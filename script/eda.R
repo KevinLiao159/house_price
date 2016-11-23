@@ -1,6 +1,8 @@
 library(dplyr)
 library(ggplot2)
 library(caret)
+library(iterators)
+library(parallel)
 library(doMC)
 registerDoMC(cores = 4)
 source("script/util.R")
