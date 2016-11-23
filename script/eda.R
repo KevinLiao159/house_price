@@ -21,6 +21,11 @@ data.test$SalePrice = 0
 data.all = rbind(data.train, data.test)
 data.train$data_type = as.factor(data.train$data_type)
 
+data.all$MSSubClass = as.factor(data.all$MSSubClass) 
+data.all$YearBuilt = as.factor(data.all$YearBuilt)
+data.all$YrSold = as.factor(data.all$YrSold)
+data.all$GarageYrBlt = as.factor(data.all$GarageYrBlt)
+
 data.all = convert_na_to_factor(data.all)
 
 # split into train, test again
@@ -42,6 +47,18 @@ ggplot(data.train, aes(x = SalePrice)) + geom_histogram() + scale_x_log10()
 data.tmp <- select(data.train, MiscFeature, SalePrice)
 data.tmp$MiscFeature_exist <- !is.na(data.tmp$MiscFeature)
 
+# featur engineering
+
+data.numeric = get_only_numerical_predictors(data.all)
+data.numeric %>% head
+
+
+tmp4 = head(data.train)
+
+
+sum(data.train[1, ] == "None")
+
+
 #### visualization
 
 # SalePrice based on Existence of MiscFeature
@@ -55,7 +72,7 @@ data.train$SalePrice = log(data.train$SalePrice)
 filter(data.train, SalePrice == max(SalePrice))
 
 
-
+res=MCA(data.train, quanti.sup=19)
 
 
 

@@ -23,6 +23,26 @@ convert_na_to_factor = function(data) {
   
 }
 
+get_only_numerical_predictors = function(data) {
+  
+  
+  
+  
+  tmp = NULL
+  
+  for (predictor in colnames(data)){
+    pred = eval(quote(predictor))
+    predictor = data[, pred]
+    if (is.numeric(predictor)) {
+
+      tmp = c(tmp, pred)
+
+    }
+
+  }
+  data[, eval(quote(tmp))]
+}
+
 
 make_submission_form = function(model, data.test) {
   data.test$SalePrice = NULL
