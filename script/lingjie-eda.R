@@ -198,9 +198,29 @@ ggplot(DataTrain, aes(x = MiscRoom, y = SalePrice, col = factor(BldgType))) + ge
 # Fireplaces
 ggplot(DataTrain, aes(x = Fireplaces, y = SalePrice)) + geom_point()
 ggplot(DataTrain, aes(x = SalePrice, fill = factor(Fireplaces))) + geom_histogram(position="dodge", bins = 30)
+# With regards to fireplace quality
+ggplot(DataTrain, aes(x = Fireplaces, y = SalePrice, col = factor(FireplaceQu))) + geom_point()
+# New Variable - FireplaceQuBinary
+DataTrain$FireplaceQuBinary <- 0
+for (i in 1:nrow(DataTrain)) {
+    if (DataTrain[i,]$FireplaceQu == "Ex" | DataTrain[i,]$FireplaceQu == "Gd") {
+        DataTrain[i,]$FireplaceQuBinary <- 1
+    }
+}
+ggplot(DataTrain, aes(x = Fireplaces, y = SalePrice, col = factor(FireplaceQuBinary))) + geom_point()
+
 
 
 # GarageYrBlt
+# Any missing value in garage year
+DataTrain[DataTrain$GarageYrBlt == -1, ]$GarageType == "None"
+# No missing value in garage year built
+DataTrain[DataTrain$GarageYrBlt != -1,] %>%
+    ggplot(aes(x = GarageYrBlt, y = SalePrice)) + geom_point()
+# New variable - GarageAge
+min(DataTrain[DataTrain$GarageYrBlt != -1, ]$GarageYrBlt)
+# The oldest garage was built in 1900
+
 # GarageCars
 # GarageArea
 # WoodDeckSF
