@@ -275,5 +275,21 @@ ggplot(DataTrain, aes(x = SalePrice, fill = factor(PoolBinary))) + geom_histogra
 
 
 # MiscVal
+ggplot(DataTrain, aes(x = SalePrice, fill = factor(MiscVal))) + geom_histogram(position="dodge", bins = 30)
+ggplot(DataTrain, aes(x = MiscVal, y = SalePrice)) + geom_point()
+# New Variable - MiscBinary, which measures if a house has pool or not
+DataTrain$MiscBinary <- 0
+for (i in 1:nrow(DataTrain)) {
+    if (DataTrain[i,]$MiscVal > 0) {
+        DataTrain[i,]$MiscBinary <- 1
+    }
+}
+ggplot(DataTrain, aes(x = MiscBinary, y = SalePrice)) + geom_point()
+
 # MoSold
+ggplot(DataTrain, aes(x = SalePrice, fill = factor(MoSold))) + geom_histogram(position="dodge", bins = 30)
+ggplot(DataTrain, aes(x = MoSold, y = SalePrice)) + geom_point()
+
 # YrSold
+ggplot(DataTrain, aes(x = SalePrice, fill = factor(YrSold))) + geom_histogram(position="dodge", bins = 30)
+ggplot(DataTrain, aes(x = YrSold, y = SalePrice)) + geom_point()
