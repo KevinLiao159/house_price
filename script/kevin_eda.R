@@ -24,7 +24,7 @@ data.all = rbind(data.train, data.test)
 data.train$data_type = as.factor(data.train$data_type)
 
 data.all$MSSubClass = as.factor(data.all$MSSubClass) 
-data.all$YearBuilt = as.factor(data.all$YearBuilt)
+#data.all$YearBuilt = as.factor(data.all$YearBuilt)
 data.all$YrSold = as.factor(data.all$YrSold)
 data.all$GarageYrBlt = as.factor(data.all$GarageYrBlt)
 
@@ -127,4 +127,29 @@ plot(data.train$Neighborhood, data.train$multiple, las = 2)
 
 # YearBuilt
 
- 
+ggplot(data = data.train, aes(y = SalePrice, x = YearBuilt)) + 
+  geom_point()
+
+ggplot(data.train, aes(x = YearBuilt)) + geom_bar() 
+
+# standize YearBuilt
+# data.all$YearBuilt <- scale(as.numeric(data.all$YearBuilt), center = TRUE, scale = TRUE)
+# Mean = 1971.3
+mean(as.numeric(data.all$YearBuilt))
+
+# binary YearBuilt
+data.all$Year <- c()
+for (i in 1:nrow(data.all)) {
+  if (data.all$YearBuilt[i] > 1945) {
+    data.all$Year[i] <- 1
+  } else {
+    data.all$Year[i] <- 0
+  }
+}
+
+# Year
+ggplot(data = data.train, aes(y = SalePrice, x = Year)) + 
+  geom_point()
+
+ggplot(data.train, aes(x = Year)) + geom_bar() 
+
