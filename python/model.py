@@ -30,7 +30,7 @@ def report(results, n_top=3):
 
 clf = RandomForestRegressor(n_estimators=500, n_jobs=-1)
 param_grid = {"max_depth": [5, 10, 15],
-              "max_features": ["10"],
+              "max_features": [10],
               "min_samples_split": [1, 3, 10],
               "min_samples_leaf": [1, 3, 10],
               "bootstrap": [True, False],
