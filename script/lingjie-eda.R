@@ -289,7 +289,34 @@ ggplot(DataTrain, aes(x = MiscBinary, y = SalePrice)) + geom_point()
 # MoSold
 ggplot(DataTrain, aes(x = SalePrice, fill = factor(MoSold))) + geom_histogram(position="dodge", bins = 30)
 ggplot(DataTrain, aes(x = MoSold, y = SalePrice)) + geom_point()
+# New Variable - SeasonSold
+# 0: Winter - December, January, Feburary
+# 1: Spring - March, April, May
+# 2: Summer - June, July, August
+# 3: Fall - September, October, November
+DataTrain$SeasonSold <- 0
+for (i in 1:nrow(DataTrain)) {
+    if (DataTrain[i,]$MoSold == 12 | DataTrain[i,]$MoSold == 1 | DataTrain[i,]$MoSold == 2) {
+        DataTrain[i,]$SeasonSold <- 0
+    } else if (DataTrain[i,]$MoSold == 3 | DataTrain[i,]$MoSold == 4 | DataTrain[i,]$MoSold == 5) {
+        DataTrain[i,]$SeasonSold <- 1
+    } else if (DataTrain[i,]$MoSold == 6 | DataTrain[i,]$MoSold == 7 | DataTrain[i,]$MoSold == 8) {
+        DataTrain[i,]$SeasonSold <- 2
+    } else {
+        DataTrain[i,]$SeasonSold <- 3
+    }
+}
+ggplot(DataTrain, aes(x = SeasonSold, y = SalePrice)) + geom_point()
+ggplot(DataTrain, aes(x = SalePrice, fill = factor(SeasonSold))) + geom_histogram(position="dodge", bins = 30)
+
 
 # YrSold
 ggplot(DataTrain, aes(x = SalePrice, fill = factor(YrSold))) + geom_histogram(position="dodge", bins = 30)
 ggplot(DataTrain, aes(x = YrSold, y = SalePrice)) + geom_point()
+
+
+
+
+# Fit linear model
+lm <- lm(SalePrice ~., data = DataTrain)
+
