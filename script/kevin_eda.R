@@ -101,5 +101,12 @@ ggplot(data = data.train, aes(y = SalePrice, x = MSSubClass)) +
 
 plot(data.train$MSSubClass)
 
+# OverallCond  ????????
+ggplot(data = data.train, aes(y = SalePrice, x = OverallCond)) + 
+  geom_point()
+
+# OverallQual
+ggplot(data = data.train, aes(y = SalePrice, x = OverallQual)) + 
+  geom_point()
 
 
