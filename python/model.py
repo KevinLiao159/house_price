@@ -78,7 +78,7 @@ print(lasso_cv)
 print(lasso_cv.mean())
 
 
-n_estimators = 1
+n_estimators = 2000
 
 param_bundle = {
 
