@@ -10,7 +10,7 @@ from sklearn.datasets import load_digits
 
 from sklearn.model_selection import cross_val_score
 # from xgboost import XGBClassifier
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import RandomForestRegressor
@@ -28,7 +28,7 @@ def report(results, n_top=3):
             print("")
 
 
-clf = RandomForestRegressor(n_estimators=500, n_jobs=-1)
+clf = RandomForestRegressor(n_estimators=10, n_jobs=-1)
 param_grid = {"max_depth": [5, 10, 15],
               "max_features": ["auto", "log2"],
               "min_samples_split": [1, 3, 10],
