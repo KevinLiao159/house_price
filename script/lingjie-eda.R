@@ -220,15 +220,60 @@ DataTrain[DataTrain$GarageYrBlt != -1,] %>%
 # New variable - GarageAge
 min(DataTrain[DataTrain$GarageYrBlt != -1, ]$GarageYrBlt)
 # The oldest garage was built in 1900
+DataTrain$GarageAge <- -1
+for (i in 1:nrow(DataTrain)) {
+    if (DataTrain[i,]$GarageYrBlt != -1) {
+        DataTrain[i,]$GarageAge <- DataTrain[i,]$GarageYrBlt - 1900
+    }
+}
+DataTrain[DataTrain$GarageAge != -1,] %>%
+    ggplot(aes(x = GarageAge, y = SalePrice)) + geom_point()
+ggplot(DataTrain, aes(x = GarageAge, y = SalePrice, col = factor(GarageFinish))) + geom_point()
+
 
 # GarageCars
+ggplot(DataTrain, aes(x = GarageCars, y = SalePrice, col = factor(BldgType))) + geom_point()
+
+
 # GarageArea
+ggplot(DataTrain, aes(x = GarageArea, y = SalePrice)) + geom_point()
+ggplot(DataTrain, aes(x = GarageArea, y = SalePrice)) + geom_point() + scale_x_log10()
+
 # WoodDeckSF
+ggplot(DataTrain, aes(x = WoodDeckSF, y = SalePrice)) + geom_point()
+
 # OpenPorchSF
+ggplot(DataTrain, aes(x = OpenPorchSF, y = SalePrice)) + geom_point()
+
 # EnclosedPorch
 # X3SsnPorch
 # ScreenPorch
+
+# New Variable - PorchArea, which calculates the total area of porch of a house
+DataTrain$PorchArea = DataTrain$OpenPorchSF + DataTrain$EnclosedPorch + DataTrain$X3SsnPorch + DataTrain$ScreenPorch
+ggplot(DataTrain, aes(x = PorchArea, y = SalePrice)) + geom_point()
+# New Variable - PorchBinary, which measures if a house has porch or not
+DataTrain$PorchBinary <- 1
+for (i in 1:nrow(DataTrain)) {
+    if (DataTrain[i,]$OpenPorchSF == 0 && DataTrain[i,]$EnclosedPorch == 0 && DataTrain[i,]$X3SsnPorch == 0 && DataTrain[i,]$ScreenPorch == 0) {
+        DataTrain[i,]$PorchBinary <- 0
+    }
+}
+ggplot(DataTrain, aes(x = PorchBinary, y = SalePrice)) + geom_point()
+
+
 # PoolArea
+ggplot(DataTrain, aes(x = PoolArea, y = SalePrice)) + geom_point()
+# New Variable - PoolBinary, which measures if a house has pool or not
+DataTrain$PoolBinary <- 0
+for (i in 1:nrow(DataTrain)) {
+    if (DataTrain[i,]$PoolArea > 0) {
+        DataTrain[i,]$PoolBinary <- 1
+    }
+}
+ggplot(DataTrain, aes(x = SalePrice, fill = factor(PoolBinary))) + geom_histogram(position="dodge", bins = 30)
+
+
 # MiscVal
 # MoSold
 # YrSold
