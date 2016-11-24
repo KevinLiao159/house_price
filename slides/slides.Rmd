@@ -1,22 +1,37 @@
 ---
 title: "Final Project - House Price"
-author: "Lingjie Qiao and Minsu Kim"
-date: "11/4/2016"
-output: ioslides_presentation
+author: "Team Golden Squirrels: Lingjie Qiao, Minsu Kim, Kevin Liao and Cheng Peng"
+date: "11/24/2016"
+output: 
+    ioslides_presentation:
+        fig_width: 7
+        fig_height: 6
+        fig_caption: true
 ---
 
+---
+## Agenda
+![](../images/housesbanner.png)
+
+* Project Objective
+* Data Description
+* Methodology and Applied Methods
+* Key Findings
+* Competition Results
+* Conclusions
+* Acknowledgement
+
 ## Project Objective
-This project thoroughly explores the predictive modeling process. From previous study, in order to understand the relationship of one dependent variable with several independent variables, we fit a multiple linear regession with Ordinary Least Squares. However, since OLS may have high variance and include irrelevant variables, Predictive Modeling Process can improve the results in terms of **Prediction Accuracy** and **Model Interpretability**. 
+To make full use of statistical models and predictive tools we have learned from the class and challenge ourselves to the next level, we choose to complete **"House Price: Advanced Regression Techniques"** from Kaggle Competition and have entered the competition with our work. 
 
-## Data Target
-Our analysis starts with the data set [Credit](https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data) provided by the author of book "An Introduction to Statistical Learning". This data set records `Balance`, which is the average credit card debt for a number of individuals, as well as several predictors. The dataset has eleven variables:
+Aiming to explore relations, predict housing price and raise interesting questions from the given dataset, we want to achieve both **Prediction Accuracy** and **Model Interpretability**. 
 
-<div class="blue">
-- Seven **quantitative** variables: Income, Limit, Rating, Cards, Age, Education, and Balance
-- Four **qualitative** variables, Gender, Student, Married, and Ethnicity
-</div>
+## Data Description
+Our analysis starts with the data sets provided by Kaggle Competition on  [House Price](https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data). In the information provided, `Data Description` gives the official definition for fields, This data set records; `train.csv` provides 1459 real observations that can be used for model construction; `test.csv` is used to fit the predictive model and create submission.
 
-Our goal is to understand the relationship between `Balance` and these potential predictors with statistical fitting procedures.
+The dataset has 79 variables in total, including both categorical and numerical variables.
+
+Our goal is to understand the relationship between `SalePrice` and these potential predictors with statistical fitting procedures.
 
 
 ## Methodology and Applied Methods
@@ -93,11 +108,11 @@ ggplot(plot_table_coef, aes(x = Predictors, y=Coefficients, group = Models, colo
 
 ## Conclusions
 
-In conclusions, we explore and compare the usage of different regression models on dataset `Credit` to understand the relationship between dependent variable `Balance` and ten potential predictors. Setting ordinary least squares as the benchmark, we look at two shrinkage regression methods (ridge and lasso) and two dimension reduction regression methods (PCR and PLSR) to find the best fitting model.
+In conclusions, we explore and compare the usage of different regression models on the train dataset and fit the model for predictions in the test dataset. Solving problems to the next level and applying advanced regression techniques, we obtained a better understanding of the data, potential predictors and useful techniques. Along the completition of this project, we emphasized team collaboration, project reproducibility and adventurous strategy. Great conclusion to the end of this class!
 
-## Reference
+## Acknowledgments
 
-James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. _An Introduction to Statistical Learning: With Applications in R_. New York: Springer, 2013. Print.
+The Ames Housing dataset was compiled by Dean De Cock for use in data science education. It's an incredible alternative for data scientists looking for a modernized and expanded version of the often cited Boston Housing dataset. 
 
-1. https://en.wikipedia.org/wiki/Partial_least_squares_regression
+Special thanks to Professor Gaston Sanchez and GSI Sindhuja Jeyabal.
 
