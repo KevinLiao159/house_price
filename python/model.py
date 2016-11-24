@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 import pickle
 
-import matplotlib
-import matplotlib.pyplot as plt
 from scipy.stats import randint as sp_randint
 from sklearn.model_selection import KFold
 from sklearn.model_selection import GridSearchCV
