@@ -43,6 +43,13 @@ get_only_numerical_predictors = function(data) {
   data[, eval(quote(tmp))]
 }
 
+get_number_none = function(data) {
+  number_of_nones = apply(data, 1, function(x) {
+    sum(x == 'None')
+  })
+  
+  return(number_of_nones)
+}
 
 make_submission_form = function(model, data.test) {
   data.test$SalePrice = NULL
