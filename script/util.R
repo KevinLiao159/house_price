@@ -53,8 +53,10 @@ get_number_none = function(data) {
 
 make_submission_form = function(model, data.test) {
   data.test$SalePrice = NULL
+  result3 = exp(predict(model.gbm3, data.test))
+  result2 = exp(predict(model.gbm2, data.test))
   result = exp(predict(model.gbm, data.test))
-  data.sample$SalePrice = result
-  write.csv(data.sample, "first_submission.csv", row.names = FALSE)
+  data.sample$SalePrice = (result * 0.3 + result2 * 0.3+ result3 * 0.4)
+  write.csv(data.sample, "tenth_submission.csv", row.names = FALSE)
 }
 
