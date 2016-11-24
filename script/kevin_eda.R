@@ -62,7 +62,7 @@ pairs(data.train[,c("LotFrontage", "LotArea", "MSSubClass", "OverallCond", "Over
                     "GrLivArea")])
 dev.off()
 
-# LotFrontage
+# LotFrontage ------ take log
 ggplot(data = data.train, aes(y = SalePrice, x = LotFrontage)) + 
   geom_point()
 # weak coorelation
@@ -71,7 +71,7 @@ cor(data.train$SalePrice, data.train$LotFrontage)
 ggplot(data.train, aes(x = LotFrontage)) + geom_histogram() + scale_x_log10()
 
 
-# LotArea
+# LotArea ----- take log
 ggplot(data = data.train[-c(54, 250, 314, 336, 385, 452, 458, 707, 770, 1299, 1397), ], 
        aes(y = SalePrice, x = LotArea)) + 
   geom_point()
@@ -105,8 +105,26 @@ plot(data.train$MSSubClass)
 ggplot(data = data.train, aes(y = SalePrice, x = OverallCond)) + 
   geom_point()
 
-# OverallQual
+# Why outliers
+which(data.train$SalePrice > 5e+05 & data.train$OverallCond == 5)
+data.train[c(179, 441, 770, 804, 899, 1047, 1170, 1183),]
+
+
+# OverallQual  ---- Strong 
 ggplot(data = data.train, aes(y = SalePrice, x = OverallQual)) + 
   geom_point()
 
+# add price multiple to data.all
+data.all$multiple <- data.all$SalePrice / data.all$GrLivArea
 
+# Look at the top 5 multiples
+head(data.all[order(data.all$multiple),][data.all$data_type=="train",])
+
+# plot multiple vs. neighborhood
+plot(data.train$Neighborhood, data.train$multiple, las = 2)
+
+
+
+# YearBuilt
+
+ 
