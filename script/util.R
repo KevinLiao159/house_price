@@ -13,7 +13,7 @@ convert_na_to_factor = function(data) {
     }
     if (is.integer(selected_pred)) {
       
-      selected_pred[is.na(selected_pred)] = -1
+      selected_pred[is.na(selected_pred)] = mean(selected_pred, na.rm = TRUE)
       data[, pred] = selected_pred
     }
     

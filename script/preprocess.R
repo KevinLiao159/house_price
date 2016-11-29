@@ -15,8 +15,6 @@ data.sample = read.csv("rawData/sample_submission.csv")
 data.train$Id <- NULL
 data.test$Id <- NULL
 
-
-
 # combine train, test
 data.train$data_type = "train"
 data.test$data_type = "test"
@@ -24,15 +22,27 @@ data.test$SalePrice = 0
 data.all = rbind(data.train, data.test)
 data.train$data_type = as.factor(data.train$data_type)
 
-# indicates the ages of building built, sold
-data.all$YearBuilt_age = abs(max(data.all$YearBuilt) - data.all$YearBuilt)
-data.all$YrSold_age = abs(max(data.all$YrSold) - data.all$YrSold)
+# Scale log transform
+data.all$SalePrice = log(data.all$SalePrice + 1)
 
+# indicates the ages of building built, sold
+# data.all$YearBuilt_age = abs(max(data.all$YearBuilt) - data.all$YearBuilt)
+# data.all$YrSold_age = abs(max(data.all$YrSold) - data.all$YrSold)
+
+# sold - built
+data.all$YrSold_YearBuilt = data.all$YrSold - data.all$YearBuilt
+
+# Remodel - built
+data.all$YearRemodel_YearBuilt = data.all$YearRemodAdd - data.all$YearBuilt
+
+# sold - remodel
+data.all$YrSold_YearRemodel = data.all$YrSold - data.all$YearRemodAdd
 
 # factorize
 data.all$MSSubClass = as.factor(data.all$MSSubClass) 
 data.all$YearBuilt = as.factor(data.all$YearBuilt)
 data.all$YrSold = as.factor(data.all$YrSold)
+data.all$MoSold = as.factor(data.all$MoSold)
 data.all$GarageYrBlt = as.factor(data.all$GarageYrBlt)
 
 # convert NAs to factor
@@ -64,7 +74,7 @@ data.all$masVnrArea_exist = as.factor(data.all$MasVnrArea != 0)
 
 data.all$LotArea = log(data.all$LotArea + 1)
 data.all$GrLivArea = log(data.all$GrLivArea + 1)
-data.all$SalePrice = log(data.all$SalePrice + 1)
+
 
 data_type = data.all$data_type
 data.all$data_type = NULL

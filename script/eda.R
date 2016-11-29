@@ -1,4 +1,77 @@
 
+head(data.all)
+View(data.all)
+
+data.train = filter(data.all, data_type == 'train')
+# YrSold
+ggplot(data.all, aes(x = YrSold)) + geom_histogram()
+
+# MoSold
+ggplot(data.all, aes(x = MoSold)) + geom_histogram()
+# => This makes sense. People usually move in and out during summer.
+
+# Price distribution
+filter(data.all, data_type == 'train') %>%
+  ggplot(aes(x = SalePrice)) + geom_histogram()
+# => skewed to the right. 
+
+
+# Price log distribution
+filter(data.all, data_type == 'train') %>%
+  ggplot(aes(x = SalePrice)) + geom_histogram()
+
+summary(data.train$SalePrice)
+quantile(data.train$SalePrice, probs = c(0.005, 0.995))
+ggplot(data.train, aes(x = SalePrice)) + geom_histogram()
+ggplot(data.train, aes(x = SalePrice)) + geom_histogram() + xlim(10.91511, 13.17509)
+filter(data.train, SalePrice <= 10.91511 | SalePrice >= 13.17509)
+
+
+filter(data.train, SalePrice == 0)
+data.all$SalePrice
+
+# Sold Year - Remodel Year -> how long it has been after remodeling.
+ggplot(data.train, aes(x = YrSold_YearRemodel, y = SalePrice)) + geom_point() + geom_smooth() + scale_y_log10()
+ggplot(data.train, aes(x = YrSold_YearRemodel, y = SalePrice)) + geom_point() + geom_smooth() + scale_y_log10() + xlim(0, 20)
+ggplot(data.train, aes(x = YrSold_YearRemodel, y = SalePrice)) + geom_point() + geom_smooth() + scale_y_log10() + xlim(21, 40)
+ggplot(data.train, aes(x = YrSold_YearRemodel, y = SalePrice)) + geom_point() + geom_smooth() + scale_y_log10() + xlim(41, 60)
+
+# Sold Year - Built Year -> how long it has been after built
+ggplot(data.train, aes(x = YrSold_YearBuilt, y = SalePrice)) + geom_point() + geom_smooth() +  scale_y_log10() + xlim(0, 100)
+
+# group by YrSold_YearRemodel vs SalePrice
+group_by(data.train, YrSold_YearRemodel) %>% summarise(mean(SalePrice)) %>% View
+
+# group by YrSold_YearBuilt vs SalePrice
+group_by(data.train, YrSold_YearBuilt) %>% summarise(mean(SalePrice)) %>% View
+
+
+
+
+# look at outliers 
+filter(data.all, SalePrice > 500000)
+
+summary(data.train$SalePrice)
+
+# group by SaleCondition vs SalePrice
+group_by(data.train, SaleCondition) %>% summarise(mean(SalePrice))
+
+# group by SaleType vs SalePrice
+group_by(data.train, SaleType) %>% summarise(mean(SalePrice))
+
+# group by MoSold vs SalePrice
+group_by(data.train, MoSold) %>% summarise(mean(SalePrice))
+
+# group by YrSold vs SalePrice
+group_by(data.train, YrSold) %>% summarise(mean(SalePrice))
+
+
+
+
+
+
+data.all
+
 #### visualization
 
 # SalePrice based on Existence of MiscFeature
