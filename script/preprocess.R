@@ -15,15 +15,20 @@ data.sample = read.csv("rawData/sample_submission.csv")
 data.train$Id <- NULL
 data.test$Id <- NULL
 
-# combine train, test
+# add predictor called data_type
 data.train$data_type = "train"
 data.test$data_type = "test"
 data.test$SalePrice = 0
-data.all = rbind(data.train, data.test)
-data.train$data_type = as.factor(data.train$data_type)
 
 # Scale log transform
-data.all$SalePrice = log(data.all$SalePrice + 1)
+data.train$SalePrice = log(data.train$SalePrice + 1)
+
+# remove outliers 17 points
+data.train = filter(data.train, 10.91511 < SalePrice, SalePrice < 13.17509)
+
+# combine train, test
+data.all = rbind(data.train, data.test)
+data.train$data_type = as.factor(data.train$data_type)
 
 # indicates the ages of building built, sold
 # data.all$YearBuilt_age = abs(max(data.all$YearBuilt) - data.all$YearBuilt)

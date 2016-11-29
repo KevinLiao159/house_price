@@ -24,6 +24,7 @@ summary(data.train$SalePrice)
 quantile(data.train$SalePrice, probs = c(0.005, 0.995))
 ggplot(data.train, aes(x = SalePrice)) + geom_histogram()
 ggplot(data.train, aes(x = SalePrice)) + geom_histogram() + xlim(10.91511, 13.17509)
+
 filter(data.train, SalePrice <= 10.91511 | SalePrice >= 13.17509)
 
 
@@ -45,9 +46,6 @@ group_by(data.train, YrSold_YearRemodel) %>% summarise(mean(SalePrice)) %>% View
 # group by YrSold_YearBuilt vs SalePrice
 group_by(data.train, YrSold_YearBuilt) %>% summarise(mean(SalePrice)) %>% View
 
-
-
-
 # look at outliers 
 filter(data.all, SalePrice > 500000)
 
@@ -64,6 +62,9 @@ group_by(data.train, MoSold) %>% summarise(mean(SalePrice))
 
 # group by YrSold vs SalePrice
 group_by(data.train, YrSold) %>% summarise(mean(SalePrice))
+
+
+# model analysis
 
 
 
