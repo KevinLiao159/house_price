@@ -8,6 +8,13 @@ data.train.matrix$data_type = NULL
 data.test.matrix <- filter(data.all.matrix, data_type == "test")
 data.test.matrix$data_type = NULL
 
+range(data.train.matrix$SalePrice)
+
+quantile(data.train.matrix$SalePrice, )
+
+
+data.train.matrix = read.csv("cleanedData/data.train.matrix2.csv")
+
 write.csv(data.train.matrix, "cleanedData/data.train.matrix.csv", row.names = F)
 write.csv(data.test.matrix, "cleanedData/data.test.matrix.csv", row.names = F)
 
@@ -16,9 +23,9 @@ fitControl <- trainControl(method = "repeatedcv", number = 7, repeats = 3)
 
 # param
 gbmGrid3 <- expand.grid(interaction.depth = c(1, 3, 5),
-                        n.trees = c(5, 6)*50, 
-                        shrinkage = c(0.1),
-                        n.minobsinnode = c(15, 20))
+                        n.trees = c(4, 5, 6, 7)*50, 
+                        shrinkage = c(0.1, 0.2),
+                        n.minobsinnode = c(10, 15, 20))
 
 # gbm
 model.gbm6<- train(SalePrice ~., data =  data.train.matrix, method = 'gbm', tuneGrid = gbmGrid3)

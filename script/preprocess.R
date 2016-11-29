@@ -15,6 +15,8 @@ data.sample = read.csv("rawData/sample_submission.csv")
 data.train$Id <- NULL
 data.test$Id <- NULL
 
+
+
 # combine train, test
 data.train$data_type = "train"
 data.test$data_type = "test"
@@ -42,29 +44,30 @@ data.all$pool_exist = as.factor(data.all$PoolArea != 0)
 data.all$garage_exist = as.factor(data.all$GarageArea != 0)
 data.all$masVnrArea_exist = as.factor(data.all$MasVnrArea != 0)
 
-# kmeans using areas
-set.seed(11)
-data.area <- select(data.all, LotArea, GrLivArea)
-scaled_data = as.data.frame(scale(data.area))
-data.model.kmeans = kmeans(scaled_data, centers = 10)
-
-data.all$cluster <- as.factor(data.model.kmeans$cluster)
-scaled_data$cluster <- as.factor(data.model.kmeans$cluster)
-
-data.all$cluster_dist = 0
-for (i in 1:nrow(data.all)) {
-  
-  data.all$cluster_dist[i] = dist(rbind( select(scaled_data[i, ], -cluster), data.model.kmeans$centers[scaled_data[i, ]$cluster, ] ))
-  
-}
+# # kmeans using areas
+# set.seed(11)
+# data.area <- select(data.all, LotArea, GrLivArea)
+# scaled_data = as.data.frame(scale(data.area))
+# data.model.kmeans = kmeans(scaled_data, centers = 10)
+# 
+# data.all$cluster <- as.factor(data.model.kmeans$cluster)
+# scaled_data$cluster <- as.factor(data.model.kmeans$cluster)
+# 
+# data.all$cluster_dist = 0
+# for (i in 1:nrow(data.all)) {
+#   
+#   data.all$cluster_dist[i] = dist(rbind( select(scaled_data[i, ], -cluster), data.model.kmeans$centers[scaled_data[i, ]$cluster, ] ))
+#   
+# }
 
 # add log term for area related predictors
 
-data.all$LotArea_log = log(data.all$LotArea + 1)
-data.all$GrLivArea_log = log(data.all$GrLivArea + 1)
+data.all$LotArea = log(data.all$LotArea + 1)
+data.all$GrLivArea = log(data.all$GrLivArea + 1)
 data.all$SalePrice = log(data.all$SalePrice + 1)
 
 data_type = data.all$data_type
 data.all$data_type = NULL
 data.all.matrix = as.data.frame(model.matrix( ~ ., data = data.all))
+data.all.matrix$`(Intercept)` = NULL
 data.all.matrix$data_type = data_type
