@@ -1,0 +1,104 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Kaggle Competition: House Price - Project Report}
+\author{Team Golden Squirrels: Lingjie Qiao, Minsu Kim, Kevin Liao, Cheng Peng}
+
+\usepackage{Sweave}
+\begin{document}
+\input{report-concordance}
+\maketitle
+
+\begin{abstract}
+This paper summarizes the background, problem, methodology and results of our team's final project in the course Stats 159 Reproducible and Collaborative Statistical Data Science. To make full use of statistical models and predictive tools we have learned from the class and challenge ourselves to the next level, our team choose to complete \textbf{"House Price: Advanced Regression Techniques"} from Kaggle Competition and enter the competition with our work. 
+\newline
+\newline
+\textbf{Competition Link:} 
+https://www.kaggle.com/c/house-prices-advanced-regression-techniques
+\newline
+\newline
+The goal of this project is to present the use of predictive modeling process and utilize software tools that effectively communicate the results. While the competition only emphasizes the accuracy of predicted values, our team at the same time are dedicated to maintain project reproducibility and provide both objective and personal reflections upon regression analysis.
+\end{abstract}
+
+\section{Introduction}
+The House Price project thoroughly explores the predictive modeling process and advanced regression techniques. From previous study, in order to understand the relationship of one dependent variable with several independent variables, we fit a multiple linear regession with Ordinary Least Squares. However, since OLS may have high variance and include irrelevant variables, Predictive Modeling Process can improve the results in terms of \textbf{\textit{Prediction Accuracy}} and \textbf{\textit{Model Interpretability}}. 
+\newline
+\newline
+The competition sets the background of the project: Ask a home buyer to describe their dream house, and they probably won't begin with the height of the basement ceiling or the proximity to an east-west railroad. But this playground competition's dataset proves that much more influences price negotiations than the number of bedrooms or a white-picket fence.
+\newline
+\newline
+With 79 explanatory variables describing (almost) every aspect of residential homes in Ames, Iowa, this competition requires participants to predict the final price of each home. Our team therefore follows the idea of model prediction and tries to use different techniques in order to most accurately predict the final sales price of each house.
+
+
+\section{Data}
+The datasets are obtained from the Kaggle Competition website (link \href{https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data}{here}). We have access to four files: `Data Description` gives the official definition for fields; `train.csv` provides 1459 real observations that can be used for model construction; `test.csv` is used to fit the predictive model and create submission entry for the final sales price of 1460 observations; `sample_submission.csv` gives an example of how the fitted values should be submitted.
+\newline
+\newline
+The train dataset has in total 80 variables - 79 potential predictors and 1 dependent variable called `SalesPrice`. We observe both categorial predictors, such as `FireplaceQu`, `GarageCond` and `MasVnrType` as well as numerical predictors, such as `PoolArea`, `EnclosedPorch` and `YrSold`. Since we can potentially create a lot of different new variables, our goal is to understand the relationship between `SalesPrice` and these predictors with statistical fitting procedures that minimizes Mean Square Error.
+
+\section{Methodology}
+In this paper, we mainly consider the relatinoship between Sales and one media from the data set, **TV**. In order to explore this relationship, we use a simple linear model and regress `sales` onto `TV` by fitting the model:
+
+\begin{equation}
+Sales = \beta_0 + \beta_1 TV
+\end{equation}
+
+Mathematically, $\beta_0$ represents the intercept and $\beta_1$ represents the slope terms in the linear model. With this linear model, we estimate the coefficients by minimizing the least squares criterion, which is minimizing the sum of squared errors.
+
+\section{Results}
+
+With the least square estimators, we compute the regression coefficients.\newline
+Table 1: Information about Regression Coefficients
+
+\vspace{2mm}
+\begin{tabular}{ | p{3cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} |}
+  \hline			
+  Coefficients & Estimate & Std. Error & t-statistics & Pr Value \\
+  Intercept & 7.0325 & 0.4578 & 15.36 & <0.00 \\
+  TV & 0.0475 & 0.0027 & 17.67 & <0.00 \\
+  \hline  
+\end{tabular}
+
+\vspace{5mm}
+Here is the scatterplot
+
+
+\vspace{5mm}
+More information about the least squares model is given in the table below: \newline
+Table 2: Regression Quality Indices
+
+\vspace{2mm}
+\begin{tabular}{ | p{4cm} | p{2cm} | }
+  \hline			
+  Quantity & Value \\
+  Residual Standard Error & 3.259 \\
+  R-squared & 0.612 \\
+  F-statistic & 312.14 \\
+  \hline  
+\end{tabular}
+
+\section{Conclusion}
+From the reproduced graph we can see the same results as produced in the book, namely "a linear fit captures the essence of the relationship, although it is somewhat deficient in the left of the plot." This project helps us to fully understand the simple linear regression model, its mathematical interpretation, and all the data retrieved from the R fitted linear model.
+
+\end{document}
