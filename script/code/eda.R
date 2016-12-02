@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 library(dplyr)
 library(ggplot2)
 library(caret)
@@ -61,8 +59,6 @@ tmp4 = head(data.train)
 
 
 sum(data.train[1, ] == "None")
-
->>>>>>> kevin_eda
 
 #### visualization
 
