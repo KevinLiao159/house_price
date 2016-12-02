@@ -1,0 +1,118 @@
+---
+title: "Final Project - House Price"
+author: "Team Golden Squirrels: Lingjie Qiao, Minsu Kim, Kevin Liao and Cheng Peng"
+date: "11/24/2016"
+output: 
+    ioslides_presentation:
+        fig_width: 7
+        fig_height: 6
+        fig_caption: true
+---
+
+---
+## Agenda
+![](../images/housesbanner.png)
+
+* Project Objective
+* Data Description
+* Methodology and Applied Methods
+* Key Findings
+* Competition Results
+* Conclusions
+* Acknowledgement
+
+## Project Objective
+To make full use of statistical models and predictive tools we have learned from the class and challenge ourselves to the next level, we choose to complete **"House Price: Advanced Regression Techniques"** from Kaggle Competition and have entered the competition with our work. 
+
+Aiming to explore relations, predict housing price and raise interesting questions from the given dataset, we want to achieve both **Prediction Accuracy** and **Model Interpretability**. 
+
+## Data Description
+Our analysis starts with the data sets provided by Kaggle Competition on  [House Price](https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data). In the information provided, `Data Description` gives the official definition for fields, This data set records; `train.csv` provides 1459 real observations that can be used for model construction; `test.csv` is used to fit the predictive model and create submission.
+
+The dataset has 79 variables in total, including both categorical and numerical variables.
+
+Our goal is to understand the relationship between `SalePrice` and these potential predictors with statistical fitting procedures.
+
+
+## Methodology and Applied Methods
+
+Instead of fitting multiple linear regression with ordinary least square (OLS), we use OLS as a benchmark to compare the following four methods: 
+
+- **Shrinkage Methods**
+    - Ridge regression (RR)
+    - Lasso regression (LR)
+- **Dimension Reduction Methods**
+    - Principal Components regression (PCR)
+    - Partial Least Squares regression (PLSR)
+
+## Key Findings
+
+We can first explore the relationship of each predictors by creating a scatterplot matrix among all variables.
+
+After the initial observations, we fit the four different regression methods and observe the trend of lambda for ridge regression and lasso regression
+
+## Key Findings - PCR
+
+![Display: Ridge Lambda](../images/housesbanner.png)
+
+## Key Findings - Mean Squared Error
+
+We can also observe and table the Mean Squared Error obtained from each regression method
+
+```{r, echo=FALSE}
+library(xtable)
+```
+
+```{r, echo=FALSE, results='asis', message=FALSE, eval=FALSE}
+# Create table of test MSE
+library(knitr)
+library(reshape2)
+library(ggplot2)
+table_mse <- data.frame("Ridge" = model.ridge.mse,
+                        "Lasso" = model.lasso.mse,
+                        "PCR" = model.pcr.mse,
+                        "PLSR" = model.plsr.mse)
+rownames(table_mse) <- "MSE Value"
+
+# Print table of test MSE
+kable_table_mse <- kable(table_mse,
+                         caption = "Display: Mean Squared Errors",
+                         digits = 5)
+print(kable_table_mse, caption.placement="top")
+```
+
+## Coefficients
+
+```{r, echo=FALSE, results='asis', eval=FALSE}
+# Coefficient table for plsr
+# colnames(model.plsr.coeff) <- c("Value")
+xtable_plsr_coef<- xtable(coeff_table, 
+                         caption = 'Coefficient Table')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+```{r, echo=FALSE, eval=FALSE}
+
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(coeff_table)), coeff_table)
+rownames(plot_table_coef) <- NULL
+
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "Coefficients", variable.name= "Models")
+
+ggplot(plot_table_coef, aes(x = Predictors, y=Coefficients, group = Models, colour = Models)) +
+    geom_line() +
+    geom_point(size = 1) +
+    ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+## Conclusions
+
+In conclusions, we explore and compare the usage of different regression models on the train dataset and fit the model for predictions in the test dataset. Solving problems to the next level and applying advanced regression techniques, we obtained a better understanding of the data, potential predictors and useful techniques. Along the completition of this project, we emphasized team collaboration, project reproducibility and adventurous strategy. Great conclusion to the end of this class!
+
+## Acknowledgments
+
+The Ames Housing dataset was compiled by Dean De Cock for use in data science education. It's an incredible alternative for data scientists looking for a modernized and expanded version of the often cited Boston Housing dataset. 
+
+Special thanks to Professor Gaston Sanchez and GSI Sindhuja Jeyabal.
+

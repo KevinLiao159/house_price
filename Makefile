@@ -1,5 +1,7 @@
-# Declare the variables
+# Declare the variables for folders and files
 D = data
+rawD = data/rawData
+cleanD = data/cleanedData
 C = code
 S = code/scripts
 T = code/tests
@@ -12,7 +14,9 @@ ST = report/sections/*.Rmd
 all: eda regressions report
 
 data:
-	curl -o $(D)/Credit.csv "http://www-bcf.usc.edu/~gareth/ISL/Credit.csv"
+	curl -o $(rawD)/train.csv "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/download/train.csv"
+	curl -o $(rawD)/test.csv "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/download/test.csv"
+	curl -o $(rawD)/test.csv "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/download/sample_submission.csv”
 
 tests: $(T)/test-evaluation.R
 	cd $(T) && Rscript test-evaluation.R
