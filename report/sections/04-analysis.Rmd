@@ -1,0 +1,91 @@
+---
+output: pdf_document
+---
+
+```{r, echo=FALSE}
+library(xtable)
+library(reshape2)
+library(ggplot2)
+load("../../data/pcr.Rdata")
+load("../../data/ols.Rdata")
+load("../../data/plsr.Rdata")
+load("../../data/ridge.Rdata")
+load("../../data/lasso.Rdata")
+load("../../data/report.RData")
+```
+## 4. Analysis
+In this section, we present the result for each model by investigating hyper-parameters, coefficients and Mean Square Error. Lastly, we choose the best model based on Mean Square Error.
+
+### 4.1 Baseline model
+In order to set the baseline model, we first fit the ordinary least square regression using eleven predictors. Unlike other models, OLS does not have a tuning paramter. The p-values in coefficients indicate that Income, Limit, cards and StudentYes are statistically significant. Also, adjusted R-squared shows that this model explains well about the data. 
+
+### 4.2 Tuning parameter selection
+As mentioned in methods section, we use 10-fold cross validation to tune hyper-paramters for each model. 
+
+**Ridge regression** penalizes predictors' weights by L2 norm. And lambda determines the magnitude of the penalty. The figure shows that MSE increases as the lambda increments. Using cross validation, we finally obtain the minimum lambda that maximizes MSE, which is 0.01. 
+
+\begin{figure}[!hb]
+  \centering
+    \includegraphics[width=70mm]{../../images/ridge-lambda.png}
+      \caption{Lambda for Ridge}
+\end{figure}
+
+
+**Lasso regression** penalizes predictors' weights by L1 norm. Similar to Ridge regression, its lambda determines the magnitude of the penalty. The figure shows that MSE increases significanly as lambda grows. Using cross validation, we finally obtain the minimum lambda that maximizes MSE, which is 0.01. 
+\vspace{100mm}
+
+\begin{figure}[!hb]
+  \centering
+    \includegraphics[width=70mm]{../../images/lasso-lambda.png}
+      \caption{Lambda for Lasso}
+\end{figure}
+
+This is an interesting result in that both Ridge and Lasso have very small lambda. It means that both models end up penalizing a little bit. This makes sense because there are not many predictors and predictors are quite independant. 
+
+**Principal Component Regression** fits a linear regression on newly generated basis, principal components. The number of principal components is important. To obtain the best number, we use 10-fold cross validation and select one that minimizes RMSEP. The figure shows that both ten and eleven PCs are very simliar and bring about the lowest RMSEP. So, we end up choosing ten pricipal components.
+\vspace{10mm}
+\begin{figure}[!hb]
+  \centering
+    \includegraphics[width=70mm]{../../images/pcr-cross-validation.png}
+      \caption{PCR cross validation}
+\end{figure}
+
+
+**Partial least squares regression** bears some relation to principal components regression. Instead of finding hyperplanes of maximum variance between the response and independent variables, it finds a linear regression model by projecting the predicted variables and the observable variables to a new space. [1] Again, The number of principal components is important. Similarly, to obtain the best number, we use 10-fold cross validation and select one that minimizes RMSEP. The figure shows that four to eleven PCs bring out almost the same RMSEP. If our goal is to reduce dimensionality, we can select either four or five principal components. We end up choosing four.
+\vspace{10mm}
+\begin{figure}[!hb]
+  \centering
+    \includegraphics[width=70mm]{../../images/plsr-cross-validation.png}
+      \caption{PLSR cross validation}
+\end{figure}
+
+
+### 4.3 Coefficients
+
+Table 1 and Figure 5 show the coefficients for five different models. They show that cofficietns for predictors in five models are very simliar and there are slight differences in **Limit** and **Rating** predictors. 
+
+```{r, echo=FALSE, results='asis'}
+# Coefficient table for plsr
+# colnames(model.plsr.coeff) <- c("Value")
+xtable_plsr_coef<- xtable(coeff_table, 
+                         caption = 'Coefficient Table')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+```{r, echo=FALSE}
+
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(coeff_table)), coeff_table)
+rownames(plot_table_coef) <- NULL
+
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "Coefficients", variable.name= "Models")
+
+ggplot(plot_table_coef, aes(x = Predictors, y=Coefficients, group = Models, colour = Models)) +
+    geom_line() +
+    geom_point(size = 1) +
+    ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+### 4.4 Model Comparison and selection
+

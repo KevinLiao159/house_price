@@ -1,0 +1,22 @@
+---
+title: "Kaggle Competition: House Price - Project Report"
+author: "Team Golden Squirrels: Lingjie Qiao, Minsu Kim, Kevin Liao, Cheng Peng"
+date: "11/24/2016"
+output: pdf_document
+---
+
+**Course**: Statistics 159
+
+**Course Title**: Reproducible and Collaborative Statistical Data Science
+
+**Instructor**: Gaston Sanchez
+
+
+## Abstract
+
+This paper summarizes the background, problem, methodology and results of our team's final project in the course Stats 159 Reproducible and Collaborative Statistical Data Science. To make full use of statistical models and predictive tools we have learned from the class and challenge ourselves to the next level, our team choose to complete **"House Price: Advanced Regression Techniques"** from Kaggle Competition and enter the competition with our work. 
+
+**Competition Link:** https://www.kaggle.com/c/house-prices-advanced-regression-techniques
+
+The goal of this project is to present the use of predictive modeling process and utilize software tools that effectively communicate the results. While the competition only emphasizes the accuracy of predicted values, our team at the same time are dedicated to maintain project reproducibility and provide both objective and personal reflections upon regression analysis.
+

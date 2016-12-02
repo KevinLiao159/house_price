@@ -1,0 +1,13 @@
+
+## 6. Conclusion
+
+In conclusions, we explore and compare the usage of different regression models on dataset `Credit` to understand the relationship between dependent variable `Balance` and ten potential predictors. Setting ordinary least squares as the benchmark, we look at two shrinkage regression methods (ridge and lasso) and two dimension reduction regression methods (PCR and PLSR) to find the best fitting model.
+
+---
+
+## Reference
+
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. _An Introduction to Statistical Learning: With Applications in R_. New York: Springer, 2013. Print.
+
+1. https://en.wikipedia.org/wiki/Partial_least_squares_regression
+
