@@ -36,7 +36,8 @@ server <- function(input, output) {
     output$plot2 <- renderPlot({
       ggplot(numeric_items, aes(x = numeric_items[,input$x])) +
         geom_histogram() +
-        ggtitle(paste0("Histogram of ", input$x))
+        ggtitle(paste0("Histogram of ", input$x)) +
+        labs(x = input$x)
       
       
     })
