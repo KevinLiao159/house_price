@@ -1,4 +1,5 @@
 library(shiny)
+library(ggplot2)
 
 train <- read.csv("../data/rawData/train.csv")
 
@@ -21,12 +22,12 @@ ui <- fluidPage(
 server <- function(input, output) {
     
     selectedData <- reactive({
-        train[, c(input$x, SalePrice)]
+      numeric_items[, c(input$x, SalePrice)]
     })
     
     output$plot1 <- renderPlot({
-        plot(train[, input$x],
-             train$SalePrice,
+        plot(numeric_items[, input$x],
+             numeric_items$SalePrice,
              xlab = input$x,
              ylab = "Sale Price")
     })
