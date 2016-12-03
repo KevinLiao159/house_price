@@ -29,6 +29,7 @@ server <- function(input, output) {
     output$plot1 <- renderPlot({
         ggplot(numeric_items, aes(x = numeric_items[,input$x], y = numeric_items$SalePrice)) + 
           geom_point() +
+          ggtitle(paste0("Scatter Plot: Sale Price vs. ", input$x)) +
           labs(x = input$x, y = "Sale Price")
         
 
