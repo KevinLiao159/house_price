@@ -12,6 +12,8 @@ train_index = createDataPartition(data.train.matrix$SalePrice, p = 0.8, list = F
 data.train.matrix = data.train.matrix[train_index, ]
 data.validation.matrix = data.train.matrix[-train_index, ]
 
+data.validation.matrix = arrange(data.validation.matrix, SalePrice)
+
 data.test.matrix <- filter(data.all.matrix, data_type == "test")
 data.test.matrix$data_type = NULL
 
@@ -34,7 +36,7 @@ model.lasso.pred_y$model = 'lasso'
 model.lasso.pred_y$index = 1:nrow(model.lasso.pred_y)
 model.lasso.pred_y$residual = model.lasso.pred_y$y - model.lasso.pred_y$pred
 ggplot(model.lasso.pred_y, aes(x = y, y= pred)) + geom_point() + geom_smooth()
-ggplot(model.lasso.pred_y, aes(x = 1:241, y = residual)) + geom_line()
+ggplot(model.lasso.pred_y, aes(x = 1:nrow(model.lasso.pred_y), y = residual)) + geom_line()
 
 # ridge
 # grid <- 10 ^ seq(10, -2, length = 100)
@@ -53,7 +55,7 @@ model.ridge.pred_y$model = 'ridge'
 model.ridge.pred_y$index = 1:nrow(model.ridge.pred_y)
 model.ridge.pred_y$residual = model.ridge.pred_y$y - model.ridge.pred_y$pred
 ggplot(model.ridge.pred_y, aes(x = y, y= pred)) + geom_point() + geom_smooth()
-ggplot(model.ridge.pred_y, aes(x = 1:241, y = residual)) + geom_line()
+ggplot(model.ridge.pred_y, aes(x = 1:nrow(model.ridge.pred_y), y = residual)) + geom_line()
 
 # gbm
 gbmGrid3 <- expand.grid(interaction.depth = c(1, 3, 5),
@@ -68,10 +70,18 @@ model.gbm.pred_y$residual = model.gbm.pred_y$y - model.gbm.pred_y$pred
 model.gbm.pred_y$model = 'gbm'
 model.gbm.pred_y$index = 1:nrow(model.gbm.pred_y)
 
+## improve
+plot(model.gbm)
+## improve
+plot(varImp(model.gbm))
+
+
+
 ggplot(model.gbm.pred_y, aes(x = y, y= pred)) + geom_point() + geom_smooth()
-ggplot(model.gbm.pred_y, aes(x = 1:241, y = residual)) + geom_line()
+ggplot(model.gbm.pred_y, aes(x = 1:nrow(model.gbm.pred_y), y = residual)) + geom_line() + yl
 
 combined = rbind(model.gbm.pred_y, model.lasso.pred_y, model.ridge.pred_y)
+combined = rbind(model.gbm.pred_y, model.ridge.pred_y)
 combined$model = as.factor(combined$model)
 
 ggplot(combined, aes(x = index, y = residual, color = model)) + geom_line()
