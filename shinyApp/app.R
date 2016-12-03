@@ -6,7 +6,7 @@ train <- read.csv("../data/rawData/train.csv")
 source("../script/function/util.R")
 names_items <- names(get_only_numerical_predictors(train))
  
-numeric_items <- train[, names_items]
+nfeatures <- train[, names_items]
 
 ui <- fluidPage(
     headerPanel('Explanatory Data Analysis and Visualization'),
@@ -23,18 +23,18 @@ ui <- fluidPage(
 server <- function(input, output) {
     
     selectedData <- reactive({
-      numeric_items[, c(input$x, SalePrice)]
+      nfeatures[, c(input$x, SalePrice)]
     })
     
     output$plot1 <- renderPlot({
-      ggplot(numeric_items, aes(x = numeric_items[,input$x], y = numeric_items$SalePrice)) + 
+      ggplot(nfeatures, aes(x = nfeatures[,input$x], y = nfeatures$SalePrice)) + 
         geom_point() +
         ggtitle(paste0("Scatter Plot: Sale Price vs. ", input$x)) +
         labs(x = input$x, y = "Sale Price")
     })
     
     output$plot2 <- renderPlot({
-      ggplot(numeric_items, aes(x = numeric_items[,input$x])) +
+      ggplot(nfeatures, aes(x = nfeatures[,input$x])) +
         geom_histogram() +
         ggtitle(paste0("Histogram of ", input$x)) +
         labs(x = input$x)
