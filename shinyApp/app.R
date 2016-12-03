@@ -1,6 +1,6 @@
 library(shiny)
 
-advertising <- read.csv("Advertising.csv")
+test <- read.csv("../data/rawData/test.csv")
 advertising <- advertising[,2:5]
 
 ui <- fluidPage(
