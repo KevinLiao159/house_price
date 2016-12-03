@@ -1,7 +1,11 @@
 library(shiny)
 
-advertising <- read.csv("Advertising.csv")
-advertising <- advertising[,2:5]
+train <- read.csv("../data/rawData/train.csv")
+
+source("../script/function/util.R")
+num_items <- names(get_only_numerical_predictors(train))
+ 
+train <- 
 
 ui <- fluidPage(
     headerPanel('Simple Regression'),
@@ -10,6 +14,7 @@ ui <- fluidPage(
     ),
     mainPanel(
         plotOutput('plot1')
+        
     )
 )
 
