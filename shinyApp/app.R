@@ -10,7 +10,7 @@ numeric_items <- train[, names_items]
 ui <- fluidPage(
     headerPanel('Explanatory Data Analysis and Visualization'),
     sidebarPanel(
-        selectInput('x', 'Input', names(advertising)[1:3])
+        selectInput('x', 'Input', names_items)
     ),
     mainPanel(
         plotOutput('plot1')
@@ -21,14 +21,14 @@ ui <- fluidPage(
 server <- function(input, output) {
     
     selectedData <- reactive({
-        advertising[, c(input$x, Sales)]
+        train[, c(input$x, SalePrice)]
     })
     
     output$plot1 <- renderPlot({
-        plot(advertising[, input$x],
-             advertising$Sales,
+        plot(train[, input$x],
+             train$SalePrice,
              xlab = input$x,
-             ylab = "Sales")
+             ylab = "Sale Price")
     })
 }
 
