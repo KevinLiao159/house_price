@@ -40,28 +40,30 @@ data
  
 Frequency Table - Relative Frequency of Neighborhood 
 data
-    Blmngtn     Blueste      BrDale     BrkSide     ClearCr     CollgCr     Crawfor 
-0.011643836 0.001369863 0.010958904 0.039726027 0.019178082 0.102739726 0.034931507 
-    Edwards     Gilbert      IDOTRR     MeadowV     Mitchel       NAmes     NoRidge 
-0.068493151 0.054109589 0.025342466 0.011643836 0.033561644 0.154109589 0.028082192 
-    NPkVill     NridgHt      NWAmes     OldTown      Sawyer     SawyerW     Somerst 
-0.006164384 0.052739726 0.050000000 0.077397260 0.050684932 0.040410959 0.058904110 
-    StoneBr       SWISU      Timber     Veenker 
-0.017123288 0.017123288 0.026027397 0.007534247 
+    Blmngtn     Blueste      BrDale     BrkSide     ClearCr     CollgCr 
+0.011643836 0.001369863 0.010958904 0.039726027 0.019178082 0.102739726 
+    Crawfor     Edwards     Gilbert      IDOTRR     MeadowV     Mitchel 
+0.034931507 0.068493151 0.054109589 0.025342466 0.011643836 0.033561644 
+      NAmes     NoRidge     NPkVill     NridgHt      NWAmes     OldTown 
+0.154109589 0.028082192 0.006164384 0.052739726 0.050000000 0.077397260 
+     Sawyer     SawyerW     Somerst     StoneBr       SWISU      Timber 
+0.050684932 0.040410959 0.058904110 0.017123288 0.017123288 0.026027397 
+    Veenker 
+0.007534247 
  
 Frequency Table - Relative Frequency of Condition1 
 data
-     Artery       Feedr        Norm        PosA        PosN        RRAe        RRAn 
-0.032876712 0.055479452 0.863013699 0.005479452 0.013013699 0.007534247 0.017808219 
-       RRNe        RRNn 
-0.001369863 0.003424658 
+     Artery       Feedr        Norm        PosA        PosN        RRAe 
+0.032876712 0.055479452 0.863013699 0.005479452 0.013013699 0.007534247 
+       RRAn        RRNe        RRNn 
+0.017808219 0.001369863 0.003424658 
  
 Frequency Table - Relative Frequency of Condition2 
 data
-      Artery        Feedr         Norm         PosA         PosN         RRAe         RRAn 
-0.0013698630 0.0041095890 0.9897260274 0.0006849315 0.0013698630 0.0006849315 0.0006849315 
-        RRNn 
-0.0013698630 
+      Artery        Feedr         Norm         PosA         PosN 
+0.0013698630 0.0041095890 0.9897260274 0.0006849315 0.0013698630 
+        RRAe         RRAn         RRNn 
+0.0006849315 0.0006849315 0.0013698630 
  
 Frequency Table - Relative Frequency of BldgType 
 data
@@ -70,10 +72,10 @@ data
  
 Frequency Table - Relative Frequency of HouseStyle 
 data
-     1.5Fin      1.5Unf      1Story      2.5Fin      2.5Unf      2Story      SFoyer 
-0.105479452 0.009589041 0.497260274 0.005479452 0.007534247 0.304794521 0.025342466 
-       SLvl 
-0.044520548 
+     1.5Fin      1.5Unf      1Story      2.5Fin      2.5Unf      2Story 
+0.105479452 0.009589041 0.497260274 0.005479452 0.007534247 0.304794521 
+     SFoyer        SLvl 
+0.025342466 0.044520548 
  
 Frequency Table - Relative Frequency of RoofStyle 
 data
@@ -82,28 +84,30 @@ data
  
 Frequency Table - Relative Frequency of RoofMatl 
 data
-     ClyTile      CompShg      Membran        Metal         Roll      Tar&Grv      WdShake 
-0.0006849315 0.9821917808 0.0006849315 0.0006849315 0.0006849315 0.0075342466 0.0034246575 
-     WdShngl 
-0.0041095890 
+     ClyTile      CompShg      Membran        Metal         Roll 
+0.0006849315 0.9821917808 0.0006849315 0.0006849315 0.0006849315 
+     Tar&Grv      WdShake      WdShngl 
+0.0075342466 0.0034246575 0.0041095890 
  
 Frequency Table - Relative Frequency of Exterior1st 
 data
-     AsbShng      AsphShn      BrkComm      BrkFace       CBlock      CemntBd      HdBoard 
-0.0136986301 0.0006849315 0.0013698630 0.0342465753 0.0006849315 0.0417808219 0.1520547945 
-     ImStucc      MetalSd      Plywood        Stone       Stucco      VinylSd      Wd Sdng 
-0.0006849315 0.1506849315 0.0739726027 0.0013698630 0.0171232877 0.3527397260 0.1410958904 
-     WdShing 
-0.0178082192 
+     AsbShng      AsphShn      BrkComm      BrkFace       CBlock 
+0.0136986301 0.0006849315 0.0013698630 0.0342465753 0.0006849315 
+     CemntBd      HdBoard      ImStucc      MetalSd      Plywood 
+0.0417808219 0.1520547945 0.0006849315 0.1506849315 0.0739726027 
+       Stone       Stucco      VinylSd      Wd Sdng      WdShing 
+0.0013698630 0.0171232877 0.3527397260 0.1410958904 0.0178082192 
  
 Frequency Table - Relative Frequency of Exterior2nd 
 data
-     AsbShng      AsphShn      Brk Cmn      BrkFace       CBlock      CmentBd      HdBoard 
-0.0136986301 0.0020547945 0.0047945205 0.0171232877 0.0006849315 0.0410958904 0.1417808219 
-     ImStucc      MetalSd        Other      Plywood        Stone       Stucco      VinylSd 
-0.0068493151 0.1465753425 0.0006849315 0.0972602740 0.0034246575 0.0178082192 0.3452054795 
-     Wd Sdng      Wd Shng 
-0.1349315068 0.0260273973 
+     AsbShng      AsphShn      Brk Cmn      BrkFace       CBlock 
+0.0136986301 0.0020547945 0.0047945205 0.0171232877 0.0006849315 
+     CmentBd      HdBoard      ImStucc      MetalSd        Other 
+0.0410958904 0.1417808219 0.0068493151 0.1465753425 0.0006849315 
+     Plywood        Stone       Stucco      VinylSd      Wd Sdng 
+0.0972602740 0.0034246575 0.0178082192 0.3452054795 0.1349315068 
+     Wd Shng 
+0.0260273973 
  
 Frequency Table - Relative Frequency of MasVnrType 
 data
@@ -147,13 +151,17 @@ data
  
 Frequency Table - Relative Frequency of BsmtFinType2 
 data
-        ALQ         BLQ         GLQ         LwQ        None         Rec         Unf 
-0.013013699 0.022602740 0.009589041 0.031506849 0.026027397 0.036986301 0.860273973 
+        ALQ         BLQ         GLQ         LwQ        None         Rec 
+0.013013699 0.022602740 0.009589041 0.031506849 0.026027397 0.036986301 
+        Unf 
+0.860273973 
  
 Frequency Table - Relative Frequency of Heating 
 data
-       Floor         GasA         GasW         Grav         OthW         Wall 
-0.0006849315 0.9780821918 0.0123287671 0.0047945205 0.0013698630 0.0027397260 
+       Floor         GasA         GasW         Grav         OthW 
+0.0006849315 0.9780821918 0.0123287671 0.0047945205 0.0013698630 
+        Wall 
+0.0027397260 
  
 Frequency Table - Relative Frequency of HeatingQC 
 data
@@ -167,8 +175,10 @@ data
  
 Frequency Table - Relative Frequency of Electrical 
 data
-       FuseA        FuseF        FuseP          Mix         None        SBrkr 
-0.0643835616 0.0184931507 0.0020547945 0.0006849315 0.0006849315 0.9136986301 
+       FuseA        FuseF        FuseP          Mix         None 
+0.0643835616 0.0184931507 0.0020547945 0.0006849315 0.0006849315 
+       SBrkr 
+0.9136986301 
  
 Frequency Table - Relative Frequency of KitchenQual 
 data
@@ -177,8 +187,10 @@ data
  
 Frequency Table - Relative Frequency of Functional 
 data
-        Maj1         Maj2         Min1         Min2          Mod          Sev          Typ 
-0.0095890411 0.0034246575 0.0212328767 0.0232876712 0.0102739726 0.0006849315 0.9315068493 
+        Maj1         Maj2         Min1         Min2          Mod 
+0.0095890411 0.0034246575 0.0212328767 0.0232876712 0.0102739726 
+         Sev          Typ 
+0.0006849315 0.9315068493 
  
 Frequency Table - Relative Frequency of FireplaceQu 
 data
@@ -187,8 +199,10 @@ data
  
 Frequency Table - Relative Frequency of GarageType 
 data
-     2Types      Attchd     Basment     BuiltIn     CarPort      Detchd        None 
-0.004109589 0.595890411 0.013013699 0.060273973 0.006164384 0.265068493 0.055479452 
+     2Types      Attchd     Basment     BuiltIn     CarPort      Detchd 
+0.004109589 0.595890411 0.013013699 0.060273973 0.006164384 0.265068493 
+       None 
+0.055479452 
  
 Frequency Table - Relative Frequency of GarageFinish 
 data
@@ -227,10 +241,10 @@ data
  
 Frequency Table - Relative Frequency of SaleType 
 data
-        COD         Con       ConLD       ConLI       ConLw         CWD         New 
-0.029452055 0.001369863 0.006164384 0.003424658 0.003424658 0.002739726 0.083561644 
-        Oth          WD 
-0.002054795 0.867808219 
+        COD         Con       ConLD       ConLI       ConLw         CWD 
+0.029452055 0.001369863 0.006164384 0.003424658 0.003424658 0.002739726 
+        New         Oth          WD 
+0.083561644 0.002054795 0.867808219 
  
 Frequency Table - Relative Frequency of SaleCondition 
 data

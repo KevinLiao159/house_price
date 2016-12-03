@@ -1,34 +1,17 @@
 library(dplyr)
 
-# Util function
+# loading all function files
+files <- list.files("../function")
 
-convert_na_to_factor = function(data) {
-    
-    
-    for (predictor in colnames(data)){
-        pred = eval(quote(predictor))
-        selected_pred = data[, pred]
-        if (is.factor(selected_pred)) {
-            
-            tmp = as.character(selected_pred)
-            tmp[is.na(tmp)] = "None"
-            tmp = as.factor(tmp)
-            data[, pred] = tmp
-        }
-        if (is.integer(selected_pred)) {
-            
-            selected_pred[is.na(selected_pred)] = -1
-            data[, pred] = selected_pred
-        }
-        
-    }
-    return(data)
+for (i in 1:length(files)) {
+    source(paste0("../function/", files[i]))
 }
 
+
 # Import Data
-DataTrain <- read.csv("../rawData/train.csv")
+DataTrain <- read.csv("../../data/rawData/train.csv")
 DataTrain <- convert_na_to_factor(DataTrain)
-DataTest <- read.csv("../rawData/test.csv")
+DataTest <- read.csv("../../data/rawData/test.csv")
 DataTest <- convert_na_to_factor(DataTest)
 
 
@@ -51,54 +34,6 @@ for (i in 2:ncol(DataTest)) {
     if (!is.element(names(DataTest)[i], numerical_variable)) {
         categorical_variable <- c(categorical_variable, names(DataTest)[i])
     }
-}
-
-# Explore Qualitative Variables
-
-qualitative_analysis <- function(variable) {
-    
-    col <- which(names(DataTrain) == variable)
-    
-    # Select data
-    data <- select(DataTrain, col)
-    # Unlist data
-    data <- unlist(data)
-    
-    # Frequency Table - Relative Frequency
-    sink("qualitative_output.txt", append = TRUE)
-    cat(c("Frequency Table - Relative Frequency of", variable, "\n"), append = TRUE)
-    print(table(data) / nrow(DataTrain))
-    cat(" \n", append = TRUE)
-    sink()
-    
-    # Count plot and plot of variable vs price
-    png(paste0("../images/boxplot-", variable, ".png"))
-    plot(data, DataTrain$SalePrice, xlab = variable, ylab = "SalePrice", main = paste0("Boxplot of ", variable, "and Sale Price"))
-    dev.off()
-    png(paste0("../images/distribution-", variable, ".png"))
-    plot(data, xlab = variable, ylab = "Count", main = paste0("Distribution of ", variable))
-    dev.off()
-}
-
-
-# Explore Quantitative Variables
-
-quantitative_analysis <- function(variable) {
-    
-    col <- which(names(DataTrain) == variable)
-    
-    # Select data
-    data <- select(DataTrain, col)
-    # Unlist data
-    data <- unlist(data)
-    
-    # Plot
-    png(paste0("../images/plot-", variable, ".png"))
-    plot(data, DataTrain$SalePrice, xlab = variable, ylab = "SalePrice", main = paste0("Plot of ", variable, "and Sale Price"))
-    dev.off()
-    png(paste0("../images/histogram-", variable, ".png"))
-    hist(data, xlab = variable, ylab = "Frequency", main = paste0("Histogram of the frequency of ", variable))
-    dev.off()
 }
 
 for (i in 1:length(numerical_variable)) {

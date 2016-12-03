@@ -17,6 +17,7 @@ data:
 	curl -o $(rawD)/train.csv "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/download/train.csv"
 	curl -o $(rawD)/test.csv "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/download/test.csv"
 	curl -o $(rawD)/test.csv "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/download/sample_submission.csv”
+	curl -o $(rawD)/data_description.txt "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/download/data_description.txt"
 
 tests: $(T)/test-evaluation.R
 	cd $(T) && Rscript test-evaluation.R
