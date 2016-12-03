@@ -1,0 +1,23 @@
+
+## 5. Results
+
+### 5.1 Explanatory Data Analysis
+
+In order to fully understand the data, we first obtain descriptive statistics and summaries of all variables in the `Credit.csv` data set. Some of the plots we obtained are displayed as following:
+
+\vspace{10mm}
+\begin{figure}[!hb]
+  \centering
+    \includegraphics[width=70mm]{../../images/scatterplot-matrix.png}
+      \caption{Scatterplot Matrix of all variables}
+\end{figure}
+
+For qualitative variables, we can also observe some conditional boxplot as displayed below:
+
+\vspace{10mm}
+\begin{figure}[!hb]
+  \centering
+    \includegraphics[width=70mm]{../../images/conditional-boxplot-Student.png}
+      \caption{Conditional Doxplot on Student}
+\end{figure}
+

@@ -1,0 +1,12 @@
+
+## 2. Data
+
+The datasets are obtained from the Kaggle Competition website (link [here](https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data)). We have access to four files: `Data Description` gives the official definition for fields; `train.csv` provides 1459 real observations that can be used for model construction; `test.csv` is used to fit the predictive model and create submission entry for the final sales price of 1460 observations; `sample_submission.csv` gives an example of how the fitted values should be submitted.
+
+The train dataset has in total 80 variables - 79 potential predictors and 1 dependent variable called `SalesPrice`. We observe both categorial predictors, such as `FireplaceQu`, `GarageCond` and `MasVnrType` as well as numerical predictors, such as `PoolArea`, `EnclosedPorch` and `YrSold`. Since we can potentially create a lot of different new variables, our goal is to understand the relationship between `SalesPrice` and these predictors with statistical fitting procedures that minimizes Mean Square Error.
+
+### 2.1 Pre-modeling Data Processing
+
+In order to find the most accurate regression models, we first preprocess the dataset `train.csv` with several steps:
+* Create New Variables: Although the variables provided almost covered all different aspects of a house's properties, it is important to create new variables that are more useful for model fitting. Since we as human beings can intuitively interprete the meanings of each variables and give meaningful suggestions to the what the number means, adding an extra layer of human intuition will help us better capture the trends of data.
+* Standardization: Since sometimes standardized variables can be more helpful and interpretable, our team choose to standardize certain variables for the purpose of better predictions.
