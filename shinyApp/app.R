@@ -1,12 +1,17 @@
 library(shiny)
 library(ggplot2)
 
+<<<<<<< HEAD
 train <- read.csv("../data/rawData/train.csv")
 
 source("../script/function/util.R")
 names_items <- names(get_only_numerical_predictors(train))
  
 numeric_items <- train[, names_items]
+=======
+test <- read.csv("../data/rawData/test.csv")
+advertising <- advertising[,2:5]
+>>>>>>> 6b2256087f07511695d2057be39f9c07dcda4d64
 
 ui <- fluidPage(
     headerPanel('Explanatory Data Analysis and Visualization'),
