@@ -19,6 +19,7 @@ ui <- fluidPage(
     )
 )
 
+
 server <- function(input, output) {
     
     selectedData <- reactive({
@@ -26,10 +27,11 @@ server <- function(input, output) {
     })
     
     output$plot1 <- renderPlot({
-        plot(numeric_items[, input$x],
-             numeric_items$SalePrice,
-             xlab = input$x,
-             ylab = "Sale Price")
+        ggplot(numeric_items, aes(x = numeric_items[,input$x], y = numeric_items$SalePrice)) + 
+          geom_point() +
+          labs(x = input$x, y = "Sale Price")
+        
+
     })
 }
 
