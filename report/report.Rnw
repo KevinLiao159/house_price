@@ -71,7 +71,12 @@ With the presented methodology, we took the following steps to approach our anal
 \subsection{Preprocess}
 According to the exploratory data analysis, we find a lot of \textbf{NA values} in most of predictors. Since regression models cannot handle missing data, we need to either remove or impute data using appropriate methods [7]. The data description provided by client [6] indicates that some of the missing values are actually none value. In that case, we replace \textbf{NA} value with factor variable named \textbf{None}. However, there are some numerical predictors with missing values in an unsystematical manner. In that case, we impute them with \textbf{mean values} of predictors. \newline
 
-As a next step, we apply \textbf{log transformations} to \textbf{area related predictors} such GrLivArea and LotArea as well as target variable. The log transformation has an effect to remedy skewness of data [8] by making original distributions of predictors to more normally distributed. Consequently, it helps regression model to work better. \newline
+As a next step, we apply \textbf{log transformations} to \textbf{area related predictors} such as GrLivArea and LotArea as well as target variable. The log transformation has an effect to remedy skewness of data [8] by making original distributions of predictors to more normally distributed. Consequently, it helps regression model to work better. \newline
+
+\begin{figure}[h]
+\includegraphics[width=8cm]{../images/plot-GrLivArea.png}
+\includegraphics[width=8cm]{../images/plot-LotArea.png}
+\end{figure}
 
 After the log transformation, we still notice few outliers and eliminate lowest and highest 0.1\% data points. Furthermore, majority of predictors are categorical under which regression models cannot be used directly. Therefore, we apply \textbf{one-hot encoding} [9] to convert categorical values to numerical ones. It consequently expands features from 79 to approximately 500. The Table 1 below summarizes this procedure. \newline
 

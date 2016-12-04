@@ -14,7 +14,7 @@ quantitative_analysis <- function(variable) {
     
     # Plot
     png(paste0("../../images/plot-", variable, ".png"))
-    plot(data, DataTrain$SalePrice, xlab = variable, ylab = "SalePrice", main = paste0("Plot of ", variable, "and Sale Price"))
+    plot(data, DataTrain$SalePrice, xlab = variable, ylab = "SalePrice", main = paste0("Plot of ", variable, " and Sale Price"))
     dev.off()
     png(paste0("../../images/histogram-", variable, ".png"))
     hist(data, xlab = variable, ylab = "Frequency", main = paste0("Histogram of the frequency of ", variable))
