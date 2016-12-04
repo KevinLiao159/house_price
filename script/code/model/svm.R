@@ -1,4 +1,7 @@
-preProcValues <- preProcess(data.train, method = c("center", "scale"))
+
+
+preProcValues <- preProcess(data.train.matrix, method = c("center", "scale"))
 trainTransformed <- predict(preProcValues, data.train)
+fitControl <- trainControl(method = "repeatedcv", number = 7, repeats = 3)
 model.svmRadial <- train(SalePrice ~., data =  trainTransformed , method = 'svmRadial',trControl = fitControl, tuneLength = 20)
-model.svmRadial
+save(model.svmRadial, file = "data/model/svm.RData")
