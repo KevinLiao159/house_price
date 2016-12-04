@@ -31,34 +31,34 @@ model.ridge.df <- modify_dataframe_for_comparison(model.ridge.pred, 'ridge')
 ggplot(model.ridge.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
 ggplot(model.ridge.df, aes(x = 1:nrow(model.ridge.df), y = residual)) + geom_line()
 
-# gbm
+#### gbm
 
 # load RData
 load('data/model/gbm.RData')
 
 # model importance
-
+plot(varImp(model.gbm))
+# prediction
 model.gbm.pred = predict(model.gbm, data.validation.matrix)
 model.gbm.df <- modify_dataframe_for_comparison(model.gbm.pred, 'gbm')
-# model.gbm.pred_y = data.frame(pred = model.gbm.pred, y=data.validation.matrix$SalePrice)
-# model.gbm.pred_y$residual = model.gbm.pred_y$y - model.gbm.pred_y$pred
-# model.gbm.pred_y$model = 'gbm'
-# model.gbm.pred_y$index = 1:nrow(model.gbm.pred_y)
+ggplot(model.gbm.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
+ggplot(model.gbm.df, aes(x = 1:nrow(model.gbm.df), y = residual)) + geom_line()
 
-## improve
-plot(model.gbm)
-## improve
-plot(varImp(model.gbm))
+#### random forest
+
+# load RData
+load('data/model/rf.RData')
+# model importance
+plot(varImp(model.rf))
+# prediction
+model.rf.pred = predict(model.rf, data.validation.matrix)
+model.rf.df <- modify_dataframe_for_comparison(model.gbm.pred, 'rf')
+ggplot(model.rf.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
+ggplot(model.rf.df, aes(x = 1:nrow(model.rf.df), y = residual)) + geom_line()
 
 
-
-ggplot(model.gbm.pred_y, aes(x = y, y= pred)) + geom_point() + geom_smooth()
-ggplot(model.gbm.pred_y, aes(x = 1:nrow(model.gbm.pred_y), y = residual)) + geom_line() + yl
-
-combined = rbind(model.gbm.pred_y, model.lasso.pred_y, model.ridge.pred_y)
-combined = rbind(model.gbm.pred_y, model.ridge.pred_y)
+combined = rbind(model.rf.df, model.gbm.df)
 combined$model = as.factor(combined$model)
-
 ggplot(combined, aes(x = index, y = residual, color = model)) + geom_line()
 
 
@@ -131,12 +131,7 @@ model.imp3 = as.data.frame(varImp(model.gbm3)$importance)
 
 
 
- ### after nearzerovar removed
 
-head(data.all)
-data.all.data_type = data.all$data_type
-data.all.dummy = dummyVars(~., data = data.all)
-data.all.dummy = as.data.frame(predict(data.all.dummy, data.all))
 
 # x = nearZeroVar(data.all.dummy)
 # data.all.dummy = as.data.frame(data.all.dummy[, -x])
@@ -215,7 +210,4 @@ run_xgboost <- function(train_x, train_y, version) {
 }
 
 
-# linear model
-
-model.lasso = train(SalePrice ~., data = as.data.frame(train.x.dummified), method = 'lasso')
 
