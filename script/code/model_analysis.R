@@ -8,12 +8,21 @@ source("script/function/util.R")
 # load lasso RData
 load('data/model/lasso.RData')
 
-# plot lasso coefficient
-plot(model.lasso.lambda)
+# plot lasso lambda
+png("images/model_lasso_lambda.png")
+plot(model.lasso.lambda, main ='Lasso Lambda') 
+dev.off()
+
+model.lasso.lambda.coeff <- as.data.frame.matrix(coef(model.lasso, s = model.lasso.lambda.min))
+model.lasso.lambda.coeff$coefficent_name <- rownames(model.lasso.lambda.coeff)
+rownames(model.lasso.lambda.coeff) <- NULL
+colnames(model.lasso.lambda.coeff) <- c('coefficients', 'predictor')
+filter(model.lasso.lambda.coeff, coefficients != 0) %>% nrow
 
 # prediction
 model.lasso.pred <- predict(model.lasso,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.lasso.lambda.min)
 model.lasso.df <- modify_dataframe_for_comparison(model.lasso.pred, 'lasso')
+
 ggplot(model.lasso.df, aes(x = 1:nrow(model.lasso.df), y = residual)) + geom_line()
 ggplot(model.lasso.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
 get_rmse(model.lasso.pred, data.validation.matrix$SalePrice)
@@ -22,8 +31,16 @@ get_rmse(model.lasso.pred, data.validation.matrix$SalePrice)
 # load ridge RData
 load('data/model/ridge.RData')
 
-# plot lasso coefficient
+# plot ridge lambda
+png("images/model_ridge_lambda.png")
 plot(model.ridge.lambda)
+dev.off()
+
+model.ridge.lambda.coeff <- as.data.frame.matrix(coef(model.ridge, s = model.ridge.lambda.min))
+model.ridge.lambda.coeff$coefficent_name <- rownames(model.ridge.lambda.coeff)
+rownames(model.ridge.lambda.coeff) <- NULL
+colnames(model.ridge.lambda.coeff) <- c('coefficients', 'predictor')
+filter(model.ridge.lambda.coeff, coefficients != 0) %>% nrow
 
 # prediction
 model.ridge.pred <- predict(model.ridge,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.ridge.lambda.min)
@@ -62,30 +79,25 @@ get_rmse(model.rf.pred, data.validation.matrix$SalePrice)
 combined = rbind(model.lasso.df, model.ridge.df, model.rf.df, model.gbm.df)
 combined$model = as.factor(combined$model)
 
-ggplot(combined, aes(x = index, y = residual, color = model)) + geom_line() + facet_wrap(~model) + ggtitle("Residul comparison")
-ggplot(combined, aes(x = y, y = pred, color = model)) + geom_point() + geom_smooth()  + facet_wrap(~model) 
+png("images/model_residual_comparison.png", width = 1000, height = 300)
+ggplot(combined, aes(x = index, y = residual, color = model)) + geom_line() + facet_grid(~model) + ggtitle("Residul comparison")
+dev.off()
+
+png("images/model_prediction_comparison.png", width = 1000, height = 300)
+ggplot(combined, aes(x = y, y = pred, color = model)) + geom_point() + geom_smooth()  + facet_grid(~model) + ggtitle("Model prediction comparison")
+dev.off()
 
 
 # load PCA RData
 load('data/model/pca.RData')
+png("images/model_pca.png")
 plot(model.pca, type = 'l')
 summary(model.pca)
 
-##########
-# 
-# tmp11 = as.data.frame(varImp(model.gbm)$importance)
-# tmp11$class = rownames(tmp11)
-# tmp22 = filter(tmp11, Overall > 0) %>% arrange(Overall)
-# 
-# data.train.refined = data.train[, which(colnames(data.train) %in% tmp22$class)]
-# data.train.refined$SalePrice = data.train$SalePrice
-# 
-# gbmGrid4 <- expand.grid(interaction.depth = c(1, 3,5 ),
-#                         n.trees = c(4:6)*50, 
-#                         shrinkage = 0.1,
-#                         n.minobsinnode = c(15, 20)) # you can also put something        like c(5, 10, 15, 20)
-# model.gbm4<- train(SalePrice ~., data =  data.train.refined , method = 'gbm', tuneGrid= gbmGrid4, trControl = fitControl)
-# 
-
+# RMSE
+get_rmse(model.lasso.pred, data.validation.matrix$SalePrice)
+get_rmse(model.ridge.pred, data.validation.matrix$SalePrice)
+get_rmse(model.gbm.pred, data.validation.matrix$SalePrice)
+get_rmse(model.rf.pred, data.validation.matrix$SalePrice)
 
 
