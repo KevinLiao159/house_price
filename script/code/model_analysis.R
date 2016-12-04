@@ -32,17 +32,18 @@ ggplot(model.ridge.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
 ggplot(model.ridge.df, aes(x = 1:nrow(model.ridge.df), y = residual)) + geom_line()
 
 # gbm
-gbmGrid3 <- expand.grid(interaction.depth = c(1, 3, 5),
-                        n.trees = c(4, 5, 6, 7)*50, 
-                        shrinkage = c(0.1, 0.2),
-                        n.minobsinnode = c(10, 15, 20))
 
-model.gbm <- train(SalePrice ~., data =  data.train.matrix, method = 'gbm', tuneGrid = gbmGrid3)
+# load RData
+load('data/model/gbm.RData')
+
+# model importance
+
 model.gbm.pred = predict(model.gbm, data.validation.matrix)
-model.gbm.pred_y = data.frame(pred = model.gbm.pred, y=data.validation.matrix$SalePrice)
-model.gbm.pred_y$residual = model.gbm.pred_y$y - model.gbm.pred_y$pred
-model.gbm.pred_y$model = 'gbm'
-model.gbm.pred_y$index = 1:nrow(model.gbm.pred_y)
+model.gbm.df <- modify_dataframe_for_comparison(model.gbm.pred, 'gbm')
+# model.gbm.pred_y = data.frame(pred = model.gbm.pred, y=data.validation.matrix$SalePrice)
+# model.gbm.pred_y$residual = model.gbm.pred_y$y - model.gbm.pred_y$pred
+# model.gbm.pred_y$model = 'gbm'
+# model.gbm.pred_y$index = 1:nrow(model.gbm.pred_y)
 
 ## improve
 plot(model.gbm)
