@@ -11,11 +11,13 @@ nfeatures <- train[, names_items]
 ui <- fluidPage(
     headerPanel('Explanatory Data Analysis and Visualization'),
     sidebarPanel(
-        selectInput('x', 'Input', names_items)
-    ),
+        selectInput('ycol', 'Y Variable', names_items, selected = names_items[38]),
+        selectInput('xcol', 'X Variable', names_items, selected = names_items[1])),
+        
     mainPanel(
-        plotOutput('plot1') +
-        plotOutput('plot2')
+        plotOutput('plot1') 
+        #+
+        #plotOutput('plot2')
     )
 )
 
@@ -23,24 +25,24 @@ ui <- fluidPage(
 server <- function(input, output) {
     
     selectedData <- reactive({
-      nfeatures[, c(input$x, SalePrice)]
+      nfeatures[, c(input$xcol, input$ycol)]
     })
     
     output$plot1 <- renderPlot({
-      ggplot(nfeatures, aes(x = nfeatures[,input$x], y = nfeatures$SalePrice)) + 
+      ggplot(nfeatures, aes(x = nfeatures[,input$xcol], y = nfeatures[, input$ycol])) + 
         geom_point() +
-        ggtitle(paste0("Scatter Plot: Sale Price vs. ", input$x)) +
-        labs(x = input$x, y = "Sale Price")
+        ggtitle(paste0("Scatter Plot: ", input$ycol, " vs. ", input$xcol)) +
+        labs(x = input$xcol, y = input$ycol)
     })
     
-    output$plot2 <- renderPlot({
-      ggplot(nfeatures, aes(x = nfeatures[,input$x])) +
-        geom_histogram() +
-        ggtitle(paste0("Histogram of ", input$x)) +
-        labs(x = input$x)
+    #output$plot2 <- renderPlot({
+      #ggplot(nfeatures, aes(x = nfeatures[,input$x])) +
+        #geom_histogram() +
+        #ggtitle(paste0("Histogram of ", input$x)) +
+        #labs(x = input$x)
       
       
-    })
+    #})
     
     
     
