@@ -8,6 +8,12 @@ modify_dataframe_for_comparison <- function(df, model_name) {
   
 }
 
+get_rmse <- function(pred, real) {
+  
+  return(sqrt(mean((pred - real) ** 2)))
+  
+}
+
 
 convert_na_to_factor <- function(data) {
   
