@@ -12,32 +12,28 @@ set.seed(1000)
 train_index = createDataPartition(data.train.matrix$SalePrice, p = 0.8, list = FALSE)
 data.train.matrix = data.train.matrix[train_index, ]
 data.validation.matrix = data.train.matrix[-train_index, ]
-
 data.validation.matrix = arrange(data.validation.matrix, SalePrice)
-
 data.test.matrix <- filter(data.all.matrix, data_type == "test")
 data.test.matrix$data_type = NULL
 
 
-# lasso
-
-# grid <- 10 ^ seq(10, -2, length = 100)
-grid <- seq(0, 4, length = 1000)
-model.lasso.lambda <- cv.glmnet(as.matrix(select(data.train.matrix, -SalePrice)), as.matrix(data.train.matrix$SalePrice), nfolds = 5, intercept = FALSE, lambda = grid, alpha = 1)
+### lasso
 
 # plot lasso coefficient
 plot(model.lasso.lambda)
 
-model.lasso.lambda.min = model.lasso.lambda$lambda.min
-model.lasso <- glmnet(as.matrix(select(data.train.matrix, -SalePrice)), as.matrix(data.train.matrix$SalePrice), alpha = 1, lambda = model.lasso.lambda.min)
 model.lasso.pred <- predict(model.lasso,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.lasso.lambda.min)
 model.lasso.pred_y = data.frame(pred = model.lasso.pred, y=data.validation.matrix$SalePrice)
-colnames(model.lasso.pred_y) = c('pred', 'y')
-model.lasso.pred_y$model = 'lasso'
-model.lasso.pred_y$index = 1:nrow(model.lasso.pred_y)
-model.lasso.pred_y$residual = model.lasso.pred_y$y - model.lasso.pred_y$pred
-ggplot(model.lasso.pred_y, aes(x = y, y= pred)) + geom_point() + geom_smooth()
-ggplot(model.lasso.pred_y, aes(x = 1:nrow(model.lasso.pred_y), y = residual)) + geom_line()
+
+
+model.lasso.df <- modify_dataframe_for_comparison(model.lasso.pred, 'lasso')
+
+ggplot(model.lasso.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
+ggplot(model.lasso.df, aes(x = 1:nrow(model.lasso.df), y = residual)) + geom_line()
+
+
+
+
 
 # ridge
 # grid <- 10 ^ seq(10, -2, length = 100)
