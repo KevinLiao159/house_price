@@ -1,58 +1,35 @@
 library(caret)
 library(glmnet)
 library(xgboost)
-
-# split into train, test matrix
-load(file = "data/cleanedData/data.all.matrix.RData")
-data.all.matrix <- as.data.frame(data.all.matrix)
-data.train.matrix <- filter(data.all.matrix, data_type == "train")
-data.train.matrix$data_type = NULL
-
-set.seed(1000)
-train_index = createDataPartition(data.train.matrix$SalePrice, p = 0.8, list = FALSE)
-data.train.matrix = data.train.matrix[train_index, ]
-data.validation.matrix = data.train.matrix[-train_index, ]
-data.validation.matrix = arrange(data.validation.matrix, SalePrice)
-data.test.matrix <- filter(data.all.matrix, data_type == "test")
-data.test.matrix$data_type = NULL
-
+source("script/function/util.R")
 
 ### lasso
 
+# load RData
+load('data/model/lasso.RData')
+
 # plot lasso coefficient
 plot(model.lasso.lambda)
 
+# prediction
 model.lasso.pred <- predict(model.lasso,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.lasso.lambda.min)
-model.lasso.pred_y = data.frame(pred = model.lasso.pred, y=data.validation.matrix$SalePrice)
-
-
 model.lasso.df <- modify_dataframe_for_comparison(model.lasso.pred, 'lasso')
-
-ggplot(model.lasso.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
 ggplot(model.lasso.df, aes(x = 1:nrow(model.lasso.df), y = residual)) + geom_line()
+ggplot(model.lasso.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
 
+### ridge
 
-
-
-
-# ridge
-# grid <- 10 ^ seq(10, -2, length = 100)
-grid <- seq(0, 4, length = 1000)
-model.ridge.lambda <- cv.glmnet(as.matrix(select(data.train.matrix, -SalePrice)), as.matrix(data.train.matrix$SalePrice), nfolds = 5, intercept = FALSE, lambda = grid, alpha = 0)
+# load RData
+load('data/model/ridge.RData')
 
 # plot lasso coefficient
-plot(model.lasso.lambda)
+plot(model.ridge.lambda)
 
-model.ridge.lambda.min = model.ridge.lambda$lambda.min
-model.ridge <- glmnet(as.matrix(select(data.train.matrix, -SalePrice)), as.matrix(data.train.matrix$SalePrice), alpha = 0, lambda = model.ridge.lambda.min)
+# prediction
 model.ridge.pred <- predict(model.ridge,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.ridge.lambda.min)
-model.ridge.pred_y = data.frame(pred = model.ridge.pred, y=data.validation.matrix$SalePrice)
-colnames(model.ridge.pred_y) = c('pred', 'y')
-model.ridge.pred_y$model = 'ridge'
-model.ridge.pred_y$index = 1:nrow(model.ridge.pred_y)
-model.ridge.pred_y$residual = model.ridge.pred_y$y - model.ridge.pred_y$pred
-ggplot(model.ridge.pred_y, aes(x = y, y= pred)) + geom_point() + geom_smooth()
-ggplot(model.ridge.pred_y, aes(x = 1:nrow(model.ridge.pred_y), y = residual)) + geom_line()
+model.ridge.df <- modify_dataframe_for_comparison(model.ridge.pred, 'ridge')
+ggplot(model.ridge.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
+ggplot(model.ridge.df, aes(x = 1:nrow(model.ridge.df), y = residual)) + geom_line()
 
 # gbm
 gbmGrid3 <- expand.grid(interaction.depth = c(1, 3, 5),
