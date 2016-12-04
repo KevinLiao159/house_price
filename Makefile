@@ -14,9 +14,10 @@ ST = report/sections/*.Rmd
 all: eda regressions report
 
 data:
-	curl -o $(rawD)/train.csv "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/download/train.csv"
-	curl -o $(rawD)/test.csv "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/download/test.csv"
-	curl -o $(rawD)/test.csv "https://www.kaggle.com/c/house-prices-advanced-regression-techniques/download/sample_submission.csv”
+	curl -o $(rawD)/train.csv "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/train.csv?sv=2015-12-11&sr=b&sig=m%2FXEQ6M07l7RgzPG7yQF2gvm0o32G2UzzFHNoHL82LQ%3D&se=2016-12-06T01%3A56%3A58Z&sp=r"
+	curl -o $(rawD)/test.csv "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/test.csv?sv=2015-12-11&sr=b&sig=k4B%2FEHoCF4fOc6kkovM%2FFURCktPbjCfI6SjJg6pRsD8%3D&se=2016-12-06T01%3A58%3A24Z&sp=r"
+	curl -o $(rawD)/sample_submission.csv "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/test.csv?sv=2015-12-11&sr=b&sig=AazDyubohhgo5Vhe6Hb9ikuAFiOeEmCxI6pEYXTot78%3D&se=2016-12-06T01%3A58%3A59Z&sp=r"
+	curl -o $(rawD)/data_description.txt "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/data_description.txt?sv=2015-12-11&sr=b&sig=hFnRp6bMRyjDVf8gxBI3nYSTAvZVTJSrI8HwpE5sFOQ%3D&se=2016-12-06T01%3A59%3A17Z&sp=r"
 
 tests: $(T)/test-evaluation.R
 	cd $(T) && Rscript test-evaluation.R
