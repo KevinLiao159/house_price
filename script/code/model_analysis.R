@@ -38,6 +38,7 @@ load('data/model/gbm.RData')
 
 # model importance
 plot(varImp(model.gbm))
+
 # prediction
 model.gbm.pred = predict(model.gbm, data.validation.matrix)
 model.gbm.df <- modify_dataframe_for_comparison(model.gbm.pred, 'gbm')
@@ -48,11 +49,10 @@ ggplot(model.gbm.df, aes(x = 1:nrow(model.gbm.df), y = residual)) + geom_line()
 
 # load RData
 load('data/model/rf.RData')
-# model importance
-plot(varImp(model.rf))
+
 # prediction
 model.rf.pred = predict(model.rf, data.validation.matrix)
-model.rf.df <- modify_dataframe_for_comparison(model.gbm.pred, 'rf')
+model.rf.df <- modify_dataframe_for_comparison(model.rf.pred, 'rf')
 ggplot(model.rf.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
 ggplot(model.rf.df, aes(x = 1:nrow(model.rf.df), y = residual)) + geom_line()
 
@@ -63,59 +63,7 @@ ggplot(combined, aes(x = index, y = residual, color = model)) + geom_line()
 
 
 
-########################################################################################
 
-
-data.test.matrix$SalePrice
-model.gbm.pred
-ggplot()
-
-data.train.matrix = read.csv("cleanedData/data.train.matrix2.csv")
-
-write.csv(data.train.matrix, "cleanedData/data.train.matrix.csv", row.names = F)
-write.csv(data.test.matrix, "cleanedData/data.test.matrix.csv", row.names = F)
-
-# setup fitcontrol
-fitControl <- trainControl(method = "repeatedcv", number = 7, repeats = 3)
-
-# param
-gbmGrid3 <- expand.grid(interaction.depth = c(1, 3, 5),
-                        n.trees = c(4, 5, 6, 7)*50, 
-                        shrinkage = c(0.1, 0.2),
-                        n.minobsinnode = c(10, 15, 20))
-
-# gbm
-model.gbm6<- train(SalePrice ~., data =  data.train.matrix, method = 'gbm', tuneGrid = gbmGrid3)
-model.gbm6
-
-
-
-
-
-
-
-data.train <- filter(data.all, data_type == "train")
-data.train$SalePrice = log(data.train$SalePrice)
-data.train$data_type = NULL
-
-
-data.test <- filter(data.all, data_type == "test")
-data.test$data_type = NULL
-
-gbmGrid3 <- expand.grid(interaction.depth = c(1, 3, 5, 7),
-                        n.trees = c(5, 7)*50, 
-                        shrinkage = c(0.1, 0.15),
-                        n.minobsinnode = c(15, 20, 25)) # you can also put something        like c(5, 10, 15, 20)
-
-fitControl <- trainControl(method = "repeatedcv", number = 7, repeats = 3)
-
-model.gbm3<- train(SalePrice ~., data =  data.train , method = 'gbm', tuneGrid= gbmGrid3, trControl = fitControl)
-
-# model.c5 <- train(SalePrice ~., data =  data.train , method = 'C5.0',trControl = fitControl)
-preProcValues <- preProcess(data.train, method = c("center", "scale"))
-trainTransformed <- predict(preProcValues, data.train)
-model.svmRadial <- train(SalePrice ~., data =  trainTransformed , method = 'svmRadial',trControl = fitControl, tuneLength = 20)
-model.svmRadial
 
 set.seed(1000)
 grid <- 10 ^ seq(10, -2, length = 100)
