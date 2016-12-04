@@ -53,6 +53,8 @@ data.all <- convert_na_to_factor(data.all)
 
 # add number of nones
 data.all$num_none <- get_number_none(data.all)
+
+# add existance
 data.all$pool_exist <- as.factor(data.all$PoolArea != 0)
 data.all$garage_exist <- as.factor(data.all$GarageArea != 0)
 data.all$masVnrArea_exist <- as.factor(data.all$MasVnrArea != 0)
