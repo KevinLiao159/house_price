@@ -21,7 +21,7 @@
 \SweaveOpts{concordance=TRUE}
 \maketitle
 
-
+\begin{flushleft}
 \begin{abstract}
 
 This paper summarizes the background, problem, methodology and results of our team's final project in the course Stats 159 Reproducible and Collaborative Statistical Data Science. To make full use of statistical models and predictive tools we have learned from the class and challenge ourselves to the next level, our team choose to complete \textbf{"House Price: Advanced Regression Techniques"} from Kaggle Competition and enter the competition with our work. \newline
@@ -30,7 +30,6 @@ This paper summarizes the background, problem, methodology and results of our te
 
 The goal of this project is to present the use of predictive modeling process and utilize software tools that effectively communicate the results. While the competition only emphasizes the accuracy of predicted values, our team at the same time are dedicated to maintain project reproducibility and provide both objective and personal reflections upon regression analysis. \newline
 \end{abstract}
-
 
 \section{Introduction}
 The House Price project thoroughly explores the predictive modeling process and advanced regression techniques. From previous study, in order to understand the relationship of one dependent variable with several independent variables, we fit a multiple linear regession with Ordinary Least Squares. However, since OLS may have high variance and include irrelevant variables, Predictive Modeling Process can improve the results in terms of \textbf{\textit{Prediction Accuracy}} and \textbf{\textit{Model Interpretability}}. \newline
@@ -42,7 +41,15 @@ With 79 explanatory variables describing (almost) every aspect of residential ho
 
 \section{Data}
 
-The train dataset has in total 80 variables \hspace 79 potential predictors and 1 dependent variable called \textit{SalePrice}. We observe both categorial predictors, such as \textit{FireplaceQu}, \textit{GarageCond} and \textit{MasVnrType} as well as numerical predictors, such as \textit{PoolArea}, \textit{EnclosedPorch} and \textit{YrSold}. Since we can potentially create a lot of different new variables, our goal is to understand the relationship between \textit{SalePrice} and these predictors with statistical fitting procedures that minimizes Mean Square Error.
+The datasets are obtained from the Kaggle Competition website. We have access to four files: \newline
+\textit{data description}, which gives the official definition for fields \newline
+\textit{train.csv}, which provides 1459 real observations that can be used for model construction \newline
+\textit{test.csv}, which is used to fit the predictive model and create submission entry for the final sales price of 1460 observations \newline
+\textit{sample submission}, which gives an example of how the fitted values should be submitted. \newline
+
+The train dataset has in total 80 variables, 79 potential predictors and 1 dependent variable called \textit{SalePrice}. We observe both categorial predictors, such as \textit{FireplaceQu}, \textit{GarageCond} and \textit{MasVnrType} as well as numerical predictors, such as \textit{PoolArea}, \textit{EnclosedPorch} and \textit{YrSold}. Since we can potentially create a lot of different new variables, our goal is to understand the relationship between \textit{SalePrice} and these predictors with statistical fitting procedures that minimizes Mean Square Error.
+
+
 
 \section{Methodology}
 
@@ -90,4 +97,5 @@ In conclusions, while participating in the Kaggle competition - "House Price: Ad
 
 This course gives us great opportunity to practice \textbf{project reproducibility}, \textbf{advanced statistical model learning} and \textbf{teamwork delegation}. By deligating work to each team mate and implementing the model to generate results, we aim to maintain project reproducibility and publicity so that more people can learn from our model and benefit for future researches. \textit{If you have any questions or concerns regarding any part of our analysis, please feel free to contact the authors for further clarification.} \newline
 
+\end{flushleft}
 \end{document}

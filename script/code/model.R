@@ -3,15 +3,98 @@ library(glmnet)
 library(xgboost)
 
 # split into train, test matrix
+load(file = "data/cleanedData/data.all.matrix.RData")
+data.all.matrix <- as.data.frame(data.all.matrix)
 data.train.matrix <- filter(data.all.matrix, data_type == "train")
 data.train.matrix$data_type = NULL
+
+set.seed(1000)
+train_index = createDataPartition(data.train.matrix$SalePrice, p = 0.8, list = FALSE)
+data.train.matrix = data.train.matrix[train_index, ]
+data.validation.matrix = data.train.matrix[-train_index, ]
+
+data.validation.matrix = arrange(data.validation.matrix, SalePrice)
+
 data.test.matrix <- filter(data.all.matrix, data_type == "test")
 data.test.matrix$data_type = NULL
 
-range(data.train.matrix$SalePrice)
 
-quantile(data.train.matrix$SalePrice, )
+# lasso
 
+# grid <- 10 ^ seq(10, -2, length = 100)
+grid <- seq(0, 4, length = 1000)
+model.lasso.lambda <- cv.glmnet(as.matrix(select(data.train.matrix, -SalePrice)), as.matrix(data.train.matrix$SalePrice), nfolds = 5, intercept = FALSE, lambda = grid, alpha = 1)
+
+# plot lasso coefficient
+plot(model.lasso.lambda)
+
+model.lasso.lambda.min = model.lasso.lambda$lambda.min
+model.lasso <- glmnet(as.matrix(select(data.train.matrix, -SalePrice)), as.matrix(data.train.matrix$SalePrice), alpha = 1, lambda = model.lasso.lambda.min)
+model.lasso.pred <- predict(model.lasso,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.lasso.lambda.min)
+model.lasso.pred_y = data.frame(pred = model.lasso.pred, y=data.validation.matrix$SalePrice)
+colnames(model.lasso.pred_y) = c('pred', 'y')
+model.lasso.pred_y$model = 'lasso'
+model.lasso.pred_y$index = 1:nrow(model.lasso.pred_y)
+model.lasso.pred_y$residual = model.lasso.pred_y$y - model.lasso.pred_y$pred
+ggplot(model.lasso.pred_y, aes(x = y, y= pred)) + geom_point() + geom_smooth()
+ggplot(model.lasso.pred_y, aes(x = 1:nrow(model.lasso.pred_y), y = residual)) + geom_line()
+
+# ridge
+# grid <- 10 ^ seq(10, -2, length = 100)
+grid <- seq(0, 4, length = 1000)
+model.ridge.lambda <- cv.glmnet(as.matrix(select(data.train.matrix, -SalePrice)), as.matrix(data.train.matrix$SalePrice), nfolds = 5, intercept = FALSE, lambda = grid, alpha = 0)
+
+# plot lasso coefficient
+plot(model.lasso.lambda)
+
+model.ridge.lambda.min = model.ridge.lambda$lambda.min
+model.ridge <- glmnet(as.matrix(select(data.train.matrix, -SalePrice)), as.matrix(data.train.matrix$SalePrice), alpha = 0, lambda = model.ridge.lambda.min)
+model.ridge.pred <- predict(model.ridge,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.ridge.lambda.min)
+model.ridge.pred_y = data.frame(pred = model.ridge.pred, y=data.validation.matrix$SalePrice)
+colnames(model.ridge.pred_y) = c('pred', 'y')
+model.ridge.pred_y$model = 'ridge'
+model.ridge.pred_y$index = 1:nrow(model.ridge.pred_y)
+model.ridge.pred_y$residual = model.ridge.pred_y$y - model.ridge.pred_y$pred
+ggplot(model.ridge.pred_y, aes(x = y, y= pred)) + geom_point() + geom_smooth()
+ggplot(model.ridge.pred_y, aes(x = 1:nrow(model.ridge.pred_y), y = residual)) + geom_line()
+
+# gbm
+gbmGrid3 <- expand.grid(interaction.depth = c(1, 3, 5),
+                        n.trees = c(4, 5, 6, 7)*50, 
+                        shrinkage = c(0.1, 0.2),
+                        n.minobsinnode = c(10, 15, 20))
+
+model.gbm <- train(SalePrice ~., data =  data.train.matrix, method = 'gbm', tuneGrid = gbmGrid3)
+model.gbm.pred = predict(model.gbm, data.validation.matrix)
+model.gbm.pred_y = data.frame(pred = model.gbm.pred, y=data.validation.matrix$SalePrice)
+model.gbm.pred_y$residual = model.gbm.pred_y$y - model.gbm.pred_y$pred
+model.gbm.pred_y$model = 'gbm'
+model.gbm.pred_y$index = 1:nrow(model.gbm.pred_y)
+
+## improve
+plot(model.gbm)
+## improve
+plot(varImp(model.gbm))
+
+
+
+ggplot(model.gbm.pred_y, aes(x = y, y= pred)) + geom_point() + geom_smooth()
+ggplot(model.gbm.pred_y, aes(x = 1:nrow(model.gbm.pred_y), y = residual)) + geom_line() + yl
+
+combined = rbind(model.gbm.pred_y, model.lasso.pred_y, model.ridge.pred_y)
+combined = rbind(model.gbm.pred_y, model.ridge.pred_y)
+combined$model = as.factor(combined$model)
+
+ggplot(combined, aes(x = index, y = residual, color = model)) + geom_line()
+
+
+
+########################################################################################
+
+
+data.test.matrix$SalePrice
+model.gbm.pred
+ggplot()
 
 data.train.matrix = read.csv("cleanedData/data.train.matrix2.csv")
 
