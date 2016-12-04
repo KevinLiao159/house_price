@@ -3,7 +3,8 @@ library(glmnet)
 library(xgboost)
 
 # split into train, test matrix
-data.all.matrix = as.data.frame(data.all.matrix)
+load(file = "data/cleanedData/data.all.matrix.RData")
+data.all.matrix <- as.data.frame(data.all.matrix)
 data.train.matrix <- filter(data.all.matrix, data_type == "train")
 data.train.matrix$data_type = NULL
 
