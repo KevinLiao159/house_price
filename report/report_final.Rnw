@@ -85,13 +85,22 @@ The datasets are obtained from the Kaggle Competition website. We have access to
 The train dataset has in total 80 variables, 79 predictors and 1 target variable called \textit{SalePrice}. We observe both categorial predictors, such as \textit{FireplaceQu}, \textit{GarageCond} and \textit{MasVnrType} as well as numerical predictors, such as \textit{PoolArea}, \textit{EnclosedPorch} and \textit{YrSold}. Since we can potentially create a lot of different new variables, our goal is to understand the relationship between \textit{SalePrice} and these predictors with statistical fitting procedures that minimizes Mean Square Error.
 
 \section{EXPLORATORY DATA ANALYSIS}
-In order to choose the model to accurately predict the housing price, we first need to understand the provided dataset by conducting exploratory data analysis (aka EDA). Separating categorical predictors and numerical predictors, we can explore in two perspectives: 1) the distribution of varible itself and 2) the relationship between explanatory variable and response variable. 
+In order to choose the model to accurately predict the housing price, we first need to understand the provided dataset by conducting exploratory data analysis (aka EDA). Separating categorical predictors and numerical predictors, we can explore in two perspectives: 1) the distribution of varible itself, an example of which is shown in Figure 1 and 2) the relationship between explanatory variable and response variable, an example of which is shown in Figure 2. 
+   \begin{figure}[thpb]
+      \centering
+      \includegraphics[width =  9cm, height = 7cm]{../images/distribution-BsmtFinType1.png}
+      \caption{Exploratory Data Analysis - Distribution of BsmtFinType1}
+      \label{figurelabel}
+   \end{figure}
+   
    \begin{figure}[thpb]
       \centering
       \includegraphics[width =  9cm, height = 5cm]{../images/eda-bath-vs-sale.png}
       \caption{Exploratory Data Analysis - Relationship Between Bath and SalePrice}
       \label{figurelabel}
    \end{figure}
+
+Some interesting observations we made include: 1) While some variables are equally distributed in their own segments, some variables are skewed in certain directions (either to the left or to the right), which means some potential data transformation can be made to improve the predictive model; 2) We observe some linear relationship between variables, which can be used in the future model selection; and 3) While some variables have strong linear relationship with the response variable SALEPRICE, other variables do not display the similar pattern. This might encourage us to remove unnecessary predictors from the dataset in terms of model fitting and selecting.
 
 \section{METHODOLOGY}
 
@@ -110,9 +119,14 @@ Since L2 loss function minimizes the squared differences between the estimated a
 \subsection{Preprocess}
 According to the exploratory data analysis, we find a lot of NA values in most of predictors. Since regression models cannot handle missing data, we need to either remove or impute data using appropriate methods [7]. The data description provided by client [6] indicates that some of the missing values are actually none value. In that case, we replace NA value with factor variable named None. However, there are some numerical predictors with missing values in an unsystematical manner. In that case, we impute them with mean values of predictors.
 
-As a next step, we apply log transformations to area related predictors such as GrLivArea and LotArea as well as target variable. The log transformation has an effect to remedy skewness of data [8] by making original distributions of predictors to more normally distributed. Consequently, it helps regression model to work better.
+As a next step, we apply log transformations to area related predictors such as GrLivArea and LotArea as well as target variable. Figure 3 displays the relationship between GrLivArea with SalePrice, which suggests the skewness of certain variables. The log transformation has an effect to remedy skewness of data [8] by making original distributions of predictors to more normally distributed. Consequently, it helps regression model to work better.
 
-Images will be filled
+   \begin{figure}[thpb]
+      \centering
+      \includegraphics[width =  7cm, height = 5cm]{../images/plot-GrLivArea.png}
+      \caption{Relationship Between GrLivArea and SalePrice, which suggests that area-related variable might present a skewed pattern that needs to be fixed with log transformation}
+      \label{figurelabel}
+   \end{figure}
 
 After the log transformation, we still notice few outliers and eliminate lowest and highest 0.1\% data points. Furthermore, majority of predictors are categorical under which regression models cannot be used directly. Therefore, we apply one-hot encoding [9] to convert categorical values to numerical ones. It consequently expands features from 79 to approximately 500. The Table 1 below summarizes this procedure.
 
