@@ -2,10 +2,14 @@ library(dplyr)
 library(caret)
 library(glmnet)
 library(xgboost)
+library(gbm)
+library(randomForest)
 source("../function/util.R")
 
 
 ######################################### PCA ######################################### 
+
+load('../../data/cleanedData/ddata_train_validation.matrix.RData')
 
 
 # load PCA RData
@@ -38,7 +42,7 @@ colnames(model.ridge.lambda.coeff) <- c('coefficients', 'predictor')
 filter(model.ridge.lambda.coeff, coefficients != 0) %>% nrow
 
 
-######################################### ridge #########################################
+
 
 # load ridge RData
 load('../../data/model/ridge.RData')
@@ -71,12 +75,14 @@ arrange(model.lasso.lambda.coeff.filterd, desc(coefficients))[2:11, ] %>%
 dev.off()
 
 # prediction
-# model.lasso.pred <- predict(model.lasso,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.lasso.lambda.min)
-# model.lasso.df <- modify_dataframe_for_comparison(model.lasso.pred, 'lasso')
-# 
-# ggplot(model.lasso.df, aes(x = 1:nrow(model.lasso.df), y = residual)) + geom_line()
-# ggplot(model.lasso.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
-# get_rmse(model.lasso.pred, data.validation.matrix$SalePrice)
+model.lasso.pred <- predict(model.lasso,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.lasso.lambda.min)
+model.lasso.df <- modify_dataframe_for_comparison(model.lasso.pred, 'lasso')
+
+ 
+
+ggplot(model.lasso.df, aes(x = 1:nrow(model.lasso.df), y = residual)) + geom_line()
+ggplot(model.lasso.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
+get_rmse(model.lasso.pred, data.validation.matrix$SalePrice)
 
 ######################################### ridge #########################################
 
@@ -95,6 +101,8 @@ arrange(model.ridge.lambda.coeff, desc(coefficients))[2:11, ] %>%
   ggplot(aes(x = predictor, y =coefficients )) + geom_density() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   ggtitle("cofficient for top 10 predictors from Ridge")
 dev.off()
+
+# 
 
 ggplot(model.ridge.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
 ggplot(model.ridge.df, aes(x = 1:nrow(model.ridge.df), y = residual)) + geom_line()
@@ -146,10 +154,18 @@ ggplot(combined, aes(x = y, y = pred, color = model)) + geom_point() + geom_smoo
 dev.off()
 
 
+
 # RMSE
 get_rmse(model.lasso.pred, data.validation.matrix$SalePrice)
 get_rmse(model.ridge.pred, data.validation.matrix$SalePrice)
 get_rmse(model.gbm.pred, data.validation.matrix$SalePrice)
 get_rmse(model.rf.pred, data.validation.matrix$SalePrice)
 
+
+# Save data for shiny app
+save(model.lasso.df,
+     model.ridge.df,
+     model.gbm.df,
+     model.rf.df,
+     file = "../../data/model/model.df.RData")
 
