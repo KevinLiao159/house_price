@@ -93,18 +93,20 @@
           </hgroup>
   </slide>
 
-<slide class=''><hgroup><h2></h2></hgroup><article >
-
-</article></slide><slide class=''><hgroup><h2>Agenda</h2></hgroup><article  id="agenda">
+<slide class=''><hgroup><h2>House Price: Advanced Regression Techniques</h2></hgroup><article  id="house-price-advanced-regression-techniques">
 
 <img src='../images/housesbanner.png' title='fig:'/>
+
+</article></slide><slide class=''><hgroup><h2>Agenda</h2></hgroup><article  id="agenda">
 
 <ul>
 <li>Project Objective</li>
 <li>Data Description</li>
-<li>Methodology and Applied Methods</li>
+<li>Exploratory Data Analysis</li>
+<li>Methodology</li>
+<li>Applied Methods</li>
+<li>Feature Engineering</li>
 <li>Key Findings</li>
-<li>Competition Results</li>
 <li>Conclusions</li>
 <li>Acknowledgement</li>
 </ul>
@@ -117,46 +119,59 @@
 
 </article></slide><slide class=''><hgroup><h2>Data Description</h2></hgroup><article  id="data-description">
 
-<p>Our analysis starts with the data sets provided by Kaggle Competition on <a href='https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data' title=''>House Price</a>. In the information provided, <code>Data Description</code> gives the official definition for fields, This data set records; <code>train.csv</code> provides 1459 real observations that can be used for model construction; <code>test.csv</code> is used to fit the predictive model and create submission.</p>
+<p>Our analysis starts with the data sets provided by Kaggle Competition on <a href='https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data' title=''>House Price</a>. In the information provided, <code>data_description.txt</code> gives the official definition for fields, This data set records; <code>train.csv</code> provides 1459 real observations that can be used for model construction; <code>test.csv</code> is used to fit the predictive model and create submission.</p>
 
 <p>The dataset has 79 variables in total, including both categorical and numerical variables.</p>
 
 <p>Our goal is to understand the relationship between <code>SalePrice</code> and these potential predictors with statistical fitting procedures.</p>
 
-</article></slide><slide class=''><hgroup><h2>Methodology and Applied Methods</h2></hgroup><article  id="methodology-and-applied-methods">
+</article></slide><slide class=''><hgroup><h2>Exploratory Data Analysis</h2></hgroup><article  id="exploratory-data-analysis">
 
-<p>Instead of fitting multiple linear regression with ordinary least square (OLS), we use OLS as a benchmark to compare the following four methods:</p>
+<p>With datasets in hand, the first thing we would like to explore is the dataset itself: what are some interesting relationships among variables and what human interpretation can we give to these observations?</p>
+
+<img src='../images/boxplot-FireplaceQu.png' title='fig:'/><p class='caption'>Display: Exploratory Data Analysis Example</p>
+
+<img src='../images/eda-bath-vs-sale.png' title='fig:'/><p class='caption'>Display: Exploratory Data Analysis Example</p>
+
+</article></slide><slide class=''><hgroup><h2>Methodology</h2></hgroup><article  id="methodology">
+
+<p>The goal of this analysis is to accurately predict the final price of each home. Therefore, we frame this problem as a regression problem, and decide to use the L2 loss function which is often used in regression problem.</p>
+
+<p>Taking this objective into account, we preprocess original dataset so that regression models can work well. Furthermore, we extract more features by involving feature engineering. Finally, we fit two shrinkage models and two ensemble models.</p>
+
+</article></slide><slide class=''><hgroup><h2>Applied Methods</h2></hgroup><article  id="applied-methods">
+
+<ol>
+<li>Objective Loss Function
+
+<div class="blue2">
+<p>\[\epsilon = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (log(p_{i} + 1) - log(a_{i} + 1))^2}\]</p></div></li>
+<li>Data Preprocess
 
 <ul>
-<li><strong>Shrinkage Methods</strong>
-
-<ul>
-<li>Ridge regression (RR)</li>
-<li>Lasso regression (LR)</li>
+<li><strong>Factorization</strong>: dealing with NA values</li>
+<li><strong>Log Transformation</strong>: dealing with area-related variables</li>
+<li><strong>Outliers</strong>: dataset highly sensitive to outliers</li>
 </ul></li>
-<li><strong>Dimension Reduction Methods</strong>
+</ol>
 
-<ul>
-<li>Principal Components regression (PCR)</li>
-<li>Partial Least Squares regression (PLSR)</li>
-</ul></li>
-</ul>
+</article></slide><slide class=''><hgroup><h2>Feature Engineering</h2></hgroup><article  id="feature-engineering">
+
+<p>Considering the complexity of the problem as well as the number of observations and predictors, we assume that the success of this analysis is largely dependent on <strong>informative, feature engineered predictors</strong> that can reveal the subtle relationship to our target variable. Given the small size of dataset with 1460 observations, we conclude that feature learning is not a feasible option because feature learning often involves very complicated models with multiple layers, which tends to cause an overfitting issue when dataset is small.</p>
+
+<p>With this observation, we therefore focus more on <strong>manual feature engineering</strong>. This process is a important stepping-stone in that it helps reveal significant predictors that are previously not represented well in original dataset.</p>
+
+</article></slide><slide class=''><hgroup><h2>Model Comparison</h2></hgroup><article  id="model-comparison">
+
+<p>We utilize both <strong>shrinkage regression models</strong> and <strong>ensemble models</strong>. Practitioners often favor ensemble models due to their conveniences. Ensemble models such as <strong>Random Forest</strong>, which uses the averaged result from the randomly grown decision trees such as CART, often work well with unscaled, missing data and are used for both classification and regression problems. Also, since our dataset contains a hug number of predictors, shrinkage methods such <strong>Lasso</strong> and <strong>Ridge regressions</strong>, which penalize predictors by shrinking their weights, can be highly effective. Furthermore, we utilize a dimension reduction technique called <strong>PCA</strong> in order to compress information into lower dimension.</p>
 
 </article></slide><slide class=''><hgroup><h2>Key Findings</h2></hgroup><article  id="key-findings">
 
-<p>We can first explore the relationship of each predictors by creating a scatterplot matrix among all variables.</p>
+<img src='../images/model_prediction_comparison.png' title='fig:'/><p class='caption'>Display: Ridge Lambda</p>
 
-<p>After the initial observations, we fit the four different regression methods and observe the trend of lambda for ridge regression and lasso regression</p>
+</article></slide><slide class=''><hgroup><h2>Key Findings</h2></hgroup><article  id="key-findings-1">
 
-</article></slide><slide class=''><hgroup><h2>Key Findings - PCR</h2></hgroup><article  id="key-findings---pcr">
-
-<img src='../images/housesbanner.png' title='fig:'/><p class='caption'>Display: Ridge Lambda</p>
-
-</article></slide><slide class=''><hgroup><h2>Key Findings - Mean Squared Error</h2></hgroup><article  id="key-findings---mean-squared-error">
-
-<p>We can also observe and table the Mean Squared Error obtained from each regression method</p>
-
-</article></slide><slide class=''><hgroup><h2>Coefficients</h2></hgroup><article  id="coefficients">
+<img src='../images/model_residual_comparison.png' title='fig:'/><p class='caption'>Display: Ridge Lambda</p>
 
 </article></slide><slide class=''><hgroup><h2>Conclusions</h2></hgroup><article  id="conclusions">
 
