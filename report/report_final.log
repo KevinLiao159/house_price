@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  5 DEC 2016 00:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  5 DEC 2016 00:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -487,17 +487,17 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 ages/model_lasso_number_of_coefficients_left.png> <../images/model_lasso_coeffi
 cients_top_10.png> <../images/model_ridge_coefficients_top_10.png> <../images/m
 odel_prediction_comparison.png> <../images/model_residual_comparison.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 327--328
+Underfull \hbox (badness 10000) in paragraph at lines 326--327
 []\OT1/ptm/m/n/8 L1 vs. L2 Loss Func-tion from Rishy Github:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 328--329
+Underfull \hbox (badness 10000) in paragraph at lines 327--328
 []\OT1/ptm/m/n/8 Root Mean Squared Log-a-rith-mic Er-ror,
  []
 
 
-Underfull \hbox (badness 3623) in paragraph at lines 329--330
+Underfull \hbox (badness 3623) in paragraph at lines 328--329
 []\OT1/ptm/m/n/8 Handbook: Gen-eral prin-ci-ples for deal-ing with miss-ing dat
 a:
  []
@@ -506,24 +506,24 @@ Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
 
-Underfull \hbox (badness 4647) in paragraph at lines 335--336
+Underfull \hbox (badness 4647) in paragraph at lines 334--335
 []\OT1/ptm/m/n/8 Y. Ben-gio; A. Courville; P. Vin-cent (2013). "Rep-re-sen-ta-t
 ion
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 335--336
+Underfull \hbox (badness 10000) in paragraph at lines 334--335
 \OT1/ptm/m/n/8 Learn-ing: A Re-view and New Per-spec-tives". IEEE Trans.
  []
 
 
-Overfull \hbox (12.0232pt too wide) in paragraph at lines 338--339
+Overfull \hbox (12.0232pt too wide) in paragraph at lines 337--338
 []\OT1/ptm/m/n/8 Ensemble learn-ing, http://www.scholarpedia.org/article/Ensemb
 le[]learning 
  []
 
 
-Overfull \hbox (21.96756pt too wide) in paragraph at lines 339--340
+Overfull \hbox (21.96756pt too wide) in paragraph at lines 338--339
 []\OT1/ptm/m/n/8 Random for-est, https://www.stat.berkeley.edu/ breiman/randomf
 orest2001.pdf 
  []
@@ -547,7 +547,7 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  2742 strings out of 493089
  44412 string characters out of 6134842
- 105587 words of memory out of 5000000
+ 104587 words of memory out of 5000000
  6190 multiletter control sequences out of 15000+600000
  36583 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -564,7 +564,7 @@ texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist
 /fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/ty
 pe1/urw/times/utmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on report_final.pdf (5 pages, 500437 bytes).
+Output written on report_final.pdf (5 pages, 500585 bytes).
 PDF statistics:
  92 PDF objects out of 1000 (max. 8388607)
  47 compressed objects within 1 object stream
