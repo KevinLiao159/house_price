@@ -1,7 +1,3 @@
----
-output: html_document
-runtime: shiny
----
 library(shiny)
 library(ggplot2)
 
@@ -42,7 +38,8 @@ server <- function(input, output) {
       #par(mar = c(1, 1, 1, 1))
       plot(selectedData(),
            col = input$col,
-           pch = 20, cex = as.numeric(input$size))
+           pch = 20, cex = as.numeric(input$size),
+           main = 'Scatter Plot')
       
       #ggplot(nfeatures, aes(x = nfeatures[,input$xcol], y = nfeatures[, input$ycol])) + 
         #geom_point() +
