@@ -3,8 +3,8 @@ library(ggplot2)
 library(caret)
 library(doMC)
 library(stringr)
-registerDoMC(cores = 7)
-source("script/function//util.R")
+library(glmnet)
+source("code/function/util.R")
 
 # import dataset
 data.train <- read.csv("data/rawData/train.csv")
