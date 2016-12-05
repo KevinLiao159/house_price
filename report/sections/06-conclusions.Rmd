@@ -1,0 +1,13 @@
+
+## 6. Conclusion
+
+In conclusions, while participating in the Kaggle competition - "House Price: Advanced Regression Techniques", we get a chance to dig down into real-life dataset that have complicated variables, missing values and large number of data entries. Based our analysis on the train dataset, we try to find the regression model and advanced techniques that most accurately predict the housing price, and use the exact model to predict new entries from test file. Exploring and creating visualization of data, we compare the usage of different regression models to understand the relationship between dependent variable `SalePrice` and 79 potential predictors. Fortunately, we ranked No.10 among all 2000 participating teams with our prediction, which not only shows the precision of our own predictive model, but also suggests room of improvement and growth. 
+
+This course gives us great opportunity to practice project reproducibility, advanced statistical model learning and teamwork delegation. By deligating work to each team mate and implementing the model to generate results, we aim to maintain project reproducibility and publicity so that more people can learn from our model and benefit for future researches. If you have any questions or concerns regarding any part of our analysis, please feel free to contact the authors for further clarification.
+
+---
+
+## Reference
+---
+
+
