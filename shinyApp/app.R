@@ -25,6 +25,13 @@ model.list <- list(PCA = model.pca,
                    gbm = model.gbm,
                    random_forest = model.rf)
 
+method.names <- c('lasso', 'ridge', 'gbm', 'random_forest')
+method.list <- list(lasso = model.lasso.lambda,
+                   ridge = model.ridge.lambda,
+                   gbm = model.gbm,
+                   random_forest = model.rf)
+
+
 
 ui <- fluidPage(
   
@@ -40,36 +47,47 @@ ui <- fluidPage(
   
 
   headerPanel('Explanatory Data Analysis and Visualization'),
-  
-  
   sidebarPanel(
     selectInput('ycol', 'Y Variable', names_items, selected = names_items[38]),
     selectInput('xcol', 'X Variable', names_items, selected = names_items[1], multiple = T),
     selectInput('col', 'Colors', color, selected = color[1]),
     selectInput('size', 'Dot Size', dotsize, selected = dotsize[1])),
-  
   mainPanel(
     plotOutput('plot1')
   ),
   
   
   headerPanel('Model Description'),
-  
   mainPanel(
     h4("In order to effectively select hyper-parameters, we use 10-fold cross-validation. We first look at lasso and ridge, which are the shrinkage methods with lambda as the tuning parameter. We then look at the dimenson-reduction methods, including PCR and PLSR, where the number of principal components is the tuning parameter. We need to find the optimal number of subsets of PCs that summarize the entire data set without harming accuracy.")
   ),
   
   
-  
-  
   headerPanel('Model Selection - Tunning Parameter'),
   sidebarPanel(
     selectInput('model', 'Regression Methods', model.names, selected = model.names[1])),
-  
   mainPanel(
     plotOutput('plot2') 
+  ),
+  
+  headerPanel('Model comparison'),
+  mainPanel(
+    h4("After fitting models with various methods, we use RMSE to compare models and select the best model. Although RMSE does not provide an absolute means of model accuracy, it provides a relative measure to compare models. Thus, we finalize our model with the lowest RMSE.")
+    ),
+    
+  
+  headerPanel('Results'),
+  sidebarPanel(
+    selectInput('method', 'Regression Methods', method.names, selected = method.names.names[1])),
+  mainPanel(
+    plotOutput('plot3'),
+    plotOutput('plot4')
   )
+  
+  
 )
+  
+
 
 
 server <- function(input, output) {
