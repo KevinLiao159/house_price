@@ -63,42 +63,70 @@ img {
 <div id="header">
 <h1 class="title">app.R</h1>
 <h4 class="author"><em>Kevin</em></h4>
-<h4 class="date"><em>Fri Dec 2 16:54:20 2016</em></h4>
+<h4 class="date"><em>Sun Dec 4 16:33:55 2016</em></h4>
 </div>
 
 
 <pre class="r"><code>library(shiny)</code></pre>
 <pre><code>## Warning: package 'shiny' was built under R version 3.2.5</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<pre><code>## Warning: package 'ggplot2' was built under R version 3.2.4</code></pre>
 <pre class="r"><code>train &lt;- read.csv(&quot;../data/rawData/train.csv&quot;)
 
-source(&quot;../script/function/util.R&quot;)
+source(&quot;../code/function/util.R&quot;)
 names_items &lt;- names(get_only_numerical_predictors(train))
  
-numeric_items &lt;- train[, names_items]
+nfeatures &lt;- train[, names_items]
+
+color &lt;- c('black', 'blue', 'red', 'yellow', 'green')
+
+dotsize &lt;- c('1', '1.1', '1.2', '1.5', '2') 
 
 ui &lt;- fluidPage(
     headerPanel('Explanatory Data Analysis and Visualization'),
     sidebarPanel(
-        selectInput('x', 'Input', names_items)
-    ),
+        selectInput('ycol', 'Y Variable', names_items, selected = names_items[38]),
+        selectInput('xcol', 'X Variable', names_items, selected = names_items[1], multiple = T),
+        selectInput('col', 'Colors', color, selected = color[1]),
+        selectInput('size', 'Dot Size', dotsize, selected = dotsize[1])),
+    
     mainPanel(
-        plotOutput('plot1')
-        
+        plotOutput('plot1') 
+        #+
+        #plotOutput('plot2')
     )
 )
+
 
 server &lt;- function(input, output) {
     
     selectedData &lt;- reactive({
-        train[, c(input$x, SalePrice)]
+      nfeatures[, c(input$xcol, input$ycol)]
     })
     
     output$plot1 &lt;- renderPlot({
-        plot(train[, input$x],
-             train$SalePrice,
-             xlab = input$x,
-             ylab = &quot;Sale Price&quot;)
+      #par(mar = c(1, 1, 1, 1))
+      plot(selectedData(),
+           col = input$col,
+           pch = 20, cex = as.numeric(input$size))
+      
+      #ggplot(nfeatures, aes(x = nfeatures[,input$xcol], y = nfeatures[, input$ycol])) + 
+        #geom_point() +
+        #ggtitle(paste0(&quot;Scatter Plot: &quot;, input$ycol, &quot; vs. &quot;, input$xcol)) +
+        #labs(x = input$xcol, y = input$ycol)
     })
+    
+    #output$plot2 &lt;- renderPlot({
+      #ggplot(nfeatures, aes(x = nfeatures[,input$x])) +
+        #geom_histogram() +
+        #ggtitle(paste0(&quot;Histogram of &quot;, input$x)) +
+        #labs(x = input$x)
+      
+      
+    #})
+    
+    
+    
 }
 
 shinyApp(ui = ui, server = server)</code></pre>
