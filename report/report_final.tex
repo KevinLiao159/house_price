@@ -4,7 +4,57 @@
 
 
 
-\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}  % Comment this line out
                                                           % if you need a4paper
 %\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4
                                                           % paper
@@ -46,11 +96,8 @@ Predictive modeling for house price prediction
 %}
 \author{Minsu Kim, Lingjie Qiao, Kevin Liao, Cheng Peng \\
 University of California at Berkeley} %
-
-\usepackage{Sweave}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
-\input{report_final-concordance}
-
 
 \maketitle
 \thispagestyle{empty}
@@ -135,21 +182,21 @@ As a next step, we apply log transformations to area related predictors such as 
    
 After the log transformation, we still notice few outliers and eliminate lowest and highest 0.1\% data points. Furthermore, majority of predictors are categorical under which regression models cannot be used directly. Therefore, we apply one-hot encoding [9] to convert categorical values to numerical ones. It consequently expands features from 79 to approximately 500. The Table 1 below summarizes this procedure.
 
-Table 1: Data Preprocess and Variable Transformation
 \begin{center}
 \centering
 \begin{tabular}{ | c | c | c |}
   \hline			
   Factorization & Log Transformation & Removing Outliers \\
   \hline  
-  MSSubClass & SalePrice & 17 points -> \\
-  YearBuilt & LotArea & below 10.91511 \\
-  YrSold & GrLivArea & and above \\ 
-  MoSold & & SalePrice\\
+  MSSubClass & SalePrice & Remove 17 points \\
+  YearBuilt & LotArea & that are below \\
+  YrSold & GrLivArea & 10.91511 and \\ 
+  MoSold & & above SalePrice\\
   GarageYrBlt & & \\
   \hline  
 \end{tabular}
 \end{center}
+Table 1: Summary: Data Preprocess and Variable Transformation
 
 \subsection{Data preparation}
 Before fitting the model, we first split dataset into train and test. We could have a separate validation set. However,  R library caret has a built-in cross validation as a generic interface. So it automatically takes care of cross validation. We use train data to train and tune our models using 5-kold cross validation, and later compare RMSLE using hold-out test data [13].
@@ -242,7 +289,25 @@ Four models are fairly accurate and most of data points are located on diagonal 
 
 Figure 9 shows the residual plots for four models. The residual is the difference between real house price and predicted price from models. We can see from Figure 9 that all models overestimate the price for cheaper house and underestimate the price for expensive house. This phenomenon is not surprising because we have few data points in cheapest and most expensive houses. Thus, the models incur a high bias in these end zones. This can be alleviated if we gather more data if possible. Compared to Lasso and Ridge, Gradient boosting machine and Random Forest are more stable. Both Lasso and Ridge have huge errors in the middle of graphs. 
 
-Lastly, Table shows RMSLE for each model, which is measured from hold-out dataset. It indicates that Random Forest predicts target variable the best.
+Lastly, Table 2 as below shows RMSLE for each model, which is measured from hold-out dataset. It indicates that Random Forest predicts target variable the best.
+
+% latex table generated in R 3.2.3 by xtable 1.8-2 package
+% Sun Dec  4 23:44:22 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrl}
+  \hline
+ & RMSLE & model \\ 
+  \hline
+1 & 0.06 & RandomForest \\ 
+  2 & 0.08 & GBM \\ 
+  3 & 0.13 & Ridge \\ 
+  4 & 0.13 & Lasso \\ 
+   \hline
+\end{tabular}
+\caption{Table 2: RMSEL Comparison from Four Models} 
+\end{table}
+
 
 \section{CONCLUSIONS}
 
@@ -250,23 +315,8 @@ In conclusions, while participating in the Kaggle competition - "House Price: Ad
 
 This course gives us great opportunity to practice project reproducibility, advanced statistical model learning and teamwork delegation. By deligating work to each team mate and implementing the model to generate results, we aim to maintain project reproducibility and publicity so that more people can learn from our model and benefit for future researches. If you have any questions or concerns regarding any part of our analysis, please feel free to contact the authors for further clarification.
 
-\addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
-                                  % on the last page of the document manually. It shortens
-                                  % the textheight of the last page by a suitable amount.
-                                  % This command does not take effect until the next page
-                                  % so it should come on the page before the last. Make
-                                  % sure that you do not shorten the textheight too much.
+\addtolength{\textheight}{-12cm} 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{APPENDIX}
 
 Appendixes should appear before the acknowledgment.
 

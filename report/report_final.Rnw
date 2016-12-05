@@ -48,8 +48,6 @@ Predictive modeling for house price prediction
 University of California at Berkeley} %
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
-
 
 \maketitle
 \thispagestyle{empty}
@@ -134,21 +132,21 @@ As a next step, we apply log transformations to area related predictors such as 
    
 After the log transformation, we still notice few outliers and eliminate lowest and highest 0.1\% data points. Furthermore, majority of predictors are categorical under which regression models cannot be used directly. Therefore, we apply one-hot encoding [9] to convert categorical values to numerical ones. It consequently expands features from 79 to approximately 500. The Table 1 below summarizes this procedure.
 
-Table 1: Data Preprocess and Variable Transformation
 \begin{center}
 \centering
 \begin{tabular}{ | c | c | c |}
   \hline			
   Factorization & Log Transformation & Removing Outliers \\
   \hline  
-  MSSubClass & SalePrice & 17 points -> \\
-  YearBuilt & LotArea & below 10.91511 \\
-  YrSold & GrLivArea & and above \\ 
-  MoSold & & SalePrice\\
+  MSSubClass & SalePrice & Remove 17 points \\
+  YearBuilt & LotArea & that are below \\
+  YrSold & GrLivArea & 10.91511 and \\ 
+  MoSold & & above SalePrice\\
   GarageYrBlt & & \\
   \hline  
 \end{tabular}
 \end{center}
+Table 1: Summary: Data Preprocess and Variable Transformation
 
 \subsection{Data preparation}
 Before fitting the model, we first split dataset into train and test. We could have a separate validation set. However,  R library caret has a built-in cross validation as a generic interface. So it automatically takes care of cross validation. We use train data to train and tune our models using 5-kold cross validation, and later compare RMSLE using hold-out test data [13].
@@ -241,7 +239,13 @@ Four models are fairly accurate and most of data points are located on diagonal 
 
 Figure 9 shows the residual plots for four models. The residual is the difference between real house price and predicted price from models. We can see from Figure 9 that all models overestimate the price for cheaper house and underestimate the price for expensive house. This phenomenon is not surprising because we have few data points in cheapest and most expensive houses. Thus, the models incur a high bias in these end zones. This can be alleviated if we gather more data if possible. Compared to Lasso and Ridge, Gradient boosting machine and Random Forest are more stable. Both Lasso and Ridge have huge errors in the middle of graphs. 
 
-Lastly, Table shows RMSLE for each model, which is measured from hold-out dataset. It indicates that Random Forest predicts target variable the best.
+Lastly, Table 2 as below shows RMSLE for each model, which is measured from hold-out dataset. It indicates that Random Forest predicts target variable the best.
+
+<<echo = FALSE, results='asis'>>=  
+load("../data/cleanedData/RMSEL_Table.RData")
+library(xtable)
+print(xtable(model_comparison, caption = 'Table 2: RMSEL Comparison from Four Models'), caption.placement = 'bottom')
+@
 
 \section{CONCLUSIONS}
 
@@ -249,23 +253,8 @@ In conclusions, while participating in the Kaggle competition - "House Price: Ad
 
 This course gives us great opportunity to practice project reproducibility, advanced statistical model learning and teamwork delegation. By deligating work to each team mate and implementing the model to generate results, we aim to maintain project reproducibility and publicity so that more people can learn from our model and benefit for future researches. If you have any questions or concerns regarding any part of our analysis, please feel free to contact the authors for further clarification.
 
-\addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
-                                  % on the last page of the document manually. It shortens
-                                  % the textheight of the last page by a suitable amount.
-                                  % This command does not take effect until the next page
-                                  % so it should come on the page before the last. Make
-                                  % sure that you do not shorten the textheight too much.
+\addtolength{\textheight}{-12cm} 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{APPENDIX}
 
 Appendixes should appear before the acknowledgment.
 

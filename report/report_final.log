@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  4 DEC 2016 23:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  4 DEC 2016 23:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -96,16 +96,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 \@IEEEtmpitemindent=\dimen112
 \c@biography=\count90
 \@IEEEtranrubishbin=\box26
-)
-** ATTENTION: Overriding command lockouts (line 12).
-** ATTENTION: Overriding IEEE standard margins (line 15).
-(/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/Sweave.sty
-Package: Sweave 
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/ifthen.sty
-Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
-)
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
+) (/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
@@ -137,18 +128,31 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen113
 \Gin@req@width=\dimen114
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
-Package: fancyvrb 2008/02/07
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2014/10/28 v1.1a Standard LaTeX Color (DPC)
 
-Style option: `fancyvrb' v2.7a, with DG/SPQR fixes, and firstline=lastline fix 
-<2008/02/07> (tvz)
-\FV@CodeLineNo=\count92
-\FV@InFile=\read1
-\FV@TabBox=\box27
-\c@FancyVerbLine=\count93
-\FV@StepNumber=\count94
-\FV@OutFile=\write3
+(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
+Package color Info: Driver file: pdftex.def on input line 142.
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/framed/framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip47
+\fb@frw=\dimen115
+\fb@frh=\dimen116
+\FrameRule=\dimen117
+\FrameSep=\dimen118
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/alltt.sty
+Package: alltt 1997/06/16 v2.0g defines alltt environment
+)
+** ATTENTION: Overriding command lockouts (line 62).
+** ATTENTION: Overriding IEEE standard margins (line 65).
+(/usr/local/texlive/2015/texmf-dist/tex/latex/upquote/upquote.sty
+Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
+tim
+
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/textcomp.sty
 Package: textcomp 2005/09/27 v1.99g Standard LaTeX package
 Package textcomp Info: Sub-encoding information:
@@ -230,34 +234,7 @@ Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 406.
 Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 407.
 Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 408.
 Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
-)
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/fontenc.sty
-Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/t1enc.def
-File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
-LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
-)
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 105.
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1ptm.fd
-File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 ))
-(/usr/local/texlive/2015/texmf-dist/tex/latex/ae/ae.sty
-Package: ae 2001/02/12 1.3 Almost European Computer Modern
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/fontenc.sty
-Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/t1enc.def
-File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
-LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
-)
-LaTeX Font Info:    Try loading font information for T1+aer on input line 105.
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/ae/t1aer.fd
-File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
-))))
 (./report_final.aux
 
 LaTeX Warning: Label `figurelabel' multiply defined.
@@ -286,37 +263,38 @@ LaTeX Warning: Label `figurelabel' multiply defined.
 )
 \openout1 = `report_final.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 51.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 51.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 100.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 100.
+
  (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    ... okay on input line 100.
 
 (/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count95
-\scratchdimen=\dimen115
-\scratchbox=\box28
-\nofMPsegments=\count96
-\nofMParguments=\count97
+\scratchcounter=\count92
+\scratchdimen=\dimen119
+\scratchbox=\box27
+\nofMPsegments=\count93
+\nofMParguments=\count94
 \everyMPshowfont=\toks16
-\MPscratchCnt=\count98
-\MPscratchDim=\dimen116
-\MPnumerator=\count99
-\makeMPintoPDFobject=\count100
+\MPscratchCnt=\count95
+\MPscratchDim=\dimen120
+\MPnumerator=\count96
+\makeMPintoPDFobject=\count97
 \everyMPtoPDFconversion=\toks17
 ) (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
@@ -366,148 +344,239 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-(./report_final-concordance.tex)
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 80.
+(Font)              <7> on input line 127.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 80.
+(Font)              <5> on input line 127.
 
-<../images/eda-bath-vs-sale.png, id=2, 401.5pt x 308.15125pt>
+<../images/eda-bath-vs-sale.png, id=1, 401.5pt x 308.15125pt>
 File: ../images/eda-bath-vs-sale.png Graphic file (type png)
 
 <use ../images/eda-bath-vs-sale.png>
-Package pdftex.def Info: ../images/eda-bath-vs-sale.png used on input line 92.
+Package pdftex.def Info: ../images/eda-bath-vs-sale.png used on input line 139.
+
 (pdftex.def)             Requested size: 256.08917pt x 142.2638pt.
 
-Overfull \hbox (10.37106pt too wide) in paragraph at lines 92--93
+Overfull \hbox (10.37106pt too wide) in paragraph at lines 139--140
  [][] 
  []
 
 
-<../images/scatter_Year_sold_Year_built_Vs_Price.png, id=4, 481.8pt x 481.8pt>
+<../images/scatter_Year_sold_Year_built_Vs_Price.png, id=3, 481.8pt x 481.8pt>
 File: ../images/scatter_Year_sold_Year_built_Vs_Price.png Graphic file (type pn
 g)
 
 <use ../images/scatter_Year_sold_Year_built_Vs_Price.png>
 Package pdftex.def Info: ../images/scatter_Year_sold_Year_built_Vs_Price.png us
-ed on input line 99.
+ed on input line 146.
 (pdftex.def)             Requested size: 113.81114pt x 128.03662pt.
 
-<../images/scatter_Year_sold_Year_remodeled_Vs_Price.png, id=5, 481.8pt x 481.8
+<../images/scatter_Year_sold_Year_remodeled_Vs_Price.png, id=4, 481.8pt x 481.8
 pt>
 File: ../images/scatter_Year_sold_Year_remodeled_Vs_Price.png Graphic file (typ
 e png)
  <use ../images/scatter_Year_sold_Year_remodeled_Vs_Price.png>
 Package pdftex.def Info: ../images/scatter_Year_sold_Year_remodeled_Vs_Price.pn
-g used on input line 100.
+g used on input line 147.
 (pdftex.def)             Requested size: 113.81114pt x 128.03662pt.
  [1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
  <../images/eda-bath-vs-sale.png>]
-<../images/historgram_original_price.png, id=20, 481.8pt x 481.8pt>
+<../images/historgram_original_price.png, id=16, 481.8pt x 481.8pt>
 File: ../images/historgram_original_price.png Graphic file (type png)
 
 <use ../images/historgram_original_price.png>
 Package pdftex.def Info: ../images/historgram_original_price.png used on input 
-line 130.
+line 177.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
-<../images/historgram_log_trasformed_price.png, id=21, 481.8pt x 481.8pt>
+<../images/historgram_log_trasformed_price.png, id=17, 481.8pt x 481.8pt>
 File: ../images/historgram_log_trasformed_price.png Graphic file (type png)
 
 <use ../images/historgram_log_trasformed_price.png>
 Package pdftex.def Info: ../images/historgram_log_trasformed_price.png used on 
-input line 131.
+input line 178.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
-Overfull \hbox (16.61943pt too wide) in paragraph at lines 141--152
+Overfull \hbox (1.60982pt too wide) in paragraph at lines 187--198
  [] 
  []
 
 [2 <../images/scatter_Year_sold_Year_built_Vs_Price.png> <../images/scatter_Yea
 r_sold_Year_remodeled_Vs_Price.png> <../images/historgram_original_price.png> <
 ../images/historgram_log_trasformed_price.png>]
-<../images/model_pca_scree_plot.png, id=34, 481.8pt x 481.8pt>
+<../images/model_pca_scree_plot.png, id=31, 481.8pt x 481.8pt>
 File: ../images/model_pca_scree_plot.png Graphic file (type png)
 
 <use ../images/model_pca_scree_plot.png>
 Package pdftex.def Info: ../images/model_pca_scree_plot.png used on input line 
-187.
+234.
 (pdftex.def)             Requested size: 170.71304pt x 170.71304pt.
- [3 <../images/model_pca_scree_plot.png>] <../images/model_lasso_lambda.png, id
-=39, 481.8pt x 481.8pt>
+
+<../images/model_lasso_lambda.png, id=32, 481.8pt x 481.8pt>
 File: ../images/model_lasso_lambda.png Graphic file (type png)
 
 <use ../images/model_lasso_lambda.png>
-Package pdftex.def Info: ../images/model_lasso_lambda.png used on input line 19
-6.
+Package pdftex.def Info: ../images/model_lasso_lambda.png used on input line 24
+3.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
-<../images/model_ridge_lambda.png, id=40, 481.8pt x 481.8pt>
+<../images/model_ridge_lambda.png, id=33, 481.8pt x 481.8pt>
 File: ../images/model_ridge_lambda.png Graphic file (type png)
 
 <use ../images/model_ridge_lambda.png>
-Package pdftex.def Info: ../images/model_ridge_lambda.png used on input line 19
-7.
+Package pdftex.def Info: ../images/model_ridge_lambda.png used on input line 24
+4.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
-<../images/model_lasso_number_of_coefficients_left.png, id=41, 481.8pt x 481.8p
+<../images/model_lasso_number_of_coefficients_left.png, id=34, 481.8pt x 481.8p
 t>
 File: ../images/model_lasso_number_of_coefficients_left.png Graphic file (type 
 png)
  <use ../images/model_lasso_number_of_coefficients_left.png>
 Package pdftex.def Info: ../images/model_lasso_number_of_coefficients_left.png 
-used on input line 206.
+used on input line 253.
 (pdftex.def)             Requested size: 199.16399pt x 170.71304pt.
-
-<../images/model_lasso_coefficients_top_10.png, id=42, 481.8pt x 481.8pt>
+ [3 <../images/model_pca_scree_plot.png>]
+<../images/model_lasso_coefficients_top_10.png, id=39, 481.8pt x 481.8pt>
 File: ../images/model_lasso_coefficients_top_10.png Graphic file (type png)
 
 <use ../images/model_lasso_coefficients_top_10.png>
 Package pdftex.def Info: ../images/model_lasso_coefficients_top_10.png used on 
-input line 215.
+input line 262.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
-<../images/model_ridge_coefficients_top_10.png, id=43, 481.8pt x 481.8pt>
+<../images/model_ridge_coefficients_top_10.png, id=40, 481.8pt x 481.8pt>
 File: ../images/model_ridge_coefficients_top_10.png Graphic file (type png)
 
 <use ../images/model_ridge_coefficients_top_10.png>
 Package pdftex.def Info: ../images/model_ridge_coefficients_top_10.png used on 
-input line 216.
+input line 263.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
-<../images/model_prediction_comparison.png, id=44, 1003.75pt x 301.125pt>
+<../images/model_prediction_comparison.png, id=41, 1003.75pt x 301.125pt>
 File: ../images/model_prediction_comparison.png Graphic file (type png)
 
 <use ../images/model_prediction_comparison.png>
 Package pdftex.def Info: ../images/model_prediction_comparison.png used on inpu
-t line 229.
+t line 276.
 (pdftex.def)             Requested size: 256.06773pt x 113.81297pt.
 
-Overfull \hbox (10.34962pt too wide) in paragraph at lines 229--230
+Overfull \hbox (10.34962pt too wide) in paragraph at lines 276--277
  [][] 
  []
 
-<../images/model_residual_comparison.png, id=45, 1003.75pt x 301.125pt>
+<../images/model_residual_comparison.png, id=42, 1003.75pt x 301.125pt>
 File: ../images/model_residual_comparison.png Graphic file (type png)
 
 <use ../images/model_residual_comparison.png>
 Package pdftex.def Info: ../images/model_residual_comparison.png used on input 
-line 238.
+line 285.
 (pdftex.def)             Requested size: 256.06773pt x 113.81297pt.
 
-Overfull \hbox (10.34962pt too wide) in paragraph at lines 238--239
+Overfull \hbox (10.34962pt too wide) in paragraph at lines 285--286
  [][] 
  []
 
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 298.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 298.
 [4 <../images/model_lasso_lambda.png> <../images/model_ridge_lambda.png> <../im
 ages/model_lasso_number_of_coefficients_left.png> <../images/model_lasso_coeffi
 cients_top_10.png> <../images/model_ridge_coefficients_top_10.png> <../images/m
 odel_prediction_comparison.png> <../images/model_residual_comparison.png>]
-Underfull \hbox (badness 2556) in paragraph at lines 281--282
-[]\T1/aer/m/n/8 E. H. Miller, √íA note on re-flec-tor ar-rays (Pe-ri-od-i-cal
- []
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ê in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ê in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ë in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ë in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ê in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ë in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ê in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ê in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ê in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ê in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ê in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ê in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ê in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no í in font ptmr7t!
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
 
 
 ** Conference Paper **
@@ -526,30 +595,29 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3405 strings out of 493089
- 53017 string characters out of 6134842
- 110244 words of memory out of 5000000
- 6803 multiletter control sequences out of 15000+600000
- 102646 words of font info for 123 fonts, out of 8000000 for 9000
+ 2748 strings out of 493089
+ 44429 string characters out of 6134842
+ 105615 words of memory out of 5000000
+ 6196 multiletter control sequences out of 15000+600000
+ 36583 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,8n,23p,868b,291s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
-></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb><
-/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb>
-</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
-</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
-/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
-usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></us
-r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
-local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/loc
-al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/
-texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/t
-exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/tex
-live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on report_final.pdf (5 pages, 557588 bytes).
+ 38i,9n,23p,868b,289s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
+exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
+xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
+live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texli
+ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive
+/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/20
+15/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/201
+5/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2015/
+texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist
+/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/ty
+pe1/urw/times/utmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/ti
+mes/utmri8a.pfb>
+Output written on report_final.pdf (5 pages, 501299 bytes).
 PDF statistics:
- 100 PDF objects out of 1000 (max. 8388607)
- 52 compressed objects within 1 object stream
+ 92 PDF objects out of 1000 (max. 8388607)
+ 47 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 70 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 66 words of extra memory for PDF output out of 10000 (max. 10000000)
 
