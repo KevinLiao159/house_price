@@ -10,7 +10,7 @@ nfeatures <- train[, names_items]
 
 color <- c('black', 'blue', 'red', 'yellow', 'green')
 
-dotsize <- c(0.1, 0.2, 0.5, 1, 1.5 ,2) 
+dotsize <- c('1', '1.1', '1.2', '1.5', '2') 
 
 ui <- fluidPage(
     headerPanel('Explanatory Data Analysis and Visualization'),
@@ -18,7 +18,7 @@ ui <- fluidPage(
         selectInput('ycol', 'Y Variable', names_items, selected = names_items[38]),
         selectInput('xcol', 'X Variable', names_items, selected = names_items[1], multiple = T),
         selectInput('col', 'Colors', color, selected = color[1]),
-        selectInput('size', 'Dot Size', dotsize, selected = dotsize[3])),
+        selectInput('size', 'Dot Size', dotsize, selected = dotsize[1])),
     
     mainPanel(
         plotOutput('plot1') 
@@ -37,8 +37,8 @@ server <- function(input, output) {
     output$plot1 <- renderPlot({
       #par(mar = c(1, 1, 1, 1))
       plot(selectedData(),
-           col = 'blue',
-           pch = 20, cex = 3)
+           col = input$col,
+           pch = 20, cex = as.numeric(input$size))
       
       #ggplot(nfeatures, aes(x = nfeatures[,input$xcol], y = nfeatures[, input$ycol])) + 
         #geom_point() +
