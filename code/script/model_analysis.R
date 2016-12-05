@@ -167,5 +167,6 @@ save(model.lasso.df,
      model.ridge.df,
      model.gbm.df,
      model.rf.df,
+     combined,
      file = "../../data/model/model.df.RData")
 
