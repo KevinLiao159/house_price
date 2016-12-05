@@ -62,8 +62,7 @@ regressions:
 # Generate report
 # ------------------------------------------------------------------------------------------
 report: $(R)/report_final.Rnw
-	cd $(R); R CMD Sweave report_final.Rnw; 
-			R CMD pdflatex report_final.tex
+	cd $(R); Rscript -e "library(knitr); knit2pdf('report_final.Rnw', output = 'report_final.tex')"
 
 # ------------------------------------------------------------------------------------------
 # Generate slides
