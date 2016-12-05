@@ -126,14 +126,15 @@ We utilize both shrinkage regression models and ensemble models. Practitioners o
 \subsection{Model comparison}
 As mentioned on in Evaluation section, we use RMSE to compare models and select the best model. Although RMSE does not provide an absolute means of model accuracy, it provides a relative measure to compare models. Thus, we finalize our model with the lowest RMSE.
 In summary, the following is the the procedure for each model.
-\begin{itemize}
-\item 1. Split the data into train and test, 80\% and 20\% repectively.
-\item 2. Train a model using train data with 5-fold cross-valdation.
-\item 3. Pick the optimal hyper-parameters.
-\item 4. Predict balance using the model with the optimal parameters.
-\item 5. Calculate Mean Square Error.
-\item 6. Record both Mean Square Error and coefficients.
-\end{itemize}
+
+\begin{enumerate}
+\item Split the data into train and test, 80\% and 20\% repectively.
+\item Train a model using train data with 5-fold cross-valdation.
+\item Pick the optimal hyper-parameters.
+\item Predict balance using the model with the optimal parameters.
+\item Calculate Mean Square Error.
+\item Record both Mean Square Error and coefficients.
+\end{enumerate}
 
 \section{ANALYSIS}
 Due to the high dimensionality of dataset, we first experiment to decide whether to either project predictors into lower dimensional bases or select predictors using shrinkage methods. First, we try Principal component analysis which is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables into a set of values of linearly uncorrelated variables called principal components [15]. Since our one-hot encoded dataset has a lot of predictors that have near zero variances, we first need to remove near zero variances. This is because PCA considers variability of data and compress the predictors with high variances into first principal components.   
@@ -247,3 +248,7 @@ Figure Labels: Use 8 point Times New Roman for Figure labels. Use words rather t
 
 
 \end{document}
+Figure Labels: Use 8 point Times New Roman for Figure labels. Use words rather than symbols or abbreviations when writing Figure axis labels to avoid confusing the reader. As an example, write the quantity ÒMagnetizationÓ, or ÒMagnetization, MÓ, not just ÒMÓ. If including units in the label, present them within parentheses. Do not label axes only with units. In the example, write ÒMagnetization (A/m)Ó or ÒMagnetization {A[m(1)]}Ó, not just ÒA/mÓ. Do not label axes with a ratio of quantities and units. For example, write ÒTemperature (K)Ó, not ÒTemperature/K.Ó
+% > \end{document}
+%
+% ^.
