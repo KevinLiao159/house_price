@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  4 DEC 2016 22:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  4 DEC 2016 23:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -258,7 +258,32 @@ LaTeX Font Info:    Try loading font information for T1+aer on input line 105.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/ae/t1aer.fd
 File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
 ))))
-(./report_final.aux)
+(./report_final.aux
+
+LaTeX Warning: Label `figurelabel' multiply defined.
+
+
+LaTeX Warning: Label `figurelabel' multiply defined.
+
+
+LaTeX Warning: Label `figurelabel' multiply defined.
+
+
+LaTeX Warning: Label `figurelabel' multiply defined.
+
+
+LaTeX Warning: Label `figurelabel' multiply defined.
+
+
+LaTeX Warning: Label `figurelabel' multiply defined.
+
+
+LaTeX Warning: Label `figurelabel' multiply defined.
+
+
+LaTeX Warning: Label `figurelabel' multiply defined.
+
+)
 \openout1 = `report_final.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 51.
@@ -275,8 +300,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 51.
 LaTeX Font Info:    ... okay on input line 51.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 51.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 51.
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
+ (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 51.
@@ -347,67 +371,143 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 80.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 80.
+
+<../images/eda-bath-vs-sale.png, id=2, 401.5pt x 308.15125pt>
+File: ../images/eda-bath-vs-sale.png Graphic file (type png)
+
+<use ../images/eda-bath-vs-sale.png>
+Package pdftex.def Info: ../images/eda-bath-vs-sale.png used on input line 92.
+(pdftex.def)             Requested size: 256.08917pt x 142.2638pt.
+
+Overfull \hbox (10.37106pt too wide) in paragraph at lines 92--93
+ [][] 
+ []
+
+
+<../images/scatter_Year_sold_Year_built_Vs_Price.png, id=4, 481.8pt x 481.8pt>
+File: ../images/scatter_Year_sold_Year_built_Vs_Price.png Graphic file (type pn
+g)
+
+<use ../images/scatter_Year_sold_Year_built_Vs_Price.png>
+Package pdftex.def Info: ../images/scatter_Year_sold_Year_built_Vs_Price.png us
+ed on input line 99.
+(pdftex.def)             Requested size: 113.81114pt x 128.03662pt.
+
+<../images/scatter_Year_sold_Year_remodeled_Vs_Price.png, id=5, 481.8pt x 481.8
+pt>
+File: ../images/scatter_Year_sold_Year_remodeled_Vs_Price.png Graphic file (typ
+e png)
+ <use ../images/scatter_Year_sold_Year_remodeled_Vs_Price.png>
+Package pdftex.def Info: ../images/scatter_Year_sold_Year_remodeled_Vs_Price.pn
+g used on input line 100.
+(pdftex.def)             Requested size: 113.81114pt x 128.03662pt.
  [1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
-] [2]
-Underfull \hbox (badness 3128) in paragraph at lines 147--148
-\T1/aer/m/n/10 in-di-cates that a great num-ber of pre-dic-tors have
+ <../images/eda-bath-vs-sale.png>]
+<../images/historgram_original_price.png, id=20, 481.8pt x 481.8pt>
+File: ../images/historgram_original_price.png Graphic file (type png)
+
+<use ../images/historgram_original_price.png>
+Package pdftex.def Info: ../images/historgram_original_price.png used on input 
+line 130.
+(pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
+
+<../images/historgram_log_trasformed_price.png, id=21, 481.8pt x 481.8pt>
+File: ../images/historgram_log_trasformed_price.png Graphic file (type png)
+
+<use ../images/historgram_log_trasformed_price.png>
+Package pdftex.def Info: ../images/historgram_log_trasformed_price.png used on 
+input line 131.
+(pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
+
+Overfull \hbox (16.61943pt too wide) in paragraph at lines 141--152
+ [] 
  []
 
+[2 <../images/scatter_Year_sold_Year_built_Vs_Price.png> <../images/scatter_Yea
+r_sold_Year_remodeled_Vs_Price.png> <../images/historgram_original_price.png> <
+../images/historgram_log_trasformed_price.png>]
+<../images/model_pca_scree_plot.png, id=34, 481.8pt x 481.8pt>
+File: ../images/model_pca_scree_plot.png Graphic file (type png)
 
-Underfull \hbox (badness 2762) in paragraph at lines 147--148
-\T1/aer/m/n/10 ap-porix-i-mately iden-ti-cal across ob-ser-va-tions. Fig-ure
+<use ../images/model_pca_scree_plot.png>
+Package pdftex.def Info: ../images/model_pca_scree_plot.png used on input line 
+187.
+(pdftex.def)             Requested size: 170.71304pt x 170.71304pt.
+ [3 <../images/model_pca_scree_plot.png>] <../images/model_lasso_lambda.png, id
+=39, 481.8pt x 481.8pt>
+File: ../images/model_lasso_lambda.png Graphic file (type png)
+
+<use ../images/model_lasso_lambda.png>
+Package pdftex.def Info: ../images/model_lasso_lambda.png used on input line 19
+6.
+(pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
+
+<../images/model_ridge_lambda.png, id=40, 481.8pt x 481.8pt>
+File: ../images/model_ridge_lambda.png Graphic file (type png)
+
+<use ../images/model_ridge_lambda.png>
+Package pdftex.def Info: ../images/model_ridge_lambda.png used on input line 19
+7.
+(pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
+
+<../images/model_lasso_number_of_coefficients_left.png, id=41, 481.8pt x 481.8p
+t>
+File: ../images/model_lasso_number_of_coefficients_left.png Graphic file (type 
+png)
+ <use ../images/model_lasso_number_of_coefficients_left.png>
+Package pdftex.def Info: ../images/model_lasso_number_of_coefficients_left.png 
+used on input line 206.
+(pdftex.def)             Requested size: 199.16399pt x 170.71304pt.
+
+<../images/model_lasso_coefficients_top_10.png, id=42, 481.8pt x 481.8pt>
+File: ../images/model_lasso_coefficients_top_10.png Graphic file (type png)
+
+<use ../images/model_lasso_coefficients_top_10.png>
+Package pdftex.def Info: ../images/model_lasso_coefficients_top_10.png used on 
+input line 215.
+(pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
+
+<../images/model_ridge_coefficients_top_10.png, id=43, 481.8pt x 481.8pt>
+File: ../images/model_ridge_coefficients_top_10.png Graphic file (type png)
+
+<use ../images/model_ridge_coefficients_top_10.png>
+Package pdftex.def Info: ../images/model_ridge_coefficients_top_10.png used on 
+input line 216.
+(pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
+
+<../images/model_prediction_comparison.png, id=44, 1003.75pt x 301.125pt>
+File: ../images/model_prediction_comparison.png Graphic file (type png)
+
+<use ../images/model_prediction_comparison.png>
+Package pdftex.def Info: ../images/model_prediction_comparison.png used on inpu
+t line 229.
+(pdftex.def)             Requested size: 256.06773pt x 113.81297pt.
+
+Overfull \hbox (10.34962pt too wide) in paragraph at lines 229--230
+ [][] 
  []
 
+<../images/model_residual_comparison.png, id=45, 1003.75pt x 301.125pt>
+File: ../images/model_residual_comparison.png Graphic file (type png)
 
-Underfull \hbox (badness 10000) in paragraph at lines 149--150
-[]\T1/aer/m/n/10 Furthermore, we try to fit both lasso and
+<use ../images/model_residual_comparison.png>
+Package pdftex.def Info: ../images/model_residual_comparison.png used on input 
+line 238.
+(pdftex.def)             Requested size: 256.06773pt x 113.81297pt.
+
+Overfull \hbox (10.34962pt too wide) in paragraph at lines 238--239
+ [][] 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 149--150
-\T1/aer/m/n/10 val-i-da-tion and then ex-am-ine co-ef-fi-cients. Fig-ure
- []
-
-
-Underfull \hbox (badness 4242) in paragraph at lines 149--150
-\OML/cmm/m/it/10 model[]asso[]ambda:png$\T1/aer/m/n/10 , $\OML/cmm/m/it/10 mode
-l[]idge[]ambda:png$ \T1/aer/m/n/10 shows
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 149--150
-\T1/aer/m/n/10 MSE for cor-re-spond-ing lambda val-ues for both
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 149--150
-\T1/aer/m/n/10 mod-els. Fig-ure $\OML/cmm/m/it/10 model[]asso[]ambda:png$ \T1/a
-er/m/n/10 shows that
- []
-
-
-Underfull \hbox (badness 2495) in paragraph at lines 149--150
-\T1/aer/m/n/10 MSE de-creases as log(lambda) in-crease up to log
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \hbox (badness 2556) in paragraph at lines 197--198
+[4 <../images/model_lasso_lambda.png> <../images/model_ridge_lambda.png> <../im
+ages/model_lasso_number_of_coefficients_left.png> <../images/model_lasso_coeffi
+cients_top_10.png> <../images/model_ridge_coefficients_top_10.png> <../images/m
+odel_prediction_comparison.png> <../images/model_residual_comparison.png>]
+Underfull \hbox (badness 2556) in paragraph at lines 281--282
 []\T1/aer/m/n/8 E. H. Miller, ÒA note on re-flec-tor ar-rays (Pe-ri-od-i-cal
  []
-
-[3]
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 226.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 226.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 ** Conference Paper **
@@ -420,33 +520,36 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[4] (./report_final.aux) ) 
+[5] (./report_final.aux)
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 3355 strings out of 493089
- 50358 string characters out of 6134842
- 112213 words of memory out of 5000000
- 6762 multiletter control sequences out of 15000+600000
- 106134 words of font info for 130 fonts, out of 8000000 for 9000
+ 3405 strings out of 493089
+ 53017 string characters out of 6134842
+ 110244 words of memory out of 5000000
+ 6803 multiletter control sequences out of 15000+600000
+ 102646 words of font info for 123 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,8n,23p,922b,291s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2015/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmbxti10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmcsc10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmex10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmmi10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmmi7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmr7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmsy10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/c
-msy7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmt
-i10.pfb>
-Output written on report_final.pdf (4 pages, 185169 bytes).
+ 37i,8n,23p,868b,291s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb><
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
+usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></us
+r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
+local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/loc
+al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/
+texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/t
+exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/tex
+live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on report_final.pdf (5 pages, 557588 bytes).
 PDF statistics:
- 70 PDF objects out of 1000 (max. 8388607)
- 49 compressed objects within 1 object stream
+ 100 PDF objects out of 1000 (max. 8388607)
+ 52 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 5 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 70 words of extra memory for PDF output out of 10000 (max. 10000000)
 
