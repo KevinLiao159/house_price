@@ -10,7 +10,8 @@ output:
 ---
 
 ## House Price: Advanced Regression Techniques
-![](../images/housesbanner.png)
+<img src="../images/housesbanner.png" style="width: 750px;"/>
+
 
 ## Agenda
 
@@ -40,9 +41,9 @@ Our goal is to understand the relationship between `SalePrice` and these potenti
 ## Exploratory Data Analysis
 With datasets in hand, the first thing we would like to explore is the dataset itself: what are some interesting relationships among variables and what human interpretation can we give to these observations? 
 
-![Display: Exploratory Data Analysis Example](../images/boxplot-FireplaceQu.png)
-
+<center>
 ![Display: Exploratory Data Analysis Example](../images/eda-bath-vs-sale.png)
+</center>
 
 
 ## Methodology
@@ -63,6 +64,21 @@ $$\epsilon = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (log(p_{i} + 1) - log(a_{i} + 1))^
     - **Log Transformation**: dealing with area-related variables
     - **Outliers**: dataset highly sensitive to outliers
 
+
+## Data Preprocess - New Variables
+
+<img src="../images/scatter_Year_sold_Year_remodeled_Vs_Price.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/scatter_Year_sold_Year_built_Vs_Price.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
+
+
+## Data Preprocess - Log Transformation
+
+<img src="../images/historgram_original_price.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/historgram_log_trasformed_price.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
+
+
 ## Feature Engineering
 
 Considering the complexity of the problem as well as the number of observations and predictors, we assume that the success of this analysis is largely dependent on **informative, feature engineered predictors** that can reveal the subtle relationship to our target variable. Given the small size of dataset with 1460 observations, we conclude that feature learning is not a feasible option because feature learning often involves very complicated models with multiple layers, which tends to cause an overfitting issue when dataset is small.
@@ -74,13 +90,18 @@ With this observation, we therefore focus more on **manual feature engineering**
 We utilize both **shrinkage regression models** and **ensemble models**. Practitioners often favor ensemble models due to their conveniences. Ensemble models such as **Random Forest**, which uses the averaged result from the randomly grown decision trees such as CART, often work well with unscaled, missing data and are used for both classification and regression problems. Also, since our dataset contains a hug number of predictors, shrinkage methods such **Lasso** and **Ridge regressions**, which penalize predictors by shrinking their weights, can be highly effective. Furthermore, we utilize a dimension reduction technique called **PCA** in order to compress information into lower dimension.
 
 
-## Key Findings
+## Principal Component Analysis
 
-![Display: Ridge Lambda](../images/model_prediction_comparison.png)
+<img src="../images/model_pca_scree_plot.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
 
-## Key Findings
+<img src="../images/model_pca_pc_comparison_plot.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
 
-![Display: Ridge Lambda](../images/model_residual_comparison.png)
+## MSE - Lasso and Ridge Regression
+
+<img src="../images/model_pca_scree_plot.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/model_pca_pc_comparison_plot.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
+
 
 ## Conclusions
 
