@@ -23,15 +23,22 @@ Course website: [gastonsanchez.com/stat159](http://gastonsanchez.com/stat159)
 
 ### Directory Structure 
 
-* `shinyApp`, which creates a shiny App for data visualization
+* `shinyApp_scatterplot`, which creates a shiny App for scatter plot visualization
+
+* `shinyApp_model`, which creates a shiny App for tuning parameters of each model
+
+* `README.md`, which describes details of this directory
 
 
 The complete file-structure for this directory is as follows:
 ```
 shinyApp/
 	README.md
-	scatterplot_app.R          # code that creates shiny app for scatter plots
-	model_app.R                # code that creates shiny app for model analysis
+	shinyApp_scatterplot/
+	  app.R                   # code that creates shiny app for scatter plots
+	shinyApp_model/
+	  app.R                   # code that creates shiny app for model analysis
+        
 ```
 **ShinyDoc**, which is created by the code in app.R, is based on the simple linear regression between two variables. The ShinyDoc will have a dropdown with a list of 3 options - TV, Radio and newspaper as an input element. The output will be a scatter plot between `Sales` and the input option chosen from the dropdown.
 
