@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  4 DEC 2016 22:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  4 DEC 2016 23:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -283,9 +283,6 @@ LaTeX Warning: Label `figurelabel' multiply defined.
 
 LaTeX Warning: Label `figurelabel' multiply defined.
 
-
-LaTeX Warning: Label `figurelabel' multiply defined.
-
 )
 \openout1 = `report_final.aux'.
 
@@ -508,15 +505,10 @@ Overfull \hbox (10.34962pt too wide) in paragraph at lines 238--239
 ages/model_lasso_number_of_coefficients_left.png> <../images/model_lasso_coeffi
 cients_top_10.png> <../images/model_ridge_coefficients_top_10.png> <../images/m
 odel_prediction_comparison.png> <../images/model_residual_comparison.png>]
-Underfull \hbox (badness 2556) in paragraph at lines 289--290
+Underfull \hbox (badness 2556) in paragraph at lines 291--292
 []\T1/aer/m/n/8 E. H. Miller, ÒA note on re-flec-tor ar-rays (Pe-ri-od-i-cal
  []
 
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 318.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 318.
-[5]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -528,21 +520,19 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[6
-
-] (./report_final.aux)
+[5] (./report_final.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3422 strings out of 493089
- 53194 string characters out of 6134842
- 112253 words of memory out of 5000000
- 6814 multiletter control sequences out of 15000+600000
- 106134 words of font info for 130 fonts, out of 8000000 for 9000
+ 3405 strings out of 493089
+ 53017 string characters out of 6134842
+ 110244 words of memory out of 5000000
+ 6803 multiletter control sequences out of 15000+600000
+ 102646 words of font info for 123 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,8n,23p,830b,291s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,8n,23p,868b,291s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb><
 /usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb>
@@ -556,10 +546,10 @@ al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/
 texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/t
 exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/tex
 live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on report_final.pdf (6 pages, 562278 bytes).
+Output written on report_final.pdf (5 pages, 558460 bytes).
 PDF statistics:
- 103 PDF objects out of 1000 (max. 8388607)
- 54 compressed objects within 1 object stream
+ 100 PDF objects out of 1000 (max. 8388607)
+ 52 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  70 words of extra memory for PDF output out of 10000 (max. 10000000)
 
