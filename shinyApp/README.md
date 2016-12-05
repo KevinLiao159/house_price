@@ -34,11 +34,8 @@ The complete file-structure for this directory is as follows:
 ```
 shinyApp/
 	README.md
-	shinyApp_scatterplot/
-	  app.R                   # code that creates shiny app for scatter plots
-	shinyApp_model/
-	  app.R                   # code that creates shiny app for model analysis
-        
+	  app.R                   # code that creates shiny app for project visualization
+
 ```
 **ShinyDoc**, which is created by the code in app.R, is based on the simple linear regression between two variables. The ShinyDoc will have a dropdown with a list of 3 options - TV, Radio and newspaper as an input element. The output will be a scatter plot between `Sales` and the input option chosen from the dropdown.
 
