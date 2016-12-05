@@ -18,8 +18,7 @@ ui <- fluidPage(
         selectInput('ycol', 'Y Variable', names_items, selected = names_items[38]),
         selectInput('xcol', 'X Variable', names_items, selected = names_items[1], multiple = T),
         selectInput('col', 'Colors', color, selected = color[1]),
-        selectInput('size', )
-    
+        selectInput('size', 'Dot Size', dotsize, selected = dotsize[3])),
     
     mainPanel(
         plotOutput('plot1') 
