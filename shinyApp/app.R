@@ -8,7 +8,7 @@ names_items <- names(get_only_numerical_predictors(train))
  
 nfeatures <- train[, names_items]
 
-color <- c("black", "blue", "red", "yellow", "green")
+color <- c('black', 'blue', 'red', 'yellow', 'green')
 
 dotsize <- c(0.1, 0.2, 0.5, 1, 1.5 ,2) 
 
@@ -16,8 +16,11 @@ ui <- fluidPage(
     headerPanel('Explanatory Data Analysis and Visualization'),
     sidebarPanel(
         selectInput('ycol', 'Y Variable', names_items, selected = names_items[38]),
-        selectInput('xcol', 'X Variable', names_items, selected = names_items[1], multiple = T)),
-        selectInput('col', 'Colors', color )
+        selectInput('xcol', 'X Variable', names_items, selected = names_items[1], multiple = T),
+        selectInput('col', 'Colors', color, selected = color[1]),
+        selectInput('size', )
+    
+    
     mainPanel(
         plotOutput('plot1') 
         #+
