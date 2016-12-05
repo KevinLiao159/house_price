@@ -11,3 +11,4 @@ data.validation.matrix = data.train.matrix[-train_index, ]
 data.validation.matrix = arrange(data.validation.matrix, SalePrice)
 data.test.matrix <- filter(data.all.matrix, data_type == "test")
 data.test.matrix$data_type = NULL
+save(data.train.matrix, data.validation.matrix, file = "data/cleanedData/ddata_train_validation.matrix.RData")
