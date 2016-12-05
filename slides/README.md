@@ -1,15 +1,17 @@
 # stat159-fall2016-finalproject
 
-## shinyApp
+## slides
 
+This directory holds the slides of the project for presenting in the class.
 
 The complete file-structure for the directory is as follows:
 
 ```
-shinyApp/
+slides/
    README.md
-   app.R
-   app.html
+   .DS_Store
+   sildes.Rmd
+   slides.html
 ```
 
 ### LICENSE

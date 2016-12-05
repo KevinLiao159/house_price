@@ -1,15 +1,22 @@
 # stat159-fall2016-finalproject
 
-## shinyApp
+## Images
 
+This directory holds all the graphic images created through the process of variable analysis and regression methods. There are three different types of plots being used: `histogram`, `boxplot`, `stripplot`, `pairsplot`, `scartterplot` and `barplot`.
 
 The complete file-structure for the directory is as follows:
 
 ```
-shinyApp/
+data/
    README.md
-   app.R
-   app.html
+   .DS_Store
+   .
+   .
+   .
+   images.png
+   .
+   .
+   .
 ```
 
 ### LICENSE

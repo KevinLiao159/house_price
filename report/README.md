@@ -1,15 +1,33 @@
 # stat159-fall2016-finalproject
 
-## shinyApp
+## Report
 
+This directory holds all the supported materials for the project report and the report.
 
 The complete file-structure for the directory is as follows:
 
 ```
-shinyApp/
+report/
    README.md
-   app.R
-   app.html
+   .DS_Store
+   .DS_Store
+   .Rhistory
+   report-concordance.tex
+   report.Rnw
+   report.log
+   report.pdf
+   report.synctex.gz
+   report.tex
+   sections/
+        .DS_Store
+        .Rhistory
+        00-abstract.Rmd
+        01-introduction.Rmd
+        02-data.Rmd
+        03-methods.Rmd
+        04-analysis.Rmd
+        05-results.Rmd
+        06-conclusions.Rmd
 ```
 
 ### LICENSE
