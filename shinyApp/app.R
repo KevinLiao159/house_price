@@ -17,6 +17,7 @@ load('../data/model/lasso.RData')
 load('../data/model/ridge.RData')
 load('../data/model/gbm.RData')
 load('../data/model/rf.RData')
+load('../data/model/model.df.Rdata')
 
 model.names <- c('PCA', 'lasso', 'ridge', 'gbm', 'random_forest')
 model.list <- list(PCA = model.pca,
@@ -26,10 +27,10 @@ model.list <- list(PCA = model.pca,
                    random_forest = model.rf)
 
 method.names <- c('lasso', 'ridge', 'gbm', 'random_forest')
-method.list <- list(lasso = model.lasso.lambda,
-                   ridge = model.ridge.lambda,
-                   gbm = model.gbm,
-                   random_forest = model.rf)
+method.list <- list(lasso = model.lasso.df,
+                   ridge = model.ridge.df,
+                   gbm = model.gbm.df,
+                   random_forest = model.rf.df)
 
 
 
@@ -78,11 +79,20 @@ ui <- fluidPage(
   
   headerPanel('Results'),
   sidebarPanel(
-    selectInput('method', 'Regression Methods', method.names, selected = method.names.names[1])),
+    selectInput('method', 'Regression Methods', method.names, selected = method.names[1])),
   mainPanel(
     plotOutput('plot3'),
     plotOutput('plot4')
+  ),
+  
+  
+  
+  headerPanel('Model Comparison'),
+  mainPanel(
+    plotOutput('plot5'),
+    plotOutput('plot6')
   )
+  
   
   
 )
@@ -102,7 +112,6 @@ server <- function(input, output) {
          col = input$col,
          pch = 20, cex = as.numeric(input$size),
          main = 'Scatter Plot')
-    
   })
   
 
@@ -111,8 +120,43 @@ server <- function(input, output) {
     plot(model.list[[input$model]], 
          type = 'l',
          main = input$model) 
-    
   })
+  
+  
+  output$plot3 <- renderPlot({
+    ggplot(method.list[[input$method]], 
+           aes(x = 1:nrow(method.list[[input$method]]), y = residual)) + 
+      geom_line() +
+      ggtitle(input$method) + 
+      labs(x = "Individual Obervation",y = "Residual")
+  })  
+  
+  
+  output$plot4 <- renderPlot({
+    ggplot(method.list[[input$method]],  aes(x = y, y= pred)) +
+      geom_point() +
+      geom_smooth() +
+      ggtitle(input$method) + 
+      labs(x = "Obervations", y = "Predictions")
+  })  
+  
+  
+  output$plot5 <- renderPlot({
+    ggplot(combined, aes(x = index, y = residual, color = model)) + 
+      geom_line() + 
+      facet_grid(~model) + 
+      ggtitle("Residul comparison")
+  })  
+  
+  
+  output$plot6 <- renderPlot({
+    ggplot(combined, aes(x = y, y = pred, color = model)) + 
+      geom_point() + 
+      geom_smooth() + 
+      facet_grid(~model) + 
+      ggtitle("Model prediction comparison")
+  })  
+  
 }
 
 shinyApp(ui = ui, server = server)
