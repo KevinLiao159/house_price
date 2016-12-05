@@ -1,0 +1,136 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
+{\fonttbl\f0\froman\fcharset0 Times-Roman;\f1\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red28\green28\blue28;\red0\green0\blue0;\red255\green255\blue255;
+\red28\green28\blue28;\red10\green0\blue109;\red11\green101\blue255;\red82\green35\blue83;\red11\green101\blue255;
+\red82\green35\blue83;\red38\green38\blue38;\red240\green240\blue240;}
+\margl1440\margr1440\vieww25300\viewh12480\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 \
+Methods\
+The goal of this analysis is to accurately predict the final price of each home. Therefore, we frame this problem as a regression problem, and decide to use the L2 loss function [10] which is often used in regression problem. Taking this objective into account, we preprocess original dataset so that regression models can work well. Furthermore, we extract more features by involving feature engineering. Finally, we fit two shrinkage models and two ensemble models. The details are explained in the following subsections.\
+\
+Objective loss function\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 We specifically use root mean squared logarithmic error \cf2 \expnd0\expndtw0\kerning0
+[5]\cf0 \kerning1\expnd0\expndtw0 , which makes more sense in our problem setting because errors in predicting expensive houses and cheap houses should affect the result equally. The following is the formula of RMSLE.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f1 \cf0 {{\NeXTGraphic Screen Shot 2016-12-03 at 3.06.02 PM.png \width7140 \height2180
+}¬} (use latex)
+\f0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+Since L2 loss function minimizes the squared differences between the estimated and existing target values [10], L2 error will be much larger in the case of outlier compared to L1 and therefore L2 loss function is highly sensitive to outliers in the dataset. So, in the preprocessing step, we eliminate outliers to remedy this issue.\
+\pard\pardeftab720
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 Preprocess\
+According on exploratory analysis, we find a lot of NA values in most of predictors. Since regression models cannot handle missing data, we need to either remove or impute data using appropriate methods [7]. The data description provided by client [6] indicates that some of the missing values are actually none value. In that case, we replace NA value with factor variable named None. However, there are some numerical predictors with missing values in an unsystematical manner. In that case, we impute them with mean values of predictors. As a next step, we apply log transformations to area related predictors such GrLivArea and LotArea as well as target variable. \cf3 \cb4 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 The log transformation has an effect to remedy skewness of data [8] by making original distributions of predictors to more normally distributed. Consequently, it helps regression model to work better. After the log transformation, we still notice few outliers and eliminate lowest and highest 0.1% data points.\cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0  Furthermore, majority of predictors are categorical under which regression models cannot be used directly. Therefore, we apply one-hot encoding [9] to convert categorical values to numerical ones. It consequently expands features from 79 to approximately 500. The table #? summarizes this procedure.\
+\
+factorization\
+MSSubClass\
+YearBuilt\
+YrSold\
+MoSold\
+GarageYrBlt\
+\
+log transformation\
+SalePrice\
+LotArea\
+GrLivArea\
+\
+remove outliers 17 points -> below 10.91511 and above SalePrice\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 Featuring engineering\
+Considering the complexity of the problem as well as the number of observations and predictors,  we assume that the success of this analysis is largely dependent on informative, feature engineered predictors that can reveal the subtle relationship to our target variable. Given the small size of dataset with 1460 observations, we conclude that feature learning, which is\cb4 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec5  a set of techniques that learn a {\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Feature_(machine_learning)"}}{\fldrslt \cb1 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec6 feature}}\cb1 : a transformation of raw data input to a representation that can be effectively exploited in machine learning tasks \kerning1\expnd0\expndtw0 \outl0\strokewidth0 [1], is not a feasible option because feature learning often involves very complicated models with multiple layers, which tends to cause an overfitting issue when dataset is small [3]. Therefore, we focus more on manual feature engineering [4]. This process is a important stepping-stone in that it helps reveal significant predictors that are previously not represented well in original dataset. By explicitly designing \cf5 \cb4 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec5 what the input x's should be, our predictive models can solve a problem easily.\
+\
+data.all$YrSold_YearBuilt <- data.all$YrSold - data.all$YearBuilt\
+data.all$YearRemodel_YearBuilt <- data.all$YearRemodAdd - data.all$YearBuilt\
+data.all$YrSold_YearRemodel <- data.all$YrSold - data.all$YearRemodAdd\
+\
+# add number of nones\
+num_none\
+\
+# add existance\
+pool_exist\
+garage_exist\
+masVnrArea_exist\
+\
+\
+Data preparation\
+Before fitting the model, we first split dataset into train and test. We could have a separate validation set. However,  R library caret has a built-in cross validation as a generic interface. So it automatically takes care of cross validation. We use train data to train and tune our models using 5-kold cross validation, and later compare RMSLE using hold-out test data [13]. \
+\
+Modeling\
+We utilize both shrinkage regression models and ensemble models. Practitioners often favor \cf2 \cb1 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 ensemble models [11] due to their conveniences. Ensemble models such as Random Forest [12], which uses the averaged result from the randomly grown decision trees such as CART [13], often work well with unscaled, missing data and are used for both classification and regression problems. Also, since our dataset contains a hug number of predictors, shrinkage methods such Lasso and Ridge regressions [13], which penalize predictors by shrinking their weights, can be highly effective. Furthermore, we utilize a dimension reduction technique called PCA[13] in order to compress information into lower dimension. The results of modeling will be further explained in the following section in detail.\cf5 \cb4 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec5 \
+\
+Result\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 We fit shrinkage regression models and ensemble model. experiment the several methods including dimension reduction techniques, feature importance measures. \cf5 \cb4 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec5 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf5 \
+Lasso\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf2 \cb1 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 Figure (model_lasso_lambda.png) shows that MSE exponentially increases as log(lambda) values increases. The \cf2 \expnd0\expndtw0\kerning0
+optimal lambda that minimizes MSE turns out to be 0.02020202. \cf5 \cb4 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec5 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf5 \
+\
+0.02020202\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf2 \cb1 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 model_residual_comparison.png\
+model_prediction_comparison.png\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf5 \cb4 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec5 \
+\
+\cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 Based on the distributions of predictors, we decide to preprocess \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+ \
+\
+\
+\
+\pard\pardeftab720
+\cf5 \cb7 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec5 [1] \cb1 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 Y. Bengio; A. Courville; P. Vincent (2013). "Representation Learning: A Review and New Perspectives". IEEE Trans. PAMI, special issue Learning Deep Architectures. 35: 1798\'961828. {\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Digital_object_identifier"}}{\fldrslt \cf6 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec6 doi}}:{\field{\*\fldinst{HYPERLINK "https://dx.doi.org/10.1109%2Ftpami.2013.50"}}{\fldrslt \cf8 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec8 10.1109/tpami.2013.50}}.\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 [2] {\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Feature_engineering"}}{\fldrslt https://en.wikipedia.org/wiki/Feature_engineering}}\
+[3] {\field{\*\fldinst{HYPERLINK "https://medium.com/@ShaliniAnanda1/an-open-letter-to-yann-lecun-22b244fc0a5a#.92x0bez05"}}{\fldrslt https://medium.com/@ShaliniAnanda1/an-open-letter-to-yann-lecun-22b244fc0a5a#.92x0bez05}}\
+[4] \cf2 \cb9 \expnd0\expndtw0\kerning0
+ {\field{\*\fldinst{HYPERLINK "https://www.quora.com/What-is-the-intuitive-explanation-of-feature-engineering-in-machine-learning"}}{\fldrslt \cf10 \cb1 \expnd0\expndtw0\kerning0
+"What is the intuitive explanation of feature engineering in machine learning? - Quora"}}\cb1 \expnd0\expndtw0\kerning0
+. www.quora.com. Retrieved 2015-11-11.\
+[5] \cf11 \cb12 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec11 Root Mean Squared Logarithmic Error\cf2 \cb1 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 , {\field{\*\fldinst{HYPERLINK "https://www.kaggle.com/wiki/RootMeanSquaredLogarithmicError"}}{\fldrslt https://www.kaggle.com/wiki/RootMeanSquaredLogarithmicError}}\
+[6] {\field{\*\fldinst{HYPERLINK "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/data_description.txt?sv=2015-12-11&sr=b&sig=Z69KmQHtfE3rd9zBAATba9PE9%2Bqa1oLmyPui9Vou3OA%3D&se=2016-12-06T22%3A04%3A09Z&sp=r"}}{\fldrslt https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/data_description.txt?sv=2015-12-11&sr=b&sig=Z69KmQHtfE3rd9zBAATba9PE9%2Bqa1oLmyPui9Vou3OA%3D&se=2016-12-06T22%3A04%3A09Z&sp=r}}\
+[7] {\field{\*\fldinst{HYPERLINK "http://handbook.cochrane.org/chapter_16/16_1_2_general_principles_for_dealing_with_missing_data.htm"}}{\fldrslt http://handbook.cochrane.org/chapter_16/16_1_2_general_principles_for_dealing_with_missing_data.htm}}\
+[8] {\field{\*\fldinst{HYPERLINK "http://onlinestatbook.com/2/transformations/log.html"}}{\fldrslt http://onlinestatbook.com/2/transformations/log.html}}\
+[9] {\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/One-hot"}}{\fldrslt https://en.wikipedia.org/wiki/One-hot}}\
+[10] {\field{\*\fldinst{HYPERLINK "http://rishy.github.io/ml/2015/04/28/l1-vs-l2-loss/"}}{\fldrslt http://rishy.github.io/ml/2015/04/28/l1-vs-l2-loss/}}\
+[11] \cf3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Ensemble learning\cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 , {\field{\*\fldinst{HYPERLINK "http://www.scholarpedia.org/article/Ensemble_learning"}}{\fldrslt http://www.scholarpedia.org/article/Ensemble_learning}}\
+[12] Random forest, {\field{\*\fldinst{HYPERLINK "https://www.stat.berkeley.edu/~breiman/randomforest2001.pdf"}}{\fldrslt https://www.stat.berkeley.edu/~breiman/randomforest2001.pdf}}\
+[13] The Elements of Statistical Learning, Shrinkage methods p.61  p. \cf0 \expnd0\expndtw0\kerning0
+305 \
+}
