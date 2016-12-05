@@ -2,7 +2,7 @@ library(caret)
 library(glmnet)
 library(xgboost)
 source("script/function/util.R")
-
+load('data/cleanedData/ddata_train_validation.matrix.RData')
 
 ######################################### PCA ######################################### 
 
@@ -148,5 +148,5 @@ dev.off()
 ##################### RMSE comparison
 
 model_comparison <- data.frame("RMSLE" = c(get_rmse(model.rf.pred, data.validation.matrix$SalePrice), get_rmse(model.gbm.pred, data.validation.matrix$SalePrice), get_rmse(model.ridge.pred, data.validation.matrix$SalePrice), get_rmse(model.lasso.pred, data.validation.matrix$SalePrice)), 'model' = c("RandomForest", "GBM", "Ridge", "Lasso"))
-model_comparison
+save(model_comparison, file = "data/cleanedData/RMSEL_Table.RData")
 

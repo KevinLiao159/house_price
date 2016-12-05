@@ -79,11 +79,6 @@ group_by(data.train, YrSold) %>% summarise(mean(SalePrice))
 
 
 
-
-
-
-data.all
-
 #### visualization
 
 # SalePrice based on Existence of MiscFeature
