@@ -70,8 +70,8 @@ arrange(model.lasso.lambda.coeff.filterd, desc(coefficients))[2:11, ] %>%
 dev.off()
 
 # prediction
-# model.lasso.pred <- predict(model.lasso,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.lasso.lambda.min)
-# model.lasso.df <- modify_dataframe_for_comparison(model.lasso.pred, 'lasso')
+model.lasso.pred <- predict(model.lasso,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.lasso.lambda.min)
+model.lasso.df <- modify_dataframe_for_comparison(model.lasso.pred, 'Lasso')
 # 
 # ggplot(model.lasso.df, aes(x = 1:nrow(model.lasso.df), y = residual)) + geom_line()
 # ggplot(model.lasso.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
@@ -81,7 +81,7 @@ dev.off()
 
 
 model.ridge.pred <- predict(model.ridge,newx= as.matrix(select(data.validation.matrix, -SalePrice)),type="response",s= model.ridge.lambda.min)
-model.ridge.df <- modify_dataframe_for_comparison(model.ridge.pred, 'ridge')
+model.ridge.df <- modify_dataframe_for_comparison(model.ridge.pred, 'Ridge')
 
 
 model.ridge.lambda.coeff <- as.data.frame.matrix(coef(model.ridge, s = model.ridge.lambda.min))
@@ -116,7 +116,7 @@ arrange(model.gbm.imp, desc(Overall))[1:10, ] %>%
 dev.off()
 # prediction
 model.gbm.pred <- predict(model.gbm, data.validation.matrix)
-model.gbm.df <- modify_dataframe_for_comparison(model.gbm.pred, 'gbm')
+model.gbm.df <- modify_dataframe_for_comparison(model.gbm.pred, 'Gradient Boosting Machine')
 ggplot(model.gbm.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
 ggplot(model.gbm.df, aes(x = 1:nrow(model.gbm.df), y = residual)) + geom_line()
 get_rmse(model.gbm.pred, data.validation.matrix$SalePrice)
@@ -127,7 +127,7 @@ load('data/model/rf.RData')
 
 # prediction
 model.rf.pred = predict(model.rf, data.validation.matrix)
-model.rf.df <- modify_dataframe_for_comparison(model.rf.pred, 'rf')
+model.rf.df <- modify_dataframe_for_comparison(model.rf.pred, 'Random Forest')
 ggplot(model.rf.df, aes(x = y, y= pred)) + geom_point() + geom_smooth()
 ggplot(model.rf.df, aes(x = 1:nrow(model.rf.df), y = residual)) + geom_line()
 get_rmse(model.rf.pred, data.validation.matrix$SalePrice)
@@ -145,10 +145,8 @@ ggplot(combined, aes(x = y, y = pred, color = model)) + geom_point() + geom_smoo
 dev.off()
 
 
-# RMSE
-get_rmse(model.lasso.pred, data.validation.matrix$SalePrice)
-get_rmse(model.ridge.pred, data.validation.matrix$SalePrice)
-get_rmse(model.gbm.pred, data.validation.matrix$SalePrice)
-get_rmse(model.rf.pred, data.validation.matrix$SalePrice)
+##################### RMSE comparison
 
+model_comparison <- data.frame("RMSLE" = c(get_rmse(model.rf.pred, data.validation.matrix$SalePrice), get_rmse(model.gbm.pred, data.validation.matrix$SalePrice), get_rmse(model.ridge.pred, data.validation.matrix$SalePrice), get_rmse(model.lasso.pred, data.validation.matrix$SalePrice)), 'model' = c("RandomForest", "GBM", "Ridge", "Lasso"))
+model_comparison
 
