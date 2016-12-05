@@ -131,9 +131,9 @@ Furthermore, we try to fit both lasso and regression and tune lambda values usin
 
 \section{Results}
 
-We fit shrinkage regression models and ensemble model, experiment the several methods including dimension reduction techniques, feature importance measures. \newline
+Figure $model_prediction_comparison.png$ shows model comparison between true price and predicted price. Four models are fairly accurate and most of data points are located on diagonal line, which indicates a strong linear relationship between true price and predicted. Especially, Random Forest is especially well fitted among these four. Figure $model_residual_comparison.png$ shows residual plots for four models. The residual is the difference between real house price and predicted price from models. We can see from Figure $model_residual_comparison.png$ that all models overestimate the price for cheaper house and underestimate the price for expensive house. This phenomenon is not surprising because we have few data points in cheapest and most expensive houses. Thus, the models incur a high bias in these end zones. This can be alleviated if we gather more data if possible. Compared to Lasso and Ridge, Gradient boosting machine and Random Forest are more stable. Both Lasso and Ridge have huge errors in the middle of graphs. 
 
-Figure named (model\_ lasso\_ lambda.png) shows that MSE exponentially increases as log(lambda) values increases. The optimal lambda that minimizes MSE turns out to be 0.02020202. 
+Lastly, Table shows RMSLE for each model, which is measured from hold-out dataset. It indicates that Random Forest predicts target variable the best. 
 
 
 \section{Conclusion}
