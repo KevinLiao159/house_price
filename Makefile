@@ -2,14 +2,13 @@
 D = data
 rawD = data/rawData
 cleanD = data/cleanedData
-C = code
-S = code/scripts
+M = code/script/model
+S = code/script
 T = code/tests
 R = report
-ST = report/sections/*.Rmd
 
 # Declare PHONY targets
-.PHONY: all data tests eda pre ols ridge lasso pcr plsr regressions post report slides session clean
+.PHONY: all data tests eda pre gbm lasso pca ridge randomforest svm xgboost regressions report slides session clean
 
 all: eda regressions report
 
@@ -22,52 +21,50 @@ data:
 tests: $(T)/test-evaluation.R
 	cd $(T) && Rscript test-evaluation.R
 
-eda: $(S)/eda-script.R
-	cd $(S) && Rscript eda-script.R
+# ------------------------------------------------------------------------------------------
+# Exploratory Data Analysis - three parts
+# ------------------------------------------------------------------------------------------
+eda: $(S)/eda.R $(S)/lingjie-eda.R $(S)/kevin-eda.R
+	cd $(S) && Rscript eda.R && Rscript lingjie-eda.R && Rscript kevin-eda.R
 
 # ------------------------------------------------------------------------------------------
 # Data Preprocessing
 # ------------------------------------------------------------------------------------------
-pre: $(S)/preprocess.R
-	cd $(S) && Rscript preprocess.R
+pre: $(S)/preprocess.R $(S)/data_preparation.R
+	cd $(S) && Rscript preprocess.R && Rscript data_preparation.R
 
 # ------------------------------------------------------------------------------------------
-# Run regression models
+# Run regression models independently
 # ------------------------------------------------------------------------------------------
-ols: $(S)/ols.R pre
-	cd $(S) && Rscript ols.R
+gbm: $(M)/gbm.R pre
+	cd $(M) && Rscript gbm.R
 
-ridge: $(S)/ridge.R pre
-	cd $(S) && Rscript ridge.R
+ridge: $(M)/ridge.R pre
+	cd $(M) && Rscript ridge.R
 
-lasso: $(S)/lasso.R pre
-	cd $(S) && Rscript lasso.R
+lasso: $(M)/lasso.R pre
+	cd $(M) && Rscript lasso.R
 
-pcr: $(S)/pcr.R pre
-	cd $(S) && Rscript pcr.R
+pca: $(M)/pca.R pre
+	cd $(M) && Rscript pca.R
 
-plsr: $(S)/plsr.R pre
-	cd $(S) && Rscript plsr.R
+randomforest: $(M)/randomforest.R pre
+	cd $(M) && Rscript randomforest.R
 
 regressions:
-	make ols
-	make ridge
-	make lasso
-	make pcr
-	make plsr
-
-# ------------------------------------------------------------------------------------------
-# Data Postprocessing
-# ------------------------------------------------------------------------------------------
-post: $(S)/postprocess.R
-	cd $(S) && Rscript postprocess.R
+	make gbm 
+	make lasso 
+	make pca 
+	make ridge 
+	make randomforest
 
 # ------------------------------------------------------------------------------------------
 # Generate report
 # ------------------------------------------------------------------------------------------
-report: $(ST) post
-	cat $(ST) > $(R)/report.Rmd
-	cd $(R); Rscript -e "library(rmarkdown); render('report.Rmd', 'pdf_document')"
+report: $(R)/report.Rnw regressions
+	cd $(R); R CMD Sweave mydoc.Rnw; 
+			R CMD pdflatex mydoc.tex; 
+			R CMD pdflatex mydoc.tex
 
 # ------------------------------------------------------------------------------------------
 # Generate slides
