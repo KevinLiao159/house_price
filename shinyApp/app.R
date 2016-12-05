@@ -1,9 +1,13 @@
+---
+output: html_document
+runtime: shiny
+---
 library(shiny)
 library(ggplot2)
 
 train <- read.csv("../data/rawData/train.csv")
 
-source("../script/function/util.R")
+source("../code/function/util.R")
 names_items <- names(get_only_numerical_predictors(train))
  
 nfeatures <- train[, names_items]
