@@ -48,6 +48,7 @@ Predictive modeling for house price prediction
 University of California at Berkeley} %
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 
 \maketitle
