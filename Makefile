@@ -61,10 +61,9 @@ regressions:
 # ------------------------------------------------------------------------------------------
 # Generate report
 # ------------------------------------------------------------------------------------------
-report: $(R)/report.Rnw regressions
-	cd $(R); R CMD Sweave report.Rnw; 
-			R CMD pdflatex report.tex; 
-			R CMD pdflatex report.tex
+report: $(R)/report_final.Rnw
+	cd $(R); R CMD Sweave report_final.Rnw; 
+			R CMD pdflatex report_final.tex
 
 # ------------------------------------------------------------------------------------------
 # Generate slides
