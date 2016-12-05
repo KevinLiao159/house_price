@@ -132,6 +132,20 @@ As a next step, we apply log transformations to area related predictors such as 
 After the log transformation, we still notice few outliers and eliminate lowest and highest 0.1\% data points. Furthermore, majority of predictors are categorical under which regression models cannot be used directly. Therefore, we apply one-hot encoding [9] to convert categorical values to numerical ones. It consequently expands features from 79 to approximately 500. The Table 1 below summarizes this procedure.
 
 Table 1: Data Preprocess and Variable Transformation
+\begin{center}
+\centering
+\begin{tabular}{ | c | c | c |}
+  \hline			
+  Factorization & Log Transformation & Removing Outliers \\
+  \hline  
+  MSSubClass & SalePrice & 17 points -> \\
+  YearBuilt & LotArea & below 10.91511 \\
+  YrSold & GrLivArea & and above \\ 
+  MoSold & & SalePrice\\
+  GarageYrBlt & & \\
+  \hline  
+\end{tabular}
+\end{center}
 
 \subsection{Data preparation}
 Before fitting the model, we first split dataset into train and test. We could have a separate validation set. However,  R library caret has a built-in cross validation as a generic interface. So it automatically takes care of cross validation. We use train data to train and tune our models using 5-kold cross validation, and later compare RMSLE using hold-out test data [13].
