@@ -178,11 +178,55 @@ In summary, the following is the the procedure for each model.
 \section{ANALYSIS}
 Due to the high dimensionality of dataset, we first experiment to decide whether to either project predictors into lower dimensional bases or select predictors using shrinkage methods. First, we try Principal component analysis which is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables into a set of values of linearly uncorrelated variables called principal components [15]. Since our one-hot encoded dataset has a lot of predictors that have near zero variances, we first need to remove near zero variances. This is because PCA considers variability of data and compress the predictors with high variances into first principal components.   
 
-After removing near zero variance 519 to 128. This indicates that a great number of predictors have apporiximately identical across observations. Figure $model_pca_scree_plot.png$ shows a PCA scree plot for each principal component. It indicates that first few principal components effectively explain the variances of data, and overall graph exponentially decays. Cumulative Proportion in $Table model_pca$ shows that first 10 pcs and 61 pcs explain approximately 44\% and 90\% of variance in dataset respectively. It means that if we decide to reduce dimensionality at the expense of a bit little of prediction accuracy, we could use 61 principal components which are approximately 1/8 of total predictors. 
+   \begin{figure}[thpb]
+      \centering
+      \includegraphics[width =  6cm, height = 6cm]{../images/model_pca_scree_plot.png}
+      \caption{PCA scree plot for each principal component}
+      \label{figurelabel}
+   \end{figure}
 
-Furthermore, we try to fit both lasso and regression and tune lambda values using 5-fold cross validation and then examine coefficients. Figure $model_lasso_lambda.png$, $model_ridge_lambda.png$ shows MSE for corresponding lambda values for both models. Figure $model_lasso_lambda.png$ shows that MSE decreases as log(lambda) increase up to log lambda equals -5 and  -1.15 respectively. Based on these results, we decide optimal lambda for both model. We also examine coefficients of lasso regression. Figure $model_lasso_number_of_coefficients_left.png$ indicates that most of weights for corresponding predictors become zeros, which effectively eliminates a great portion of predictors. After elimination, only 78 predictors are left. We plot top 10 coefficients for both lasso and ridge to investigate how much each coefficient contribution to the model. Figure $model_lasso_coefficients_top_10.png$,
+After removing near zero variance 519 to 128. This indicates that a great number of predictors have apporiximately identical across observations. Figure 4 shows a PCA scree plot for each principal component. It indicates that first few principal components effectively explain the variances of data, and overall graph exponentially decays. Cumulative Proportion in $Table model_pca$ shows that first 10 pcs and 61 pcs explain approximately 44\% and 90\% of variance in dataset respectively. It means that if we decide to reduce dimensionality at the expense of a bit little of prediction accuracy, we could use 61 principal components which are approximately 1/8 of total predictors. 
 
-$model_ridge_coefficients_top_10.png$ show that top 10 coefficients from both models. It is noteworthy that GrivArea has the highest coefficient in Lasso and YearBuilt2010 has the highest coefficient in Ridge. Both make sense because the area and built year are important aspects when it comes to making a decision about purchasing house. Both models indicate that GrLiArea, NeighborhoodCrawfor and NeighborhoodStoneBr belong to top 10 highest coefficients and are highly associated with house price. Furthermore, we try to figure out feature importance using Gradient boosting machine. Feature importance is automatically measured as GBM grows its tree while minimizing entropy. Figure $model_gbm_predictor importance.png$ shows that overall quality has the highest feature importance 
+   \begin{figure}[thpb]
+      \centering
+      \includegraphics[width =  7cm, height = 5cm]{../images/model_lasso_lambda.png}
+      \caption{MSE value for Lambda Values - Lasso Regression}
+      \label{figurelabel}
+   \end{figure}
+
+   \begin{figure}[thpb]
+      \centering
+      \includegraphics[width =  7cm, height = 5cm]{../images/model_ridge_lambda.png}
+      \caption{MSE value for Lambda Values - Ridge Regression}
+      \label{figurelabel}
+   \end{figure}
+
+Furthermore, we try to fit both lasso and regression and tune lambda values using 5-fold cross validation and then examine coefficients. Figure 5 and Figure 6 show the Mean Square Error for corresponding lambda values for both models. Figure 5 suggests that MSE decreases as log(lambda) increase up to log lambda equals -5 and  -1.15 respectively. Based on these results, we decide optimal lambda for both model. We also examine coefficients of lasso regression. Figure 7 indicates that most of weights for corresponding predictors become zeros, which effectively eliminates a great portion of predictors. After elimination, only 78 predictors are left. We plot top 10 coefficients for both lasso and ridge to investigate how much each coefficient contribution to the model.
+
+   \begin{figure}[thpb]
+      \centering
+      \includegraphics[width =  7cm, height = 6cm]{../images/model_lasso_number_of_coefficients_left.png}
+      \caption{Number of Coefficients - Lasso Regression}
+      \label{figurelabel}
+   \end{figure}
+
+Figure 8 and 9, as below, respectively show the top 10 coefficients from both models. It is noteworthy that GrivArea has the highest coefficient in Lasso and YearBuilt2010 has the highest coefficient in Ridge. Both make sense because the area and built year are important aspects when it comes to making a decision about purchasing house. Both models indicate that GrLiArea, NeighborhoodCrawfor and NeighborhoodStoneBr belong to top 10 highest coefficients and are highly associated with house price. 
+
+Furthermore, we try to figure out feature importance using Gradient boosting machine. Feature importance is automatically measured as GBM grows its tree while minimizing entropy. Figure $model_gbm_predictor importance.png$ shows that overall quality has the highest feature importance.
+
+   \begin{figure}[thpb]
+      \centering
+      \includegraphics[width =  8cm, height = 6cm]{../images/model_lasso_coefficients_top_10.png}
+      \caption{Top 10 Coefficients from Lasso Regression}
+      \label{figurelabel}
+   \end{figure}
+
+   \begin{figure}[thpb]
+      \centering
+      \includegraphics[width =  8cm, height = 6cm]{../images/model_ridge_coefficients_top_10.png}
+      \caption{Top 10 Coefficients from Ridge Regression}
+      \label{figurelabel}
+   \end{figure}
 
 \section{RESULTS}
 
