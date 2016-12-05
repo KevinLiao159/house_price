@@ -1,15 +1,15 @@
 library(caret)
 library(glmnet)
 library(xgboost)
-source("script/function/util.R")
+source("../function/util.R")
 
 ### lasso
 
 # load lasso RData
-load('data/model/lasso.RData')
+load("../../data/model/lasso.RData")
 
 # plot lasso lambda
-png("images/model_lasso_lambda.png")
+png("../../images/model_lasso_lambda.png")
 plot(model.lasso.lambda, main ='Lasso Lambda') 
 dev.off()
 
