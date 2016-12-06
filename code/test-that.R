@@ -2,6 +2,8 @@
 # Rscript test-that.R
 
 library(testthat)
+load('../data/cleanedData/ddata_train_validation.matrix.RData')
+
 
 # loading all function files
 files <- list.files("function")
