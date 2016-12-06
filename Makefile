@@ -35,50 +35,50 @@ eda: $(S)/daniel-eda.R $(S)/lingjie-eda.R $(S)/kevin-eda.R pre
 # ------------------------------------------------------------------------------------------
 # Run regression models independently
 # ------------------------------------------------------------------------------------------
-# gbm: $(M)/gbm.R pre
-# 	cd $(M) && Rscript gbm.R
+gbm: $(M)/gbm.R pre
+	cd $(M) && Rscript gbm.R
 
-# ridge: $(M)/ridge.R pre
-# 	cd $(M) && Rscript ridge.R
+ridge: $(M)/ridge.R pre
+	cd $(M) && Rscript ridge.R
 
-# lasso: $(M)/lasso.R pre
-# 	cd $(M) && Rscript lasso.R
+lasso: $(M)/lasso.R pre
+	cd $(M) && Rscript lasso.R
 
-# pca: $(M)/pca.R pre
-# 	cd $(M) && Rscript pca.R
+pca: $(M)/pca.R pre
+	cd $(M) && Rscript pca.R
 
-# randomforest: $(M)/randomforest.R pre
-# 	cd $(M) && Rscript randomforest.R
+randomforest: $(M)/randomforest.R pre
+	cd $(M) && Rscript randomforest.R
 
-# regressions:
-# 	make gbm 
-# 	make lasso 
-# 	make pca 
-# 	make ridge 
-# 	make randomforest
+regressions:
+	make gbm 
+	make lasso 
+	make pca 
+	make ridge 
+	make randomforest
 
 # ------------------------------------------------------------------------------------------
 # Generate Analysis
 # ------------------------------------------------------------------------------------------
-analysis: $(S)/model-analysis.R
+analysis: $(S)/model-analysis.R regressions
 	cd $(S) && Rscript model-analysis.R
 
 # ------------------------------------------------------------------------------------------
 # Generate report
 # ------------------------------------------------------------------------------------------
-report: $(R)/report.Rnw
+report: $(R)/report.Rnw analysis
 	cd $(R); Rscript -e "library(knitr); knit2pdf('report.Rnw', output = 'report.tex')"
 
 # ------------------------------------------------------------------------------------------
 # Generate slides
 # ------------------------------------------------------------------------------------------
-slides: slides/slides.Rmd
+slides: slides/slides.Rmd analysis
 	cd slides; Rscript -e 'library(rmarkdown); render("slides.Rmd")'
 
 # ------------------------------------------------------------------------------------------
 # Generate shinyApp
 # ------------------------------------------------------------------------------------------
-shinyApp: shinyApp
+shinyApp: shinyApp analysis
 	Rscript -e 'library(methods); shiny::runApp("shinyapp/", launch.browser=TRUE)'
 
 # ------------------------------------------------------------------------------------------
