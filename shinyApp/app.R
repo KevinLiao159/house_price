@@ -61,7 +61,7 @@ ui <- fluidPage(
     selectInput('col', 'Colors', color, selected = color[1]),
     sliderInput("x1",
                 "x-axis range",
-                min = 0,  max = 2000, value = c(0, 1500)),
+                min = 0,  max = 2000, value = c(1, 1500)),
     sliderInput("y1",
                 "y-axis range",
                 min = 0,  max = 1000000, value = c(300000, 700000))
