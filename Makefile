@@ -1,14 +1,13 @@
 # Declare the variables for folders and files
-D = data
 rawD = data/rawData
 cleanD = data/cleanedData
 M = code/script/model
 S = code/script
-T = code/tests
+T = code/test
 R = report
 
 # Declare PHONY targets
-.PHONY: all data tests eda pre gbm lasso pca ridge randomforest svm xgboost regressions report slides session clean
+.PHONY: all data pre eda test gbm lasso pca ridge randomforest svm xgboost regressions analysis report slides shinyApp session clean
 
 all: eda regressions report
 
@@ -22,16 +21,16 @@ tests: $(T)/test-evaluation.R
 	cd $(T) && Rscript test-evaluation.R
 
 # ------------------------------------------------------------------------------------------
-# Exploratory Data Analysis - three parts
+# Data Preprocessing and Preparing
 # ------------------------------------------------------------------------------------------
-eda: $(S)/eda.R $(S)/lingjie-eda.R $(S)/kevin-eda.R
-	cd $(S) && Rscript eda.R && Rscript lingjie-eda.R && Rscript kevin-eda.R
+pre: $(S)/preprocess.R $(S)/data-preparation.R
+	cd $(S) && Rscript preprocess.R && Rscript data-preparation.R
 
 # ------------------------------------------------------------------------------------------
-# Data Preprocessing
+# Exploratory Data Analysis - three parts
 # ------------------------------------------------------------------------------------------
-pre: $(S)/preprocess.R $(S)/data_preparation.R
-	cd $(S) && Rscript preprocess.R && Rscript data_preparation.R
+eda: $(S)/daniel-eda.R $(S)/lingjie-eda.R $(S)/kevin-eda.R pre
+	cd $(S) && Rscript daniel-eda.R && Rscript lingjie-eda.R && Rscript kevin-eda.R
 
 # ------------------------------------------------------------------------------------------
 # Run regression models independently
@@ -59,16 +58,28 @@ regressions:
 	make randomforest
 
 # ------------------------------------------------------------------------------------------
+# Generate Analysis
+# ------------------------------------------------------------------------------------------
+analysis: regressions $(S)/model-analysis.R
+	cd $(S) && Rscript model-analysis.R
+
+# ------------------------------------------------------------------------------------------
 # Generate report
 # ------------------------------------------------------------------------------------------
-report: $(R)/report_final.Rnw
+report: $(R)/report_final.Rnw analysis
 	cd $(R); Rscript -e "library(knitr); knit2pdf('report_final.Rnw', output = 'report_final.tex')"
 
 # ------------------------------------------------------------------------------------------
 # Generate slides
 # ------------------------------------------------------------------------------------------
-slides: slides/slides.Rmd
+slides: slides/slides.Rmd analysis
 	cd slides; Rscript -e 'library(rmarkdown); render("slides.Rmd")'
+
+# ------------------------------------------------------------------------------------------
+# Generate slides
+# ------------------------------------------------------------------------------------------
+shinyApp: shinyApp/app.R analysis
+	cd shinyApp; Rscript app.R
 
 # ------------------------------------------------------------------------------------------
 # Generate session information

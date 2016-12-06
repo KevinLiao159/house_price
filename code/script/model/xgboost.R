@@ -1,3 +1,5 @@
+library(xgboost)
+
 run_xgboost <- function(train_x, train_y, version) {
   # dir.create(paste0("model/xgboost_", version))
   set.seed(11)

@@ -1,8 +1,9 @@
+load("../../data/cleanedData/data.all.RData")
 
 head(data.all)
 View(data.all)
 
-data.train = filter(data.all, data_type == 'train')
+data.train <- filter(data.all, data_type == 'train')
 # YrSold
 ggplot(data.all, aes(x = YrSold)) + geom_histogram()
 
@@ -12,7 +13,7 @@ ggplot(data.all, aes(x = MoSold)) + geom_histogram()
 
 # Price distribution
 
-png("images/historgram_original_price.png")
+png("../../images/historgram_original_price.png")
 filter(data.all, data_type == 'train') %>%
   ggplot(aes(x = SalePrice)) + geom_histogram() + ggtitle("Original house price histogram") + xlim('Price')
 dev.off()
@@ -27,7 +28,7 @@ summary(data.train$SalePrice)
 quantile(data.train$SalePrice, probs = c(0.005, 0.995))
 ggplot(data.train, aes(x = SalePrice)) + geom_histogram()
 
-png("images/historgram_log_trasformed_price.png")
+png("../../images/historgram_log_trasformed_price.png")
 ggplot(data.train, aes(x = SalePrice)) + geom_histogram() + xlim(10.91511, 13.17509) + ggtitle("Log transformed house price histogram") + xlab('log(Price)')
 dev.off()
 
@@ -38,7 +39,7 @@ filter(data.train, SalePrice == 0)
 data.all$SalePrice
 
 # Sold Year - Remodel Year -> how long it has been after remodeling.
-png("images/scatter_Year_sold_Year_remodeled_Vs_Price.png")
+png("../../images/scatter_Year_sold_Year_remodeled_Vs_Price.png")
 ggplot(data.train, aes(x = YrSold_YearRemodel, y = SalePrice)) + geom_point() + geom_smooth() + scale_y_log10() + xlab("Year sold - Year remodeled") + ggtitle("Year sold - Year remodeled vs Price")
 dev.off()
 
@@ -47,7 +48,7 @@ ggplot(data.train, aes(x = YrSold_YearRemodel, y = SalePrice)) + geom_point() + 
 ggplot(data.train, aes(x = YrSold_YearRemodel, y = SalePrice)) + geom_point() + geom_smooth() + scale_y_log10() + xlim(41, 60)
 
 # Sold Year - Built Year -> how long it has been after built
-png("images/scatter_Year_sold_Year_built_Vs_Price.png")
+png("../../images/scatter_Year_sold_Year_built_Vs_Price.png")
 ggplot(data.train, aes(x = YrSold_YearBuilt, y = SalePrice)) + geom_point() + geom_smooth() +  scale_y_log10() + xlim(0, 100)  + xlab("Year sold - Year built") + ggtitle("Year sold - Year built vs Price")
 dev.off()
 

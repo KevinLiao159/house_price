@@ -4,12 +4,12 @@ library(caret)
 library(doMC)
 library(stringr)
 library(glmnet)
-source("code/function/util.R")
+source("../function/util.R")
 
 # import dataset
-data.train <- read.csv("data/rawData/train.csv")
-data.test <- read.csv("data/rawData/test.csv")
-data.sample <- read.csv("data/rawData/sample_submission.csv")
+data.train <- read.csv("../../data/rawData/train.csv")
+data.test <- read.csv("../../data/rawData/test.csv")
+data.sample <- read.csv("../../data/rawData/sample_submission.csv")
 
 ##################### prepocess #####################
 data.train$Id <- NULL
@@ -88,7 +88,7 @@ data.all.matrix$`(Intercept)` <- NULL
 data.all.matrix$data_type <- data_type
 
 # save RData
-save(data.all, file = "data/cleanedData/data.all.RData")
-save(data.all.matrix, file = "data/cleanedData/data.all.matrix.RData")
+save(data.all, file = "../../data/cleanedData/data.all.RData")
+save(data.all.matrix, file = "../../data/cleanedData/data.all.matrix.RData")
 
 
