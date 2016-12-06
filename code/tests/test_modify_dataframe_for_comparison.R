@@ -1,8 +1,8 @@
 library(testthat)
 
-source("../functions/mse-function.R")
+source("../function/util.R")
 
-context("Test for MSE function")
+context("Test for modify_dataframe_for_comparison")
 
 test_that("mse() works as expected", {
   
