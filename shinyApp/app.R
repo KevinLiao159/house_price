@@ -161,7 +161,7 @@ server <- function(input, output) {
     #par(mar = c(1, 1, 1, 1))
     plot(selectedData(),
          col = input$col,
-         pch = 20, cex = as.numeric(input$size),
+         pch = 20,
          main = 'Scatter Plot', 
          xlim = c(input$x1[1], input$x1[2]),
          ylim = c(input$y1[1], input$y1[2])

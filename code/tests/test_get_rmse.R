@@ -2,7 +2,7 @@ library(testthat)
 
 source("../function/util.R")
 
-context("Test for get_rmse function")
+context("Test for get_rmse() function")
 
 test_that("get_rmse() works as expected", {
   
