@@ -1,11 +1,9 @@
 ---
 title: "Final Project - House Price"
 author: "Team Golden Squirrels: Lingjie Qiao, Minsu Kim, Kevin Liao and Cheng Peng"
-date: "11/24/2016"
+date: "12/06/2016"
 output: 
     ioslides_presentation:
-        fig_width: 7
-        fig_height: 6
         fig_caption: true
 ---
 
@@ -102,6 +100,30 @@ We utilize both **shrinkage regression models** and **ensemble models**. Practit
 
 <img src="../images/model_pca_pc_comparison_plot.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
 
+## Top 10 Coefficients for Lasso and Ridge
+
+<img src="../images/model_lasso_coefficients_top_10.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/model_ridge_coefficients_top_10.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
+
+## Results - Model Prediction Comparison
+
+<img src="../images/model_prediction_comparison.png" style="float: left; width: 800px; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/model_residual_comparison.png" style="float: left; width: 800px; margin-right: 1%; margin-bottom: 0.5em;">
+
+## Results - RMSLE Comparison
+
+```{r echo = FALSE, results='asis'}  
+load("../data/cleanedData/RMSEL_Table.RData")
+library(knitr)
+xtable1 <- kable(model_comparison, caption = 'Table: RMSEL Comparison from Four Models')
+print(xtable1, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+\newline
+
+**Random Forest** seems to have the smallest RMSLE
 
 ## Conclusions
 

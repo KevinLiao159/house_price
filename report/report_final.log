@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  5 DEC 2016 00:50
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  5 DEC 2016 17:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **report_final.tex
 (./report_final.tex
-LaTeX2e <2015/01/01>
-Babel <3.9l> and hyphenation patterns for 79 languages loaded.
+LaTeX2e <2016/03/31>
+Babel <3.9r> and hyphenation patterns for 83 language(s) loaded.
 (./ieeeconf.cls
 Document Class: ieeeconf 2016/4/23 revision V1.6b by Pradeep Misra
 \@IEEEtrantmpdimenA=\dimen102
@@ -15,7 +15,7 @@ Document Class: ieeeconf 2016/4/23 revision V1.6b by Pradeep Misra
 \@IEEEtrantmptoksA=\toks14
 LaTeX Font Info:    Try loading font information for OT1+ptm on input line 794.
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 \@IEEEnormalsizefontbaselineskip=\skip41
@@ -96,47 +96,47 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 \@IEEEtmpitemindent=\dimen112
 \c@biography=\count90
 \@IEEEtranrubishbin=\box26
-) (/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks15
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2016/05/09 v1.0r Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/trig.sty
-Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/graphics.cfg
-File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/01/02 v1.10 sample graphics configuration
 )
-Package graphics Info: Driver file: pdftex.def on input line 94.
+Package graphics Info: Driver file: pdftex.def on input line 96.
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/pdftex-def/pdftex.def
+(/usr/local/texlive/2016/texmf-dist/tex/latex/pdftex-def/pdftex.def
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
 )
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count91
 ))
 \Gin@req@height=\dimen113
 \Gin@req@width=\dimen114
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/color.sty
-Package: color 2014/10/28 v1.1a Standard LaTeX Color (DPC)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2016/05/09 v1.1c Standard LaTeX Color (DPC)
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/color.cfg
-File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
-Package color Info: Driver file: pdftex.def on input line 142.
+Package color Info: Driver file: pdftex.def on input line 144.
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/framed/framed.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/framed/framed.sty
 Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
 \OuterFrameSep=\skip47
 \fb@frw=\dimen115
@@ -144,16 +144,16 @@ Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
 \FrameRule=\dimen117
 \FrameSep=\dimen118
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/alltt.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/alltt.sty
 Package: alltt 1997/06/16 v2.0g defines alltt environment
 )
-** ATTENTION: Overriding command lockouts (line 62).
-** ATTENTION: Overriding IEEE standard margins (line 65).
-(/usr/local/texlive/2015/texmf-dist/tex/latex/upquote/upquote.sty
+** ATTENTION: Overriding command lockouts (line 61).
+** ATTENTION: Overriding IEEE standard margins (line 64).
+(/usr/local/texlive/2016/texmf-dist/tex/latex/upquote/upquote.sty
 Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
 tim
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/textcomp.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/textcomp.sty
 Package: textcomp 2005/09/27 v1.99g Standard LaTeX package
 Package textcomp Info: Sub-encoding information:
 (textcomp)               5 = only ISO-Adobe without \textcurrency
@@ -168,7 +168,7 @@ Package textcomp Info: Sub-encoding information:
 (textcomp)             See the documentation for details.
 Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 79.
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1enc.def
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1enc.def
 File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
 )
 LaTeX Info: Redefining \oldstylenums on input line 334.
@@ -263,27 +263,26 @@ LaTeX Warning: Label `figurelabel' multiply defined.
 )
 \openout1 = `report_final.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 100.
-LaTeX Font Info:    ... okay on input line 100.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 100.
-LaTeX Font Info:    ... okay on input line 100.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 100.
-LaTeX Font Info:    ... okay on input line 100.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 100.
-LaTeX Font Info:    ... okay on input line 100.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 100.
-LaTeX Font Info:    ... okay on input line 100.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 100.
-LaTeX Font Info:    ... okay on input line 100.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 100.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 100.
-
- (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 99.
+LaTeX Font Info:    ... okay on input line 99.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 99.
+LaTeX Font Info:    ... okay on input line 99.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 99.
+LaTeX Font Info:    ... okay on input line 99.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 99.
+LaTeX Font Info:    ... okay on input line 99.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 99.
+LaTeX Font Info:    ... okay on input line 99.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 99.
+LaTeX Font Info:    ... okay on input line 99.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 99.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 99.
+ (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    ... okay on input line 99.
 
-(/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
+(/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count92
 \scratchdimen=\dimen119
@@ -296,40 +295,39 @@ LaTeX Font Info:    ... okay on input line 100.
 \MPnumerator=\count96
 \makeMPintoPDFobject=\count97
 \everyMPtoPDFconversion=\toks17
-) (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
-Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+) (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2016/05/10 v0.21 Utility functions of pdfTeX for LuaTeX (HO
 )
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifluatex.sty
-Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
 )
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
-Package ifpdf Info: pdfTeX in PDF mode is detected.
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2016/05/14 v3.1 Provides the ifpdf switch
 )
 Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/grfext.sty
-Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
 ))
-(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
 Package etexcmds Info: Could not find \expanded.
 (etexcmds)             That can mean that you are not using pdfTeX 1.50 or
 (etexcmds)             that some package has redefined \expanded.
@@ -338,26 +336,26 @@ Package etexcmds Info: Could not find \expanded.
 Package grfext Info: Graphics extension search list:
 (grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
 G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 452.
+(grfext)             \AppendGraphicsExtensions on input line 456.
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+(/usr/local/texlive/2016/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 127.
+(Font)              <7> on input line 126.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 127.
+(Font)              <5> on input line 126.
 
 <../images/eda-bath-vs-sale.png, id=1, 401.5pt x 308.15125pt>
 File: ../images/eda-bath-vs-sale.png Graphic file (type png)
 
 <use ../images/eda-bath-vs-sale.png>
-Package pdftex.def Info: ../images/eda-bath-vs-sale.png used on input line 139.
+Package pdftex.def Info: ../images/eda-bath-vs-sale.png used on input line 138.
 
 (pdftex.def)             Requested size: 256.08917pt x 142.2638pt.
 
-Overfull \hbox (10.37106pt too wide) in paragraph at lines 139--140
+Overfull \hbox (10.37106pt too wide) in paragraph at lines 138--139
  [][] 
  []
 
@@ -368,7 +366,7 @@ g)
 
 <use ../images/scatter_Year_sold_Year_built_Vs_Price.png>
 Package pdftex.def Info: ../images/scatter_Year_sold_Year_built_Vs_Price.png us
-ed on input line 146.
+ed on input line 145.
 (pdftex.def)             Requested size: 113.81114pt x 128.03662pt.
 
 <../images/scatter_Year_sold_Year_remodeled_Vs_Price.png, id=4, 481.8pt x 481.8
@@ -377,9 +375,9 @@ File: ../images/scatter_Year_sold_Year_remodeled_Vs_Price.png Graphic file (typ
 e png)
  <use ../images/scatter_Year_sold_Year_remodeled_Vs_Price.png>
 Package pdftex.def Info: ../images/scatter_Year_sold_Year_remodeled_Vs_Price.pn
-g used on input line 147.
+g used on input line 146.
 (pdftex.def)             Requested size: 113.81114pt x 128.03662pt.
- [1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+ [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
  <../images/eda-bath-vs-sale.png>]
@@ -388,7 +386,7 @@ File: ../images/historgram_original_price.png Graphic file (type png)
 
 <use ../images/historgram_original_price.png>
 Package pdftex.def Info: ../images/historgram_original_price.png used on input 
-line 177.
+line 176.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
 <../images/historgram_log_trasformed_price.png, id=17, 481.8pt x 481.8pt>
@@ -396,10 +394,10 @@ File: ../images/historgram_log_trasformed_price.png Graphic file (type png)
 
 <use ../images/historgram_log_trasformed_price.png>
 Package pdftex.def Info: ../images/historgram_log_trasformed_price.png used on 
-input line 178.
+input line 177.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
-Overfull \hbox (1.60982pt too wide) in paragraph at lines 187--198
+Overfull \hbox (1.60982pt too wide) in paragraph at lines 186--197
  [] 
  []
 
@@ -411,7 +409,7 @@ File: ../images/model_pca_scree_plot.png Graphic file (type png)
 
 <use ../images/model_pca_scree_plot.png>
 Package pdftex.def Info: ../images/model_pca_scree_plot.png used on input line 
-234.
+233.
 (pdftex.def)             Requested size: 170.71304pt x 170.71304pt.
 
 <../images/model_lasso_lambda.png, id=32, 481.8pt x 481.8pt>
@@ -419,7 +417,7 @@ File: ../images/model_lasso_lambda.png Graphic file (type png)
 
 <use ../images/model_lasso_lambda.png>
 Package pdftex.def Info: ../images/model_lasso_lambda.png used on input line 24
-3.
+2.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
 <../images/model_ridge_lambda.png, id=33, 481.8pt x 481.8pt>
@@ -427,7 +425,7 @@ File: ../images/model_ridge_lambda.png Graphic file (type png)
 
 <use ../images/model_ridge_lambda.png>
 Package pdftex.def Info: ../images/model_ridge_lambda.png used on input line 24
-4.
+3.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
 <../images/model_lasso_number_of_coefficients_left.png, id=34, 481.8pt x 481.8p
@@ -436,7 +434,7 @@ File: ../images/model_lasso_number_of_coefficients_left.png Graphic file (type
 png)
  <use ../images/model_lasso_number_of_coefficients_left.png>
 Package pdftex.def Info: ../images/model_lasso_number_of_coefficients_left.png 
-used on input line 253.
+used on input line 252.
 (pdftex.def)             Requested size: 199.16399pt x 170.71304pt.
  [3 <../images/model_pca_scree_plot.png>]
 <../images/model_lasso_coefficients_top_10.png, id=39, 481.8pt x 481.8pt>
@@ -444,7 +442,7 @@ File: ../images/model_lasso_coefficients_top_10.png Graphic file (type png)
 
 <use ../images/model_lasso_coefficients_top_10.png>
 Package pdftex.def Info: ../images/model_lasso_coefficients_top_10.png used on 
-input line 262.
+input line 261.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
 <../images/model_ridge_coefficients_top_10.png, id=40, 481.8pt x 481.8pt>
@@ -452,7 +450,7 @@ File: ../images/model_ridge_coefficients_top_10.png Graphic file (type png)
 
 <use ../images/model_ridge_coefficients_top_10.png>
 Package pdftex.def Info: ../images/model_ridge_coefficients_top_10.png used on 
-input line 263.
+input line 262.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
 <../images/model_prediction_comparison.png, id=41, 1003.75pt x 301.125pt>
@@ -460,10 +458,10 @@ File: ../images/model_prediction_comparison.png Graphic file (type png)
 
 <use ../images/model_prediction_comparison.png>
 Package pdftex.def Info: ../images/model_prediction_comparison.png used on inpu
-t line 276.
+t line 275.
 (pdftex.def)             Requested size: 256.06773pt x 113.81297pt.
 
-Overfull \hbox (10.34962pt too wide) in paragraph at lines 276--277
+Overfull \hbox (10.34962pt too wide) in paragraph at lines 275--276
  [][] 
  []
 
@@ -472,32 +470,32 @@ File: ../images/model_residual_comparison.png Graphic file (type png)
 
 <use ../images/model_residual_comparison.png>
 Package pdftex.def Info: ../images/model_residual_comparison.png used on input 
-line 285.
+line 284.
 (pdftex.def)             Requested size: 256.06773pt x 113.81297pt.
 
-Overfull \hbox (10.34962pt too wide) in paragraph at lines 285--286
+Overfull \hbox (10.34962pt too wide) in paragraph at lines 284--285
  [][] 
  []
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 298.
+(Font)              <8> on input line 297.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 298.
+(Font)              <6> on input line 297.
 [4 <../images/model_lasso_lambda.png> <../images/model_ridge_lambda.png> <../im
 ages/model_lasso_number_of_coefficients_left.png> <../images/model_lasso_coeffi
 cients_top_10.png> <../images/model_ridge_coefficients_top_10.png> <../images/m
 odel_prediction_comparison.png> <../images/model_residual_comparison.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 326--327
+Underfull \hbox (badness 10000) in paragraph at lines 325--326
 []\OT1/ptm/m/n/8 L1 vs. L2 Loss Func-tion from Rishy Github:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 327--328
+Underfull \hbox (badness 10000) in paragraph at lines 326--327
 []\OT1/ptm/m/n/8 Root Mean Squared Log-a-rith-mic Er-ror,
  []
 
 
-Underfull \hbox (badness 3623) in paragraph at lines 328--329
+Underfull \hbox (badness 3623) in paragraph at lines 327--328
 []\OT1/ptm/m/n/8 Handbook: Gen-eral prin-ci-ples for deal-ing with miss-ing dat
 a:
  []
@@ -506,24 +504,24 @@ Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
 
-Underfull \hbox (badness 4647) in paragraph at lines 334--335
+Underfull \hbox (badness 4647) in paragraph at lines 333--334
 []\OT1/ptm/m/n/8 Y. Ben-gio; A. Courville; P. Vin-cent (2013). "Rep-re-sen-ta-t
 ion
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 334--335
+Underfull \hbox (badness 10000) in paragraph at lines 333--334
 \OT1/ptm/m/n/8 Learn-ing: A Re-view and New Per-spec-tives". IEEE Trans.
  []
 
 
-Overfull \hbox (12.0232pt too wide) in paragraph at lines 337--338
+Overfull \hbox (12.0232pt too wide) in paragraph at lines 336--337
 []\OT1/ptm/m/n/8 Ensemble learn-ing, http://www.scholarpedia.org/article/Ensemb
 le[]learning 
  []
 
 
-Overfull \hbox (21.96756pt too wide) in paragraph at lines 338--339
+Overfull \hbox (21.96756pt too wide) in paragraph at lines 337--338
 []\OT1/ptm/m/n/8 Random for-est, https://www.stat.berkeley.edu/ breiman/randomf
 orest2001.pdf 
  []
@@ -545,24 +543,24 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 2742 strings out of 493089
- 44412 string characters out of 6134842
- 104587 words of memory out of 5000000
- 6190 multiletter control sequences out of 15000+600000
+ 2741 strings out of 493014
+ 44460 string characters out of 6133351
+ 104819 words of memory out of 5000000
+ 6246 multiletter control sequences out of 15000+600000
  36583 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,9n,23p,868b,289s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
-xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
-live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texli
-ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive
-/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/20
-15/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/201
-5/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2015/
-texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist
-/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/ty
-pe1/urw/times/utmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/ti
+{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
+exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
+xlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
+live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texli
+ve/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive
+/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/20
+16/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/201
+6/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2016/
+texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist
+/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/ty
+pe1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
 Output written on report_final.pdf (5 pages, 500585 bytes).
 PDF statistics:

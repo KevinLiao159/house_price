@@ -244,7 +244,7 @@ Lastly, Table 2 as below shows RMSLE for each model, which is measured from hold
 <<echo = FALSE, results='asis'>>=  
 load("../data/cleanedData/RMSEL_Table.RData")
 library(xtable)
-print(xtable(model_comparison, caption = 'Table 2: RMSEL Comparison from Four Models'), caption.placement = 'bottom')
+print(xtable(model_comparison, caption = 'Table 2: RMSEL Comparison from Four Models'),caption.placement = 'bottom')
 @
 
 \section{CONCLUSIONS}
