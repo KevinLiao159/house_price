@@ -23,84 +23,107 @@ Course website: [gastonsanchez.com/stat159](http://gastonsanchez.com/stat159)
 
 ### Project Structure 
 
+Since the main deliverables of this project include report, slides, shinyApp and related data in the process, we create the following repository structure to better organize the files for the purpose of reproducibility. 
+
 The main directories of this repository are:
-* `data`, which stores the original data set `Credit.csv`, the preprocessed and scaled data set `scaled-credit.csv` and some other RData output
+* `data`, which stores the original data set, the preprocessed and scaled data set, and some other RData output
 * `code`, which holds the codes for all analysis/computations and containes three main directories: 
-   * functions, which contains generic functions used in scripts
-   * scripts, which is the main folder for all regression model processing
-   * tests, which holds unit tests for output comparison
-* `images`, which stores the graphic output including histogram, boxplot, correlation matrix and barcharts etc.
-* `report`, which is sectioned into 7 parts and produces the official project report and analysis
+   * `function`, which contains generic functions used in scripts
+   * `script`, which is the main folder for all regression model processing
+   * `test`, which holds unit tests for output comparison
+* `images`, which stores the graphic output including histogram, boxplot, correlation matrix and barcharts, as well as the banner of project etc.
+* `report`, which has 7 sections and produced with latex format
 * `slides`, which adds on additional feature to the project and complements the materials in the report for a formal presentation
-* `shinyApp`, which creates a shiny App for data visualization
+* `shinyApp`, which creates a shiny App for data visualization and interactive process walk-through
+* `submission`, which holds the 16 submissions made to Kaggle Competition
 
 
 The complete file-structure for the directory is as follows:
 
 ```
-stat159-fall2016-project2/
+stat159-fall2016-finalproject/
    README.md
    Makefile
    LICENSE
    session-info.txt
    .gitignore
    code/
-      functions/
-         README.md
-         evaluation.R
-         eda/
-            eda-quantitative.R
-            eda-qualitative.R
-            eda-qualitative-extra.R
-      scripts/
-         README.md
-         eda-script.R
+      README.md
+      function/
+         qualitative_analysis.R # For exploratory data analysis
+         quantitative_analysis.R # For exploratory data analysis
+         util.R # All util functions
+      script/
+         python/ # contains the original python code
+         model/ # contains the transformed R code for each predictive model
+            gbm.R
+            lasso.R
+            ridge.R
+            pca.R
+            randomforest.R
+            svm.R
+            xgboost.R
+         lingjie-eda.R
+         daniel-eda.R
+         kevin-eda.R
+         data-preparation.R
          preprocess.R
-         ols.R
-         ridge.R
-         lasso.R
-         pcr.R
-         plsr.R
+         model-analysis.R # the main model analysis and comparison file
          seesion-info-script.R
-      tests/
-         README.md
+      test/
          test-evaluation.R
+      qualitative_output.txt # output from eda script
    data/
       README.md
-      Credit.csv
-      scaled-credit.csv
-   images/
+      rawData/ # downloaded from Kaggle website
+         train.csv
+         test.csv
+         sample_submission.csv
+         data_description.txt
+      cleanedData/
+         data.all.matrix.RData
+         data.all.RData
+         ddata_train_validation.matrix.RData
+         RMSEL_Table.RData
+      model/
+         gbm.RData
+         lasso.RData
+         ridge.RData
+         pca.RData
+         rf.RData
+   images/ # which holds over 80 png image files
    report/
       report.pdf
       report.Rmd
       sections/
-         00-abstract.Rmd
-         01-introduction.Rmd
-         02-data.Rmd
-         03-methods.Rmd
-         04-analysis.Rmd
-         05-results.Rmd
-         06-conclusions.Rmd
    slides/
+      README.md
       slides.R
       slides.html
+   shinyApp/
+      README.md
+      app.R # main shinyApp file
+   submission/ # which holds 16 submissions made to Kaggle Competition
+
 ```
 
-### Paper Structure 
+### Report Structure 
 
 > * 0. Abstract
 > * 1. Introduction
 > * 2. Data
-> * 3. Methodology
-> * 4. Analysis
-> * 5. Results
-> * 6. Conclusions
+> * 3. Exploratory Data Analysis
+> * 4. Methodology
+> * 5. Analysis
+> * 6. Results
+> * 7. Conclusions
+> * Acknowledgement
 > * References
 
 
 ### Reproducibility
 
-To reproduce the results represented in this project (images, dataset, report etc), simply clone the repository (download zip file) and run the make file with command
+To reproduce most of the results represented in this project (images, dataset, report etc), simply clone the repository (download zip file) and run the make file with command
 > make
 
 If you would like to reproduce a specific section (for example, the report), run the corresponding command line in the terminal
@@ -108,6 +131,8 @@ If you would like to reproduce a specific section (for example, the report), run
 
 If you would like to remove the report, run the following command line
 > make clean
+
+If you would like to know how we obstained the 16 submissions, please feel free to contact the owner of this repository for more information
 
 the following is a complete list of make commands for phony targets:
 * make all 
