@@ -1,6 +1,6 @@
 
 # ridge modeling
-grid <- seq(0, 2, length = 100)
+grid <- 10 ^ -c(seq(0, 10, by = 0.1))
 set.seed(1000)
 model.ridge.lambda <- cv.glmnet(as.matrix(select(data.train.matrix, -SalePrice)), as.matrix(data.train.matrix$SalePrice), nfolds = 5, intercept = FALSE, lambda = grid, alpha = 0)
 model.ridge.lambda.min = model.ridge.lambda$lambda.min

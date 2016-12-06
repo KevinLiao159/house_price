@@ -2,9 +2,10 @@
 
 ## Data
 
-This directory holds the data used to create the reproducible report. It includes two separate folders, `rawData` and `cleanData`. 
+This directory holds the data used to create the reproducible report. It includes three separate folders, `rawData`, `cleanData` and `model`. 
 * rawData: which includes the originally downloaded datasets, including `sample_submission.csv`, `test.csv`, `train.csv` and data description text file.
-* cleanedData: which includes the data after preprocessing and cleaning, `data.test.matrix.csv`, `data.train.matrix.csv` and `data.train.matrix2.csv`.
+* cleanedData: which includes the RData files after preprocessing and cleaning
+* model: which includes the RData files produced with each predictive model
 
 The complete file-structure for the directory is as follows:
 
@@ -17,9 +18,17 @@ data/
       test.csv
       sample_submission.csv
    cleanedData/
-      data.test.matrix.csv
-      data.train.matrix.csv
-      data.train.matrix2.csv
+         data.all.matrix.RData
+         data.all.RData
+         ddata_train_validation.matrix.RData
+         RMSEL_Table.RData
+   model/
+      gbm.RData
+      lasso.RData
+      ridge.RData
+      pca.RData
+      rf.RData
+
 ```
 
 ### LICENSE

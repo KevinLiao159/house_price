@@ -1,23 +1,25 @@
 ---
 title: "Final Project - House Price"
 author: "Team Golden Squirrels: Lingjie Qiao, Minsu Kim, Kevin Liao and Cheng Peng"
-date: "11/24/2016"
+date: "12/06/2016"
 output: 
     ioslides_presentation:
-        fig_width: 7
-        fig_height: 6
         fig_caption: true
 ---
 
----
+## House Price: Advanced Regression Techniques
+<img src="../images/housesbanner.png" style="width: 750px;"/>
+
+
 ## Agenda
-![](../images/housesbanner.png)
 
 * Project Objective
 * Data Description
-* Methodology and Applied Methods
+* Exploratory Data Analysis
+* Methodology
+* Applied Methods
+* Feature Engineering
 * Key Findings
-* Competition Results
 * Conclusions
 * Acknowledgement
 
@@ -27,84 +29,101 @@ To make full use of statistical models and predictive tools we have learned from
 Aiming to explore relations, predict housing price and raise interesting questions from the given dataset, we want to achieve both **Prediction Accuracy** and **Model Interpretability**. 
 
 ## Data Description
-Our analysis starts with the data sets provided by Kaggle Competition on  [House Price](https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data). In the information provided, `Data Description` gives the official definition for fields, This data set records; `train.csv` provides 1459 real observations that can be used for model construction; `test.csv` is used to fit the predictive model and create submission.
+Our analysis starts with the data sets provided by Kaggle Competition on  [House Price](https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data). In the information provided, `data_description.txt` gives the official definition for fields, This data set records; `train.csv` provides 1459 real observations that can be used for model construction; `test.csv` is used to fit the predictive model and create submission.
 
 The dataset has 79 variables in total, including both categorical and numerical variables.
 
 Our goal is to understand the relationship between `SalePrice` and these potential predictors with statistical fitting procedures.
 
 
-## Methodology and Applied Methods
+## Exploratory Data Analysis
+With datasets in hand, the first thing we would like to explore is the dataset itself: what are some interesting relationships among variables and what human interpretation can we give to these observations? 
 
-Instead of fitting multiple linear regression with ordinary least square (OLS), we use OLS as a benchmark to compare the following four methods: 
+<center>
+![Display: Exploratory Data Analysis Example](../images/eda-bath-vs-sale.png)
+</center>
 
-- **Shrinkage Methods**
-    - Ridge regression (RR)
-    - Lasso regression (LR)
-- **Dimension Reduction Methods**
-    - Principal Components regression (PCR)
-    - Partial Least Squares regression (PLSR)
 
-## Key Findings
+## Methodology
 
-We can first explore the relationship of each predictors by creating a scatterplot matrix among all variables.
+The goal of this analysis is to accurately predict the final price of each home. Therefore, we frame this problem as a regression problem, and decide to use the L2 loss function which is often used in regression problem. 
 
-After the initial observations, we fit the four different regression methods and observe the trend of lambda for ridge regression and lasso regression
+Taking this objective into account, we preprocess original dataset so that regression models can work well. Furthermore, we extract more features by involving feature engineering. Finally, we fit two shrinkage models and two ensemble models.
 
-## Key Findings - PCR
+## Applied Methods
 
-![Display: Ridge Lambda](../images/housesbanner.png)
+1. Objective Loss Function
+<div class="blue2">
+$$\epsilon = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (log(p_{i} + 1) - log(a_{i} + 1))^2}$$
+</div>
 
-## Key Findings - Mean Squared Error
+2. Data Preprocess
+    - **Factorization**: dealing with NA values
+    - **Log Transformation**: dealing with area-related variables
+    - **Outliers**: dataset highly sensitive to outliers
 
-We can also observe and table the Mean Squared Error obtained from each regression method
 
-```{r, echo=FALSE}
-library(xtable)
-```
+## Data Preprocess - New Variables
 
-```{r, echo=FALSE, results='asis', message=FALSE, eval=FALSE}
-# Create table of test MSE
+<img src="../images/scatter_Year_sold_Year_remodeled_Vs_Price.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/scatter_Year_sold_Year_built_Vs_Price.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
+
+
+## Data Preprocess - Log Transformation
+
+<img src="../images/historgram_original_price.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/historgram_log_trasformed_price.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
+
+
+## Feature Engineering
+
+Considering the complexity of the problem as well as the number of observations and predictors, we assume that the success of this analysis is largely dependent on **informative, feature engineered predictors** that can reveal the subtle relationship to our target variable. Given the small size of dataset with 1460 observations, we conclude that feature learning is not a feasible option because feature learning often involves very complicated models with multiple layers, which tends to cause an overfitting issue when dataset is small.
+
+With this observation, we therefore focus more on **manual feature engineering**. This process is a important stepping-stone in that it helps reveal significant predictors that are previously not represented well in original dataset.
+
+## Model Comparison
+
+We utilize both **shrinkage regression models** and **ensemble models**. Practitioners often favor ensemble models due to their conveniences. Ensemble models such as **Random Forest**, which uses the averaged result from the randomly grown decision trees such as CART, often work well with unscaled, missing data and are used for both classification and regression problems. Also, since our dataset contains a hug number of predictors, shrinkage methods such **Lasso** and **Ridge regressions**, which penalize predictors by shrinking their weights, can be highly effective. Furthermore, we utilize a dimension reduction technique called **PCA** in order to compress information into lower dimension.
+
+
+## Principal Component Analysis
+
+<img src="../images/model_pca_scree_plot.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/model_pca_pc_comparison_plot.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
+
+## MSE - Lasso and Ridge Regression
+
+<img src="../images/model_pca_scree_plot.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/model_pca_pc_comparison_plot.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
+
+## Top 10 Coefficients for Lasso and Ridge
+
+<img src="../images/model_lasso_coefficients_top_10.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/model_ridge_coefficients_top_10.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
+
+## Results - Model Prediction Comparison
+
+<img src="../images/model_prediction_comparison.png" style="float: left; width: 800px; margin-right: 1%; margin-bottom: 0.5em;">
+
+<img src="../images/model_residual_comparison.png" style="float: left; width: 800px; margin-right: 1%; margin-bottom: 0.5em;">
+
+## Results - RMSLE Comparison
+
+```{r echo = FALSE, results='asis'}  
+load("../data/cleanedData/RMSEL_Table.RData")
 library(knitr)
-library(reshape2)
-library(ggplot2)
-table_mse <- data.frame("Ridge" = model.ridge.mse,
-                        "Lasso" = model.lasso.mse,
-                        "PCR" = model.pcr.mse,
-                        "PLSR" = model.plsr.mse)
-rownames(table_mse) <- "MSE Value"
-
-# Print table of test MSE
-kable_table_mse <- kable(table_mse,
-                         caption = "Display: Mean Squared Errors",
-                         digits = 5)
-print(kable_table_mse, caption.placement="top")
+xtable1 <- kable(model_comparison, caption = 'Table: RMSEL Comparison from Four Models')
+print(xtable1, comment=FALSE, type = "latex", caption.placement = 'top')
 ```
 
-## Coefficients
+\newline
 
-```{r, echo=FALSE, results='asis', eval=FALSE}
-# Coefficient table for plsr
-# colnames(model.plsr.coeff) <- c("Value")
-xtable_plsr_coef<- xtable(coeff_table, 
-                         caption = 'Coefficient Table')
-print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
-```
-
-```{r, echo=FALSE, eval=FALSE}
-
-plot_table_coef <- cbind(data.frame("Predictors" = rownames(coeff_table)), coeff_table)
-rownames(plot_table_coef) <- NULL
-
-plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "Coefficients", variable.name= "Models")
-
-ggplot(plot_table_coef, aes(x = Predictors, y=Coefficients, group = Models, colour = Models)) +
-    geom_line() +
-    geom_point(size = 1) +
-    ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
+**Random Forest** seems to have the smallest RMSLE
 
 ## Conclusions
 

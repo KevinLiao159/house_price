@@ -3,8 +3,8 @@ library(ggplot2)
 library(caret)
 library(doMC)
 library(stringr)
-registerDoMC(cores = 7)
-source("script/function//util.R")
+library(glmnet)
+source("code/function/util.R")
 
 # import dataset
 data.train <- read.csv("data/rawData/train.csv")
@@ -90,6 +90,5 @@ data.all.matrix$data_type <- data_type
 # save RData
 save(data.all, file = "data/cleanedData/data.all.RData")
 save(data.all.matrix, file = "data/cleanedData/data.all.matrix.RData")
-
 
 
