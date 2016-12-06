@@ -135,7 +135,7 @@ load('../../data/model/gbm.RData')
 model.gbm.imp <- varImp(model.gbm)$importance
 model.gbm.imp$predictor <- rownames(model.gbm.imp)
 
-png("../../images/model_gbm_predictor importance.png")
+png("../../images/model_gbm_predictor_importance.png")
 arrange(model.gbm.imp, desc(Overall))[1:10, ] %>% 
   ggplot(aes(x = predictor, y =Overall )) + geom_density() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   ggtitle("predictor importance from GBM") + ylab("Importance")

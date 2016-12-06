@@ -200,11 +200,18 @@ We also examine coefficients of lasso regression. Figure 6 indicates that most o
       \label{figurelabel}
    \end{figure}
 
-Figure 7 shows the top 10 coefficients from both models. It is noteworthy that GrivArea has the highest coefficient in Lasso and YearBuilt2010 has the highest coefficient in Ridge. Both make sense because the area and built year are important aspects when it comes to making a decision about purchasing house. Both models indicate that GrLiArea, NeighborhoodCrawfor and NeighborhoodStoneBr belong to top 10 highest coefficients and are highly associated with house price. Furthermore, we try to figure out feature importance using Gradient boosting machine. Feature importance is automatically measured as GBM grows its tree while minimizing entropy. Figure $model_gbm_predictor importance.png$ shows that overall quality has the highest feature importance 
+Figure 7 shows the top 10 coefficients from both models. It is noteworthy that GrivArea has the highest coefficient in Lasso and YearBuilt2010 has the highest coefficient in Ridge. Both make sense because the area and built year are important aspects when it comes to making a decision about purchasing house. Both models indicate that GrLiArea, NeighborhoodCrawfor and NeighborhoodStoneBr belong to top 10 highest coefficients and are highly associated with house price. Furthermore, we try to figure out feature importance using Gradient boosting machine. Feature importance is automatically measured as GBM grows its tree while minimizing entropy. Figure 8 below shows that overall quality has the highest feature importance 
+
+   \begin{figure}[thpb]
+      \centering
+      \includegraphics[width =  8cm, height = 5cm]{../images/model_gbm_predictor_importance.png}
+      \caption{Model GBM Predictor Importance}
+      \label{figurelabel}
+   \end{figure}
 
 \section{RESULTS}
 
-As a result, Figure 8 shows model comparison between true price and predicted price. 
+As a result, Figure 9 shows model comparison between true price and predicted price. 
 
    \begin{figure}[thpb]
       \centering
@@ -222,7 +229,7 @@ Four models are fairly accurate and most of data points are located on a diagona
       \label{figurelabel}
    \end{figure}
 
-Figure 9 shows the residual plots for four models. The residual is the difference between real house price and predicted price from models. We can see from Figure 9 that all models overestimate the price for cheaper house and underestimate the price for expensive house. This phenomenon is not surprising because we have few data points in cheapest and most expensive houses. Thus, the models incur a high bias in these end zones. This can be alleviated if we gather more data if possible. Compared to Lasso and Ridge, Gradient boosting machine and Random Forest are more stable. Both Lasso and Ridge have huge errors in the middle of graphs. 
+Figure 10 shows the residual plots for four models. The residual is the difference between real house price and predicted price from models. We can see from Figure 10 that all models overestimate the price for cheaper house and underestimate the price for expensive house. This phenomenon is not surprising because we have few data points in cheapest and most expensive houses. Thus, the models incur a high bias in these end zones. This can be alleviated if we gather more data if possible. Compared to Lasso and Ridge, Gradient boosting machine and Random Forest are more stable. Both Lasso and Ridge have huge errors in the middle of graphs. 
 
 Lastly, Table 2 as below shows RMSLE for each model, which is measured from hold-out dataset. It indicates that Random Forest predicts target variable the best.
 

@@ -1,9 +1,12 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  5 DEC 2016 20:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  5 DEC 2016 21:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**\nonstopmode \input ./report.tex
-(./report.tex (./ieeeconf.cls
+**report.tex
+(./report.tex
+LaTeX2e <2016/03/31>
+Babel <3.9r> and hyphenation patterns for 83 language(s) loaded.
+(./ieeeconf.cls
 Document Class: ieeeconf 2016/4/23 revision V1.6b by Pradeep Misra
 \@IEEEtrantmpdimenA=\dimen102
 \@IEEEtrantmpdimenB=\dimen103
@@ -143,8 +146,8 @@ Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/base/alltt.sty
 Package: alltt 1997/06/16 v2.0g defines alltt environment
 )
-** ATTENTION: Overriding command lockouts (line 62).
-** ATTENTION: Overriding IEEE standard margins (line 65).
+** ATTENTION: Overriding command lockouts (line 61).
+** ATTENTION: Overriding IEEE standard margins (line 64).
 (/usr/local/texlive/2016/texmf-dist/tex/latex/upquote/upquote.sty
 Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
 tim
@@ -255,27 +258,30 @@ LaTeX Warning: Label `figurelabel' multiply defined.
 
 LaTeX Warning: Label `figurelabel' multiply defined.
 
+
+LaTeX Warning: Label `figurelabel' multiply defined.
+
 )
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 86.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 86.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 85.
+LaTeX Font Info:    ... okay on input line 85.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 85.
+LaTeX Font Info:    ... okay on input line 85.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 85.
+LaTeX Font Info:    ... okay on input line 85.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 85.
+LaTeX Font Info:    ... okay on input line 85.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 85.
+LaTeX Font Info:    ... okay on input line 85.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 85.
+LaTeX Font Info:    ... okay on input line 85.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 85.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 85.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 86.
+LaTeX Font Info:    ... okay on input line 85.
 
 (/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -338,19 +344,19 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 111.
+(Font)              <7> on input line 110.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 111.
+(Font)              <5> on input line 110.
 
 <../images/eda-bath-vs-sale.png, id=1, 401.5pt x 308.15125pt>
 File: ../images/eda-bath-vs-sale.png Graphic file (type png)
 
 <use ../images/eda-bath-vs-sale.png>
-Package pdftex.def Info: ../images/eda-bath-vs-sale.png used on input line 123.
+Package pdftex.def Info: ../images/eda-bath-vs-sale.png used on input line 122.
 
 (pdftex.def)             Requested size: 256.08917pt x 142.2638pt.
 
-Overfull \hbox (10.37106pt too wide) in paragraph at lines 123--124
+Overfull \hbox (10.37106pt too wide) in paragraph at lines 122--123
  [][] 
  []
 
@@ -361,7 +367,7 @@ g)
 
 <use ../images/scatter_Year_sold_Year_built_Vs_Price.png>
 Package pdftex.def Info: ../images/scatter_Year_sold_Year_built_Vs_Price.png us
-ed on input line 130.
+ed on input line 129.
 (pdftex.def)             Requested size: 113.81114pt x 128.03662pt.
 
 <../images/scatter_Year_sold_Year_remodeled_Vs_Price.png, id=4, 481.8pt x 481.8
@@ -370,7 +376,7 @@ File: ../images/scatter_Year_sold_Year_remodeled_Vs_Price.png Graphic file (typ
 e png)
  <use ../images/scatter_Year_sold_Year_remodeled_Vs_Price.png>
 Package pdftex.def Info: ../images/scatter_Year_sold_Year_remodeled_Vs_Price.pn
-g used on input line 131.
+g used on input line 130.
 (pdftex.def)             Requested size: 113.81114pt x 128.03662pt.
  [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
@@ -382,7 +388,7 @@ File: ../images/historgram_original_price.png Graphic file (type png)
 
 <use ../images/historgram_original_price.png>
 Package pdftex.def Info: ../images/historgram_original_price.png used on input 
-line 161.
+line 160.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
 <../images/historgram_log_trasformed_price.png, id=19, 481.8pt x 481.8pt>
@@ -390,10 +396,10 @@ File: ../images/historgram_log_trasformed_price.png Graphic file (type png)
 
 <use ../images/historgram_log_trasformed_price.png>
 Package pdftex.def Info: ../images/historgram_log_trasformed_price.png used on 
-input line 162.
+input line 161.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
-Overfull \hbox (1.60982pt too wide) in paragraph at lines 171--182
+Overfull \hbox (1.60982pt too wide) in paragraph at lines 170--181
  [] 
  []
 
@@ -421,9 +427,8 @@ File: ../images/model_ridge_lambda.png Graphic file (type png)
 Package pdftex.def Info: ../images/model_ridge_lambda.png used on input line 22
 8.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
- [3 <../images/model_pca_scree_plot.png> <../images/model_lasso_lambda.png> <..
-/images/model_ridge_lambda.png>]
-<../images/model_lasso_number_of_coefficients_left.png, id=40, 481.8pt x 481.8p
+
+<../images/model_lasso_number_of_coefficients_left.png, id=34, 481.8pt x 481.8p
 t>
 File: ../images/model_lasso_number_of_coefficients_left.png Graphic file (type 
 png)
@@ -431,8 +436,8 @@ png)
 Package pdftex.def Info: ../images/model_lasso_number_of_coefficients_left.png 
 used on input line 237.
 (pdftex.def)             Requested size: 199.16399pt x 170.71304pt.
-
-<../images/model_lasso_coefficients_top_10.png, id=41, 481.8pt x 481.8pt>
+ [3 <../images/model_pca_scree_plot.png>]
+<../images/model_lasso_coefficients_top_10.png, id=39, 481.8pt x 481.8pt>
 File: ../images/model_lasso_coefficients_top_10.png Graphic file (type png)
 
 <use ../images/model_lasso_coefficients_top_10.png>
@@ -440,7 +445,7 @@ Package pdftex.def Info: ../images/model_lasso_coefficients_top_10.png used on
 input line 246.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
-<../images/model_ridge_coefficients_top_10.png, id=42, 481.8pt x 481.8pt>
+<../images/model_ridge_coefficients_top_10.png, id=40, 481.8pt x 481.8pt>
 File: ../images/model_ridge_coefficients_top_10.png Graphic file (type png)
 
 <use ../images/model_ridge_coefficients_top_10.png>
@@ -448,49 +453,59 @@ Package pdftex.def Info: ../images/model_ridge_coefficients_top_10.png used on
 input line 247.
 (pdftex.def)             Requested size: 113.81114pt x 113.81114pt.
 
-<../images/model_prediction_comparison.png, id=43, 1003.75pt x 301.125pt>
+<../images/model_gbm_predictor_importance.png, id=41, 481.8pt x 481.8pt>
+File: ../images/model_gbm_predictor_importance.png Graphic file (type png)
+
+<use ../images/model_gbm_predictor_importance.png>
+Package pdftex.def Info: ../images/model_gbm_predictor_importance.png used on i
+nput line 256.
+(pdftex.def)             Requested size: 227.62228pt x 142.26208pt.
+
+<../images/model_prediction_comparison.png, id=42, 1003.75pt x 301.125pt>
 File: ../images/model_prediction_comparison.png Graphic file (type png)
 
 <use ../images/model_prediction_comparison.png>
 Package pdftex.def Info: ../images/model_prediction_comparison.png used on inpu
-t line 260.
+t line 267.
 (pdftex.def)             Requested size: 256.06773pt x 113.81297pt.
 
-Overfull \hbox (10.34962pt too wide) in paragraph at lines 260--261
+Overfull \hbox (10.34962pt too wide) in paragraph at lines 267--268
  [][] 
  []
 
-<../images/model_residual_comparison.png, id=44, 1003.75pt x 301.125pt>
+<../images/model_residual_comparison.png, id=43, 1003.75pt x 301.125pt>
 File: ../images/model_residual_comparison.png Graphic file (type png)
 
 <use ../images/model_residual_comparison.png>
 Package pdftex.def Info: ../images/model_residual_comparison.png used on input 
-line 269.
+line 276.
 (pdftex.def)             Requested size: 256.06773pt x 113.81297pt.
 
-Overfull \hbox (10.34962pt too wide) in paragraph at lines 269--270
+Overfull \hbox (10.34962pt too wide) in paragraph at lines 276--277
  [][] 
  []
 
+[4 <../images/model_lasso_lambda.png> <../images/model_ridge_lambda.png> <../im
+ages/model_lasso_number_of_coefficients_left.png> <../images/model_lasso_coeffi
+cients_top_10.png> <../images/model_ridge_coefficients_top_10.png> <../images/m
+odel_gbm_predictor_importance.png> <../images/model_prediction_comparison.png> 
+<../images/model_residual_comparison.png>]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 282.
+(Font)              <8> on input line 289.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 282.
-[4 <../images/model_lasso_number_of_coefficients_left.png> <../images/model_las
-so_coefficients_top_10.png> <../images/model_ridge_coefficients_top_10.png> <..
-/images/model_prediction_comparison.png> <../images/model_residual_comparison.p
-ng>]
-Underfull \hbox (badness 10000) in paragraph at lines 310--311
+(Font)              <6> on input line 289.
+
+Underfull \hbox (badness 10000) in paragraph at lines 317--318
 []\OT1/ptm/m/n/8 L1 vs. L2 Loss Func-tion from Rishy Github:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 311--312
+Underfull \hbox (badness 10000) in paragraph at lines 318--319
 []\OT1/ptm/m/n/8 Root Mean Squared Log-a-rith-mic Er-ror,
  []
 
 
-Underfull \hbox (badness 3623) in paragraph at lines 312--313
+Underfull \hbox (badness 3623) in paragraph at lines 319--320
 []\OT1/ptm/m/n/8 Handbook: Gen-eral prin-ci-ples for deal-ing with miss-ing dat
 a:
  []
@@ -499,24 +514,24 @@ Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
 
-Underfull \hbox (badness 4647) in paragraph at lines 318--319
+Underfull \hbox (badness 4647) in paragraph at lines 325--326
 []\OT1/ptm/m/n/8 Y. Ben-gio; A. Courville; P. Vin-cent (2013). "Rep-re-sen-ta-t
 ion
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 318--319
+Underfull \hbox (badness 10000) in paragraph at lines 325--326
 \OT1/ptm/m/n/8 Learn-ing: A Re-view and New Per-spec-tives". IEEE Trans.
  []
 
 
-Overfull \hbox (12.0232pt too wide) in paragraph at lines 321--322
+Overfull \hbox (12.0232pt too wide) in paragraph at lines 328--329
 []\OT1/ptm/m/n/8 Ensemble learn-ing, http://www.scholarpedia.org/article/Ensemb
 le[]learning 
  []
 
 
-Overfull \hbox (21.96756pt too wide) in paragraph at lines 322--323
+Overfull \hbox (21.96756pt too wide) in paragraph at lines 329--330
 []\OT1/ptm/m/n/8 Random for-est, https://www.stat.berkeley.edu/ breiman/randomf
 orest2001.pdf 
  []
@@ -532,21 +547,19 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[5
-
-] (./report.aux)
+[5] (./report.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 2741 strings out of 493014
- 44259 string characters out of 6133351
- 104819 words of memory out of 5000000
- 6247 multiletter control sequences out of 15000+600000
+ 2745 strings out of 493014
+ 44481 string characters out of 6133351
+ 104820 words of memory out of 5000000
+ 6250 multiletter control sequences out of 15000+600000
  36583 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,9n,23p,884b,289s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,9n,23p,862b,289s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
 xlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
@@ -559,10 +572,10 @@ texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist
 /fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/ty
 pe1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on report.pdf (5 pages, 470503 bytes).
+Output written on report.pdf (5 pages, 484016 bytes).
 PDF statistics:
- 92 PDF objects out of 1000 (max. 8388607)
+ 94 PDF objects out of 1000 (max. 8388607)
  47 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 66 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 71 words of extra memory for PDF output out of 10000 (max. 10000000)
 
