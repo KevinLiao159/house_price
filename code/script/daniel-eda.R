@@ -22,7 +22,7 @@ dev.off()
 
 # Sold Year - Remodel Year -> how long it has been after remodeling.
 png("../../images/scatter_Year_sold_Year_remodeled_Vs_Price.png")
-ggplot(data.train, aes(x = YrSold_YearRemodel, y = SalePrice)) + geom_point() + geom_smooth() + scale_y_log10() + xlab("Year sold - Year remodeled") + ggtitle("Year sold - Year remodeled vs Price")
+ggplot(data.train, aes(x = YrSold_YearRemodel, y = SalePrice)) + geom_point() + geom_smooth() + scale_y_log10() + xlab("Year sold - Year remodeled") + ggtitle("Year sold - Year remodeled vs Price") + xlim(0, 10)
 dev.off()
 
 # Sold Year - Built Year -> how long it has been after built
@@ -35,18 +35,6 @@ group_by(data.train, YrSold_YearRemodel) %>% summarise(mean(SalePrice)) %>% View
 
 # group by YrSold_YearBuilt vs SalePrice
 group_by(data.train, YrSold_YearBuilt) %>% summarise(mean(SalePrice)) %>% View
-
-# group by SaleCondition vs SalePrice
-group_by(data.train, SaleCondition) %>% summarise(mean(SalePrice))
-
-# group by SaleType vs SalePrice
-group_by(data.train, SaleType) %>% summarise(mean(SalePrice))
-
-# group by MoSold vs SalePrice
-group_by(data.train, MoSold) %>% summarise(mean(SalePrice))
-
-# group by YrSold vs SalePrice
-group_by(data.train, YrSold) %>% summarise(mean(SalePrice))
 
 # SalePrice based on MSZoning
 ggplot(data.all, aes(x = SalePrice, fill = factor(MSZoning))) + geom_histogram(position="dodge", bins = 30)
