@@ -129,7 +129,7 @@ ui <- fluidPage(
   headerPanel('Model Comparison'),
   fluidRow(
     column(12, offset = 0, 
-           mainPanel(width = "0%",
+           mainPanel(width = "80%",
              plotOutput('plot5'),
              plotOutput('plot6')
            )
