@@ -23,13 +23,6 @@ Course website: [gastonsanchez.com/stat159](http://gastonsanchez.com/stat159)
 
 ### Directory Structure 
 
-* `shinyApp_scatterplot`, which creates a shiny App for scatter plot visualization
-
-* `shinyApp_model`, which creates a shiny App for tuning parameters of each model
-
-* `README.md`, which describes details of this directory
-
-
 The complete file-structure for this directory is as follows:
 ```
 shinyApp/
