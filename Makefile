@@ -60,25 +60,25 @@ regressions:
 # ------------------------------------------------------------------------------------------
 # Generate Analysis
 # ------------------------------------------------------------------------------------------
-analysis: $(S)/model-analysis.R
+analysis: $(S)/model-analysis.R regressions
 	cd $(S) && Rscript model-analysis.R
 
 # ------------------------------------------------------------------------------------------
 # Generate report
 # ------------------------------------------------------------------------------------------
-report: $(R)/report.Rnw
+report: $(R)/report.Rnw analysis
 	cd $(R); Rscript -e "library(knitr); knit2pdf('report.Rnw', output = 'report.tex')"
 
 # ------------------------------------------------------------------------------------------
 # Generate slides
 # ------------------------------------------------------------------------------------------
-slides: slides/slides.Rmd
+slides: slides/slides.Rmd analysis
 	cd slides; Rscript -e 'library(rmarkdown); render("slides.Rmd")'
 
 # ------------------------------------------------------------------------------------------
 # Generate shinyApp
 # ------------------------------------------------------------------------------------------
-shinyApp: shinyApp
+shinyApp: shinyApp analysis
 	Rscript -e 'library(methods); shiny::runApp("shinyapp/", launch.browser=TRUE)'
 
 # ------------------------------------------------------------------------------------------
