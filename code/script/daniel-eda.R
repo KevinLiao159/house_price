@@ -9,7 +9,7 @@ data.train <- filter(data.all.matrix, data_type == 'train')
 
 png("../../images/historgram_original_price.png")
 filter(data.all.matrix, data_type == 'train') %>%
-  ggplot(aes(x = SalePrice)) + geom_histogram() + ggtitle("Original house price histogram") + xlim('Price')
+  ggplot(aes(x = exp(SalePrice))) + geom_histogram() + ggtitle("Original house price histogram") + xlim('Price')
 dev.off()
 # => skewed to the right. 
 
