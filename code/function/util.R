@@ -11,7 +11,7 @@ modify_dataframe_for_comparison <- function(df, model_name) {
 }
 
 
-get_rmse <- function(t) {
+get_rmse <- function(pred, real) {
   
   return(sqrt(mean((pred - real) ** 2)))
   
