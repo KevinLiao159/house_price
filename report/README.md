@@ -2,32 +2,21 @@
 
 ## Report
 
-This directory holds all the supported materials for the project report and the report.
+This directory holds all the supported materials for the project report. Report is written in an rnw file and use the ieeeconf style (you can find the library documentation in ieeeconf.cls).
 
 The complete file-structure for the directory is as follows:
 
 ```
 report/
    README.md
-   .DS_Store
-   .DS_Store
-   .Rhistory
+   ieeeconf.cls # downloaded from ieeeconf documentation website
    report-concordance.tex
    report.Rnw
    report.log
    report.pdf
    report.synctex.gz
    report.tex
-   sections/
-        .DS_Store
-        .Rhistory
-        00-abstract.Rmd
-        01-introduction.Rmd
-        02-data.Rmd
-        03-methods.Rmd
-        04-analysis.Rmd
-        05-results.Rmd
-        06-conclusions.Rmd
+   sections/ # for preparation purpose only, not included in actual report
 ```
 
 ### LICENSE

@@ -2,14 +2,13 @@
 
 ## slides
 
-This directory holds the slides of the project for presenting in the class.
+This directory holds the slides of the project for presentation in the class. We use isoslides as the slide framework to produce slides.Rmd, which can be reproduced with the makefile `make slides` commmand.
 
 The complete file-structure for the directory is as follows:
 
 ```
 slides/
    README.md
-   .DS_Store
    sildes.Rmd
    slides.html
 ```
