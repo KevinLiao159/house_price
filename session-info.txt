@@ -1,0 +1,81 @@
+Session Information
+R version 3.2.3 (2015-12-10)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.12.1 (unknown)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] parallel  stats     graphics  grDevices utils     datasets  base     
+
+other attached packages:
+ [1] glmnet_2.0-5    Matrix_1.2-3    xtable_1.8-2    rmarkdown_0.9.2
+ [5] pls_2.5-0       knitr_1.12      dplyr_0.4.3     doMC_1.3.4     
+ [9] iterators_1.0.8 foreach_1.4.3   devtools_1.9.1  caret_6.0-72   
+[13] ggplot2_2.0.0   lattice_0.20-33 car_2.1-1      
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.3        nloptr_1.0.4       plyr_1.8.3         methods_3.2.3     
+ [5] tools_3.2.3        lme4_1.1-10        digest_0.6.9       memoise_0.2.1     
+ [9] gtable_0.1.2       nlme_3.1-122       mgcv_1.8-9         DBI_0.3.1         
+[13] SparseM_1.7        stringr_1.1.0      MatrixModels_0.4-1 stats4_3.2.3      
+[17] grid_3.2.3         nnet_7.3-11        R6_2.1.1           minqa_1.2.4       
+[21] reshape2_1.4.1     magrittr_1.5       htmltools_0.3.5    scales_0.3.0      
+[25] codetools_0.2-14   ModelMetrics_1.1.0 MASS_7.3-45        splines_3.2.3     
+[29] assertthat_0.1     pbkrtest_0.4-4     colorspace_1.2-6   quantreg_5.19     
+[33] stringi_1.0-1      munsell_0.4.2     
+ setting  value                       
+ version  R version 3.2.3 (2015-12-10)
+ system   x86_64, darwin13.4.0        
+ ui       X11                         
+ language (EN)                        
+ collate  en_US.UTF-8                 
+ tz       America/Los_Angeles         
+ date     2016-12-05                  
+
+ package      * version date       source        
+ assertthat     0.1     2013-12-06 CRAN (R 3.2.0)
+ car          * 2.1-1   2015-12-14 CRAN (R 3.2.3)
+ caret        * 6.0-72  2016-11-01 CRAN (R 3.2.5)
+ codetools      0.2-14  2015-07-15 CRAN (R 3.2.3)
+ colorspace     1.2-6   2015-03-11 CRAN (R 3.2.0)
+ DBI            0.3.1   2014-09-24 CRAN (R 3.2.0)
+ devtools     * 1.9.1   2015-09-11 CRAN (R 3.2.0)
+ digest         0.6.9   2016-01-08 CRAN (R 3.2.3)
+ doMC         * 1.3.4   2015-10-13 CRAN (R 3.2.0)
+ dplyr        * 0.4.3   2015-09-01 CRAN (R 3.2.0)
+ foreach      * 1.4.3   2015-10-13 CRAN (R 3.2.0)
+ ggplot2      * 2.0.0   2015-12-18 CRAN (R 3.2.3)
+ glmnet       * 2.0-5   2016-03-17 CRAN (R 3.2.4)
+ gtable         0.1.2   2012-12-05 CRAN (R 3.2.0)
+ htmltools      0.3.5   2016-03-21 CRAN (R 3.2.3)
+ iterators    * 1.0.8   2015-10-13 CRAN (R 3.2.0)
+ knitr        * 1.12    2016-01-07 CRAN (R 3.2.3)
+ lattice      * 0.20-33 2015-07-14 CRAN (R 3.2.3)
+ lme4           1.1-10  2015-10-06 CRAN (R 3.2.2)
+ magrittr       1.5     2014-11-22 CRAN (R 3.2.0)
+ MASS           7.3-45  2015-11-10 CRAN (R 3.2.3)
+ Matrix       * 1.2-3   2015-11-28 CRAN (R 3.2.3)
+ MatrixModels   0.4-1   2015-08-22 CRAN (R 3.2.0)
+ memoise        0.2.1   2014-04-22 CRAN (R 3.2.0)
+ mgcv           1.8-9   2015-10-30 CRAN (R 3.2.3)
+ minqa          1.2.4   2014-10-09 CRAN (R 3.2.0)
+ ModelMetrics   1.1.0   2016-08-26 CRAN (R 3.2.5)
+ munsell        0.4.2   2013-07-11 CRAN (R 3.2.0)
+ nlme           3.1-122 2015-08-19 CRAN (R 3.2.3)
+ nloptr         1.0.4   2014-08-04 CRAN (R 3.2.0)
+ nnet           7.3-11  2015-08-30 CRAN (R 3.2.3)
+ pbkrtest       0.4-4   2015-12-12 CRAN (R 3.2.3)
+ pls          * 2.5-0   2015-08-22 CRAN (R 3.2.0)
+ plyr           1.8.3   2015-06-12 CRAN (R 3.2.0)
+ quantreg       5.19    2015-08-31 CRAN (R 3.2.0)
+ R6             2.1.1   2015-08-19 CRAN (R 3.2.0)
+ Rcpp           0.12.3  2016-01-10 CRAN (R 3.2.3)
+ reshape2       1.4.1   2014-12-06 CRAN (R 3.2.0)
+ rmarkdown    * 0.9.2   2016-01-01 CRAN (R 3.2.3)
+ scales         0.3.0   2015-08-25 CRAN (R 3.2.0)
+ SparseM        1.7     2015-08-15 CRAN (R 3.2.0)
+ stringi        1.0-1   2015-10-22 CRAN (R 3.2.0)
+ stringr        1.1.0   2016-08-19 CRAN (R 3.2.5)
+ xtable       * 1.8-2   2016-02-05 CRAN (R 3.2.3)

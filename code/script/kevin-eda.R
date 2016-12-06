@@ -5,12 +5,12 @@ library(iterators)
 library(parallel)
 library(doMC)
 registerDoMC(cores = 4)
-source("script/util.R")
+source("../function/util.R")
 
 # import dataset
-data.train = read.csv("rawData/train.csv")
-data.test = read.csv("rawData/test.csv")
-data.sample = read.csv("rawData/sample_submission.csv")
+data.train = read.csv("../../data/rawData/train.csv")
+data.test = read.csv("../../data/rawData/test.csv")
+data.sample = read.csv("../../data/rawData/sample_submission.csv")
 
 # prepocess
 data.train$Id <- NULL
@@ -30,11 +30,6 @@ data.all$GarageYrBlt = as.factor(data.all$GarageYrBlt)
 
 data.all = convert_na_to_factor(data.all)
 
-# split into train, test again
-data.train = filter(data.all, data_type == 'train')
-data.train$data_type = NULL
-data.test = filter(data.all, data_type == 'test')
-data.test$data_type = NULL
 
 # eda
 View(data.all)
@@ -55,7 +50,7 @@ data.numeric = get_only_numerical_predictors(data.all)
 data.numeric %>% head
 
 # pairs plot
-png("images/pairsplot")  
+png("../../images/pairsplot.png")  
 pairs(data.train[,c("LotFrontage", "LotArea", "MSSubClass", "OverallCond", "OverallQual", 
                     "YearBuilt", "YearRemodAdd", "MasVnrArea", "BsmtFinSF1", "BsmtFinSF2", 
                     "BsmtUnfSF", "TotalBsmtSF", "X1stFlrSF", "X2ndFlrSF", "LowQualFinSF", 
@@ -136,20 +131,3 @@ ggplot(data.train, aes(x = YearBuilt)) + geom_bar()
 # data.all$YearBuilt <- scale(as.numeric(data.all$YearBuilt), center = TRUE, scale = TRUE)
 # Mean = 1971.3
 mean(as.numeric(data.all$YearBuilt))
-
-# binary YearBuilt
-data.all$Year <- c()
-for (i in 1:nrow(data.all)) {
-  if (data.all$YearBuilt[i] > 1945) {
-    data.all$Year[i] <- 1
-  } else {
-    data.all$Year[i] <- 0
-  }
-}
-
-# Year
-ggplot(data = data.train, aes(y = SalePrice, x = Year)) + 
-  geom_point()
-
-ggplot(data.train, aes(x = Year)) + geom_bar() 
-
