@@ -104,7 +104,7 @@ Since L2 loss function minimizes the squared differences between the estimated a
 \subsection{Preprocess}
 According to the exploratory data analysis, we find a lot of NA values in most of predictors. Since regression models cannot handle missing data, we need to either remove or impute data using appropriate methods [3]. The data description provided by the competition host [4] indicates that some of the missing values are actually none value. In that case, we replace NA value with factor variable named None. However, there are some numerical predictors with missing values in an unsystematical manner. In that case, we impute them with mean values of predictors.
 
-As a next step, we apply log transformations to predictors related to area such as GrLivArea and LotArea as well as target variable. The log transformation has an effect to remedy skewness of data [5] by making original distributions of predictors to close to the normal distribution. Consequently, it helps regression model to work better.
+As a next step, we apply log transformations to SalePrice and other predictors related to area such as GrLivArea and LotArea. Figure 3 (left) shows an original SalePrice distribution. It is skewed to the right. The log transformation has an effect to remedy skewness of data [5] by making original distributions of predictors to close to the normal distribution. Consequently, it helps regression model to work better. Figure 3 (right) shows the log transformed SaclePrice distribution. 
 
    \begin{figure}[thpb]
       \centering
@@ -142,7 +142,7 @@ Considering the complexity of the problem as well as the number of observations 
 With this observation, we therefore focus more on manual feature engineering [10]. This process is a important stepping-stone in that it helps reveal significant predictors that are previously not represented well in original dataset. By explicitly designing what the input x's should be, our predictive models can solve a problem easily. 
 
 \subsection{Model description and hyper-parameter tuning}
-While training each model, we need to find optimal paramters for each model. In order to effectively select hyper-parameters, we use 5-fold cross-validation. For lasso and ridge, lambda is the tuning parameter. It determines how much we will penalize models for high weights on predictors. If lambda is high, it penalizes models more and ends up generating sparse models. This kind of models is called shrinkage method because they shrinken weights or even remove predictors by penalizing models. These models are especially good options when there are many predictors. By penalziing or removing unnecessary predictors, they provide more interpretable results. Thus, they are often utilized in genomic and pharametical analysis.
+While training each model, we need to find optimal paramters for each model. In order to effectively select hyper-parameters, we use 5-fold cross-validation. For lasso and ridge, lambda is the tuning parameter. It determines how much we will penalize models for high weights on predictors. If lambda is high, it penalizes models more and ends up generating sparse models. This kind of models is called shrinkage method because they shrinken weights or even remove predictors by penalizing models. These models are especially good options when there are many predictors. By penalizing or removing unnecessary predictors, they provide more interpretable results. Thus, they are often utilized in genomic and pharametical analysis.
 
 \subsection{Modeling}
 We utilize both shrinkage regression models and ensemble models. Practitioners often favor ensemble models [11] due to their conveniences. Ensemble models such as Random Forest [12], which uses the averaged result from the randomly grown decision trees such as CART [7], often work well with unscaled, missing data and are used for both classification and regression problems. Also, since our dataset contains a hug number of predictors, shrinkage methods such Lasso and Ridge regressions [7], which penalize predictors by shrinking their weights, can be highly effective. Furthermore, we utilize a dimension reduction technique called PCA[7] in order to compress information into lower dimension. The results of modeling will be further explained in the following section in detail.
@@ -162,7 +162,7 @@ In summary, the following is the the procedure for each model.
 \end{enumerate}
 
 \section{ANALYSIS}
-Due to the high dimensionality of dataset, we first experiment to decide whether to either project predictors into lower dimensional bases or select predictors using shrinkage methods. First, we try Principal component analysis which is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables into a set of values of linearly uncorrelated variables called principal components [13]. Since our one-hot encoded dataset has a lot of predictors that have near zero variances, we first need to remove near zero variances. This is because PCA considers variability of data and compress the predictors with high variances into first principal components.   
+Due to the high dimensionality of dataset, we first experiment to decide whether to either project predictors into lower dimensional bases or select predictors using shrinkage methods. First, we try Principal component analysis which is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables into a set of values of linearly uncorrelated variables called principal components [13]. Since our one-hot encoded dataset has a lot of predictors that have near zero variances, we first need to remove near zero variances. This is because PCA does not work well if predictors are consist of near zero variances among observations.
 
    \begin{figure}[thpb]
       \centering
@@ -171,7 +171,7 @@ Due to the high dimensionality of dataset, we first experiment to decide whether
       \label{figurelabel}
    \end{figure}
 
-After removing near zero variance 519 to 128. This indicates that a great number of predictors have apporiximately identical across observations. Figure 4 shows a PCA scree plot for each principal component. It indicates that first few principal components effectively explain the variances of data, and overall graph exponentially decays. Cumulative Proportion in $Table model_pca$ shows that first 10 pcs and 61 pcs explain approximately 44\% and 90\% of variance in dataset respectively. It means that if we decide to reduce dimensionality at the expense of a bit little of prediction accuracy, we could use 61 principal components which are approximately 1/8 of total predictors. 
+After removing near zero variance 519 to 128. This indicates that a great number of predictors have apporiximately identical across observations. Figure 4 shows a PCA scree plot for each principal component. It indicates that first few principal components effectively explain the variances of data, and overall graph exponentially decays. Th cumulative Proportion in indicates that first 10 principal components and 61 principal components can explain approximately 44\% and 90\% of variances in dataset respectively. It means that if we decide to reduce dimensionality at the expense of a bit little of prediction accuracy, we could use 61 principal components which are approximately 1/8 of total predictors. However, since our goal is to increase prediction accuracy as much as possible, we decide not to use PCA at the end.
 
    \begin{figure}[thpb]
       \centering
@@ -190,7 +190,7 @@ Furthermore, we try to fit both lasso and regression and tune lambda values usin
       \label{figurelabel}
    \end{figure}
 
-We also examine coefficients of lasso regression. Figure 6 indicates that most of weights for corresponding predictors become zeros, which effectively eliminates a great portion of predictors. After elimination, only 78 predictors are left. We plot top 10 coefficients for both lasso and ridge to investigate how much each coefficient contribution to the model. 
+We also examine coefficients of lasso regression. Figure 6 indicates that most of weights for corresponding predictors become zeros, which effectively eliminates a great portion of predictors. After elimination, only 78 predictors are left. We plot top 10 coefficients for both lasso and ridge to investigate how much each coefficient is associated with target variable. 
 
    \begin{figure}[thpb]
       \centering
@@ -200,11 +200,18 @@ We also examine coefficients of lasso regression. Figure 6 indicates that most o
       \label{figurelabel}
    \end{figure}
 
-Figure 7 shows the top 10 coefficients from both models. It is noteworthy that GrivArea has the highest coefficient in Lasso and YearBuilt2010 has the highest coefficient in Ridge. Both make sense because the area and built year are important aspects when it comes to making a decision about purchasing house. Both models indicate that GrLiArea, NeighborhoodCrawfor and NeighborhoodStoneBr belong to top 10 highest coefficients and are highly associated with house price. Furthermore, we try to figure out feature importance using Gradient boosting machine. Feature importance is automatically measured as GBM grows its tree while minimizing entropy. Figure $model_gbm_predictor importance.png$ shows that overall quality has the highest feature importance 
+Figure 7 shows the top 10 coefficients from both models. It is noteworthy that GrivArea has the highest coefficient in Lasso and YearBuilt2010 has the highest coefficient in Ridge. Both make sense because the area and built year are important aspects when it comes to making a decision about purchasing house. Both models indicate that GrLiArea, NeighborhoodCrawfor and NeighborhoodStoneBr belong to top 10 highest coefficients and are highly associated with house price. Furthermore, we try to figure out feature importance using Gradient boosting machine. Feature importance is automatically measured as GBM grows its tree while minimizing entropy. Figure 8 below shows that overall quality has the highest feature importance 
+
+   \begin{figure}[thpb]
+      \centering
+      \includegraphics[width =  8cm, height = 5cm]{../images/model_gbm_predictor_importance.png}
+      \caption{Model GBM Predictor Importance}
+      \label{figurelabel}
+   \end{figure}
 
 \section{RESULTS}
 
-As a result, Figure 8 shows model comparison between true price and predicted price. 
+As a result, Figure 9 shows model comparison between true price and predicted price. 
 
    \begin{figure}[thpb]
       \centering
@@ -213,7 +220,7 @@ As a result, Figure 8 shows model comparison between true price and predicted pr
       \label{figurelabel}
    \end{figure}
 
-Four models are fairly accurate and most of data points are located on diagonal line, which indicates a strong linear relationship between true price and predicted. Especially, Random Forest is especially well fitted among these four. 
+Four models are fairly accurate and most of data points are located on a diagonal line, which indicates the strong linear relationship between true price and predicted. Especially, Random Forest is especially fitted well among these four. 
 
    \begin{figure}[thpb]
       \centering
@@ -222,7 +229,7 @@ Four models are fairly accurate and most of data points are located on diagonal 
       \label{figurelabel}
    \end{figure}
 
-Figure 9 shows the residual plots for four models. The residual is the difference between real house price and predicted price from models. We can see from Figure 9 that all models overestimate the price for cheaper house and underestimate the price for expensive house. This phenomenon is not surprising because we have few data points in cheapest and most expensive houses. Thus, the models incur a high bias in these end zones. This can be alleviated if we gather more data if possible. Compared to Lasso and Ridge, Gradient boosting machine and Random Forest are more stable. Both Lasso and Ridge have huge errors in the middle of graphs. 
+Figure 10 shows the residual plots for four models. The residual is the difference between real house price and predicted price from models. We can see from Figure 10 that all models overestimate the price for cheaper house and underestimate the price for expensive house. This phenomenon is not surprising because we have few data points in cheapest and most expensive houses. Thus, the models incur a high bias in these end zones. This can be alleviated if we gather more data if possible. Compared to Lasso and Ridge, Gradient boosting machine and Random Forest are more stable. Both Lasso and Ridge have huge errors in the middle of graphs. 
 
 Lastly, Table 2 as below shows RMSLE for each model, which is measured from hold-out dataset. It indicates that Random Forest predicts target variable the best.
 

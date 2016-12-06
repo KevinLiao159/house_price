@@ -757,3 +757,835 @@ data
     Abnorml     AdjLand      Alloca      Family      Normal     Partial 
 0.069178082 0.002739726 0.008219178 0.013698630 0.820547945 0.085616438 
  
+Frequency Table - Relative Frequency of MSZoning 
+data
+    C (all)          FV          RH          RL          RM 
+0.006849315 0.044520548 0.010958904 0.788356164 0.149315068 
+ 
+Frequency Table - Relative Frequency of Street 
+data
+       Grvl        Pave 
+0.004109589 0.995890411 
+ 
+Frequency Table - Relative Frequency of Alley 
+data
+      Grvl       None       Pave 
+0.03424658 0.93767123 0.02808219 
+ 
+Frequency Table - Relative Frequency of LotShape 
+data
+        IR1         IR2         IR3         Reg 
+0.331506849 0.028082192 0.006849315 0.633561644 
+ 
+Frequency Table - Relative Frequency of LandContour 
+data
+       Bnk        HLS        Low        Lvl 
+0.04315068 0.03424658 0.02465753 0.89794521 
+ 
+Frequency Table - Relative Frequency of Utilities 
+data
+      AllPub       NoSeWa 
+0.9993150685 0.0006849315 
+ 
+Frequency Table - Relative Frequency of LotConfig 
+data
+     Corner     CulDSac         FR2         FR3      Inside 
+0.180136986 0.064383562 0.032191781 0.002739726 0.720547945 
+ 
+Frequency Table - Relative Frequency of LandSlope 
+data
+       Gtl        Mod        Sev 
+0.94657534 0.04452055 0.00890411 
+ 
+Frequency Table - Relative Frequency of Neighborhood 
+data
+    Blmngtn     Blueste      BrDale     BrkSide     ClearCr     CollgCr 
+0.011643836 0.001369863 0.010958904 0.039726027 0.019178082 0.102739726 
+    Crawfor     Edwards     Gilbert      IDOTRR     MeadowV     Mitchel 
+0.034931507 0.068493151 0.054109589 0.025342466 0.011643836 0.033561644 
+      NAmes     NoRidge     NPkVill     NridgHt      NWAmes     OldTown 
+0.154109589 0.028082192 0.006164384 0.052739726 0.050000000 0.077397260 
+     Sawyer     SawyerW     Somerst     StoneBr       SWISU      Timber 
+0.050684932 0.040410959 0.058904110 0.017123288 0.017123288 0.026027397 
+    Veenker 
+0.007534247 
+ 
+Frequency Table - Relative Frequency of Condition1 
+data
+     Artery       Feedr        Norm        PosA        PosN        RRAe 
+0.032876712 0.055479452 0.863013699 0.005479452 0.013013699 0.007534247 
+       RRAn        RRNe        RRNn 
+0.017808219 0.001369863 0.003424658 
+ 
+Frequency Table - Relative Frequency of Condition2 
+data
+      Artery        Feedr         Norm         PosA         PosN         RRAe 
+0.0013698630 0.0041095890 0.9897260274 0.0006849315 0.0013698630 0.0006849315 
+        RRAn         RRNn 
+0.0006849315 0.0013698630 
+ 
+Frequency Table - Relative Frequency of BldgType 
+data
+      1Fam     2fmCon     Duplex      Twnhs     TwnhsE 
+0.83561644 0.02123288 0.03561644 0.02945205 0.07808219 
+ 
+Frequency Table - Relative Frequency of HouseStyle 
+data
+     1.5Fin      1.5Unf      1Story      2.5Fin      2.5Unf      2Story 
+0.105479452 0.009589041 0.497260274 0.005479452 0.007534247 0.304794521 
+     SFoyer        SLvl 
+0.025342466 0.044520548 
+ 
+Frequency Table - Relative Frequency of RoofStyle 
+data
+       Flat       Gable     Gambrel         Hip     Mansard        Shed 
+0.008904110 0.781506849 0.007534247 0.195890411 0.004794521 0.001369863 
+ 
+Frequency Table - Relative Frequency of RoofMatl 
+data
+     ClyTile      CompShg      Membran        Metal         Roll      Tar&Grv 
+0.0006849315 0.9821917808 0.0006849315 0.0006849315 0.0006849315 0.0075342466 
+     WdShake      WdShngl 
+0.0034246575 0.0041095890 
+ 
+Frequency Table - Relative Frequency of Exterior1st 
+data
+     AsbShng      AsphShn      BrkComm      BrkFace       CBlock      CemntBd 
+0.0136986301 0.0006849315 0.0013698630 0.0342465753 0.0006849315 0.0417808219 
+     HdBoard      ImStucc      MetalSd      Plywood        Stone       Stucco 
+0.1520547945 0.0006849315 0.1506849315 0.0739726027 0.0013698630 0.0171232877 
+     VinylSd      Wd Sdng      WdShing 
+0.3527397260 0.1410958904 0.0178082192 
+ 
+Frequency Table - Relative Frequency of Exterior2nd 
+data
+     AsbShng      AsphShn      Brk Cmn      BrkFace       CBlock      CmentBd 
+0.0136986301 0.0020547945 0.0047945205 0.0171232877 0.0006849315 0.0410958904 
+     HdBoard      ImStucc      MetalSd        Other      Plywood        Stone 
+0.1417808219 0.0068493151 0.1465753425 0.0006849315 0.0972602740 0.0034246575 
+      Stucco      VinylSd      Wd Sdng      Wd Shng 
+0.0178082192 0.3452054795 0.1349315068 0.0260273973 
+ 
+Frequency Table - Relative Frequency of MasVnrType 
+data
+    BrkCmn    BrkFace       None      Stone 
+0.01027397 0.30479452 0.59726027 0.08767123 
+ 
+Frequency Table - Relative Frequency of ExterQual 
+data
+         Ex          Fa          Gd          TA 
+0.035616438 0.009589041 0.334246575 0.620547945 
+ 
+Frequency Table - Relative Frequency of ExterCond 
+data
+          Ex           Fa           Gd           Po           TA 
+0.0020547945 0.0191780822 0.1000000000 0.0006849315 0.8780821918 
+ 
+Frequency Table - Relative Frequency of Foundation 
+data
+     BrkTil      CBlock       PConc        Slab       Stone        Wood 
+0.100000000 0.434246575 0.443150685 0.016438356 0.004109589 0.002054795 
+ 
+Frequency Table - Relative Frequency of BsmtQual 
+data
+        Ex         Fa         Gd       None         TA 
+0.08287671 0.02397260 0.42328767 0.02534247 0.44452055 
+ 
+Frequency Table - Relative Frequency of BsmtCond 
+data
+         Fa          Gd        None          Po          TA 
+0.030821918 0.044520548 0.025342466 0.001369863 0.897945205 
+ 
+Frequency Table - Relative Frequency of BsmtExposure 
+data
+        Av         Gd         Mn         No       None 
+0.15136986 0.09178082 0.07808219 0.65273973 0.02602740 
+ 
+Frequency Table - Relative Frequency of BsmtFinType1 
+data
+       ALQ        BLQ        GLQ        LwQ       None        Rec        Unf 
+0.15068493 0.10136986 0.28630137 0.05068493 0.02534247 0.09109589 0.29452055 
+ 
+Frequency Table - Relative Frequency of BsmtFinType2 
+data
+        ALQ         BLQ         GLQ         LwQ        None         Rec 
+0.013013699 0.022602740 0.009589041 0.031506849 0.026027397 0.036986301 
+        Unf 
+0.860273973 
+ 
+Frequency Table - Relative Frequency of Heating 
+data
+       Floor         GasA         GasW         Grav         OthW         Wall 
+0.0006849315 0.9780821918 0.0123287671 0.0047945205 0.0013698630 0.0027397260 
+ 
+Frequency Table - Relative Frequency of HeatingQC 
+data
+          Ex           Fa           Gd           Po           TA 
+0.5075342466 0.0335616438 0.1650684932 0.0006849315 0.2931506849 
+ 
+Frequency Table - Relative Frequency of CentralAir 
+data
+         N          Y 
+0.06506849 0.93493151 
+ 
+Frequency Table - Relative Frequency of Electrical 
+data
+       FuseA        FuseF        FuseP          Mix         None        SBrkr 
+0.0643835616 0.0184931507 0.0020547945 0.0006849315 0.0006849315 0.9136986301 
+ 
+Frequency Table - Relative Frequency of KitchenQual 
+data
+        Ex         Fa         Gd         TA 
+0.06849315 0.02671233 0.40136986 0.50342466 
+ 
+Frequency Table - Relative Frequency of Functional 
+data
+        Maj1         Maj2         Min1         Min2          Mod          Sev 
+0.0095890411 0.0034246575 0.0212328767 0.0232876712 0.0102739726 0.0006849315 
+         Typ 
+0.9315068493 
+ 
+Frequency Table - Relative Frequency of FireplaceQu 
+data
+        Ex         Fa         Gd       None         Po         TA 
+0.01643836 0.02260274 0.26027397 0.47260274 0.01369863 0.21438356 
+ 
+Frequency Table - Relative Frequency of GarageType 
+data
+     2Types      Attchd     Basment     BuiltIn     CarPort      Detchd 
+0.004109589 0.595890411 0.013013699 0.060273973 0.006164384 0.265068493 
+       None 
+0.055479452 
+ 
+Frequency Table - Relative Frequency of GarageFinish 
+data
+       Fin       None        RFn        Unf 
+0.24109589 0.05547945 0.28904110 0.41438356 
+ 
+Frequency Table - Relative Frequency of GarageQual 
+data
+         Ex          Fa          Gd        None          Po          TA 
+0.002054795 0.032876712 0.009589041 0.055479452 0.002054795 0.897945205 
+ 
+Frequency Table - Relative Frequency of GarageCond 
+data
+         Ex          Fa          Gd        None          Po          TA 
+0.001369863 0.023972603 0.006164384 0.055479452 0.004794521 0.908219178 
+ 
+Frequency Table - Relative Frequency of PavedDrive 
+data
+         N          P          Y 
+0.06164384 0.02054795 0.91780822 
+ 
+Frequency Table - Relative Frequency of PoolQC 
+data
+         Ex          Fa          Gd        None 
+0.001369863 0.001369863 0.002054795 0.995205479 
+ 
+Frequency Table - Relative Frequency of Fence 
+data
+      GdPrv        GdWo       MnPrv        MnWw        None 
+0.040410959 0.036986301 0.107534247 0.007534247 0.807534247 
+ 
+Frequency Table - Relative Frequency of MiscFeature 
+data
+        Gar2         None         Othr         Shed         TenC 
+0.0013698630 0.9630136986 0.0013698630 0.0335616438 0.0006849315 
+ 
+Frequency Table - Relative Frequency of SaleType 
+data
+        COD         Con       ConLD       ConLI       ConLw         CWD 
+0.029452055 0.001369863 0.006164384 0.003424658 0.003424658 0.002739726 
+        New         Oth          WD 
+0.083561644 0.002054795 0.867808219 
+ 
+Frequency Table - Relative Frequency of SaleCondition 
+data
+    Abnorml     AdjLand      Alloca      Family      Normal     Partial 
+0.069178082 0.002739726 0.008219178 0.013698630 0.820547945 0.085616438 
+ 
+Frequency Table - Relative Frequency of MSZoning 
+data
+    C (all)          FV          RH          RL          RM 
+0.006849315 0.044520548 0.010958904 0.788356164 0.149315068 
+ 
+Frequency Table - Relative Frequency of Street 
+data
+       Grvl        Pave 
+0.004109589 0.995890411 
+ 
+Frequency Table - Relative Frequency of Alley 
+data
+      Grvl       None       Pave 
+0.03424658 0.93767123 0.02808219 
+ 
+Frequency Table - Relative Frequency of LotShape 
+data
+        IR1         IR2         IR3         Reg 
+0.331506849 0.028082192 0.006849315 0.633561644 
+ 
+Frequency Table - Relative Frequency of LandContour 
+data
+       Bnk        HLS        Low        Lvl 
+0.04315068 0.03424658 0.02465753 0.89794521 
+ 
+Frequency Table - Relative Frequency of Utilities 
+data
+      AllPub       NoSeWa 
+0.9993150685 0.0006849315 
+ 
+Frequency Table - Relative Frequency of LotConfig 
+data
+     Corner     CulDSac         FR2         FR3      Inside 
+0.180136986 0.064383562 0.032191781 0.002739726 0.720547945 
+ 
+Frequency Table - Relative Frequency of LandSlope 
+data
+       Gtl        Mod        Sev 
+0.94657534 0.04452055 0.00890411 
+ 
+Frequency Table - Relative Frequency of Neighborhood 
+data
+    Blmngtn     Blueste      BrDale     BrkSide     ClearCr     CollgCr 
+0.011643836 0.001369863 0.010958904 0.039726027 0.019178082 0.102739726 
+    Crawfor     Edwards     Gilbert      IDOTRR     MeadowV     Mitchel 
+0.034931507 0.068493151 0.054109589 0.025342466 0.011643836 0.033561644 
+      NAmes     NoRidge     NPkVill     NridgHt      NWAmes     OldTown 
+0.154109589 0.028082192 0.006164384 0.052739726 0.050000000 0.077397260 
+     Sawyer     SawyerW     Somerst     StoneBr       SWISU      Timber 
+0.050684932 0.040410959 0.058904110 0.017123288 0.017123288 0.026027397 
+    Veenker 
+0.007534247 
+ 
+Frequency Table - Relative Frequency of Condition1 
+data
+     Artery       Feedr        Norm        PosA        PosN        RRAe 
+0.032876712 0.055479452 0.863013699 0.005479452 0.013013699 0.007534247 
+       RRAn        RRNe        RRNn 
+0.017808219 0.001369863 0.003424658 
+ 
+Frequency Table - Relative Frequency of Condition2 
+data
+      Artery        Feedr         Norm         PosA         PosN         RRAe 
+0.0013698630 0.0041095890 0.9897260274 0.0006849315 0.0013698630 0.0006849315 
+        RRAn         RRNn 
+0.0006849315 0.0013698630 
+ 
+Frequency Table - Relative Frequency of BldgType 
+data
+      1Fam     2fmCon     Duplex      Twnhs     TwnhsE 
+0.83561644 0.02123288 0.03561644 0.02945205 0.07808219 
+ 
+Frequency Table - Relative Frequency of HouseStyle 
+data
+     1.5Fin      1.5Unf      1Story      2.5Fin      2.5Unf      2Story 
+0.105479452 0.009589041 0.497260274 0.005479452 0.007534247 0.304794521 
+     SFoyer        SLvl 
+0.025342466 0.044520548 
+ 
+Frequency Table - Relative Frequency of RoofStyle 
+data
+       Flat       Gable     Gambrel         Hip     Mansard        Shed 
+0.008904110 0.781506849 0.007534247 0.195890411 0.004794521 0.001369863 
+ 
+Frequency Table - Relative Frequency of RoofMatl 
+data
+     ClyTile      CompShg      Membran        Metal         Roll      Tar&Grv 
+0.0006849315 0.9821917808 0.0006849315 0.0006849315 0.0006849315 0.0075342466 
+     WdShake      WdShngl 
+0.0034246575 0.0041095890 
+ 
+Frequency Table - Relative Frequency of MSZoning 
+data
+    C (all)          FV          RH          RL          RM 
+0.006849315 0.044520548 0.010958904 0.788356164 0.149315068 
+ 
+Frequency Table - Relative Frequency of Street 
+data
+       Grvl        Pave 
+0.004109589 0.995890411 
+ 
+Frequency Table - Relative Frequency of Alley 
+data
+      Grvl       None       Pave 
+0.03424658 0.93767123 0.02808219 
+ 
+Frequency Table - Relative Frequency of LotShape 
+data
+        IR1         IR2         IR3         Reg 
+0.331506849 0.028082192 0.006849315 0.633561644 
+ 
+Frequency Table - Relative Frequency of LandContour 
+data
+       Bnk        HLS        Low        Lvl 
+0.04315068 0.03424658 0.02465753 0.89794521 
+ 
+Frequency Table - Relative Frequency of Utilities 
+data
+      AllPub       NoSeWa 
+0.9993150685 0.0006849315 
+ 
+Frequency Table - Relative Frequency of LotConfig 
+data
+     Corner     CulDSac         FR2         FR3      Inside 
+0.180136986 0.064383562 0.032191781 0.002739726 0.720547945 
+ 
+Frequency Table - Relative Frequency of LandSlope 
+data
+       Gtl        Mod        Sev 
+0.94657534 0.04452055 0.00890411 
+ 
+Frequency Table - Relative Frequency of Neighborhood 
+data
+    Blmngtn     Blueste      BrDale     BrkSide     ClearCr     CollgCr 
+0.011643836 0.001369863 0.010958904 0.039726027 0.019178082 0.102739726 
+    Crawfor     Edwards     Gilbert      IDOTRR     MeadowV     Mitchel 
+0.034931507 0.068493151 0.054109589 0.025342466 0.011643836 0.033561644 
+      NAmes     NoRidge     NPkVill     NridgHt      NWAmes     OldTown 
+0.154109589 0.028082192 0.006164384 0.052739726 0.050000000 0.077397260 
+     Sawyer     SawyerW     Somerst     StoneBr       SWISU      Timber 
+0.050684932 0.040410959 0.058904110 0.017123288 0.017123288 0.026027397 
+    Veenker 
+0.007534247 
+ 
+Frequency Table - Relative Frequency of Condition1 
+data
+     Artery       Feedr        Norm        PosA        PosN        RRAe 
+0.032876712 0.055479452 0.863013699 0.005479452 0.013013699 0.007534247 
+       RRAn        RRNe        RRNn 
+0.017808219 0.001369863 0.003424658 
+ 
+Frequency Table - Relative Frequency of Condition2 
+data
+      Artery        Feedr         Norm         PosA         PosN         RRAe 
+0.0013698630 0.0041095890 0.9897260274 0.0006849315 0.0013698630 0.0006849315 
+        RRAn         RRNn 
+0.0006849315 0.0013698630 
+ 
+Frequency Table - Relative Frequency of BldgType 
+data
+      1Fam     2fmCon     Duplex      Twnhs     TwnhsE 
+0.83561644 0.02123288 0.03561644 0.02945205 0.07808219 
+ 
+Frequency Table - Relative Frequency of HouseStyle 
+data
+     1.5Fin      1.5Unf      1Story      2.5Fin      2.5Unf      2Story 
+0.105479452 0.009589041 0.497260274 0.005479452 0.007534247 0.304794521 
+     SFoyer        SLvl 
+0.025342466 0.044520548 
+ 
+Frequency Table - Relative Frequency of RoofStyle 
+data
+       Flat       Gable     Gambrel         Hip     Mansard        Shed 
+0.008904110 0.781506849 0.007534247 0.195890411 0.004794521 0.001369863 
+ 
+Frequency Table - Relative Frequency of RoofMatl 
+data
+     ClyTile      CompShg      Membran        Metal         Roll      Tar&Grv 
+0.0006849315 0.9821917808 0.0006849315 0.0006849315 0.0006849315 0.0075342466 
+     WdShake      WdShngl 
+0.0034246575 0.0041095890 
+ 
+Frequency Table - Relative Frequency of Exterior1st 
+data
+     AsbShng      AsphShn      BrkComm      BrkFace       CBlock      CemntBd 
+0.0136986301 0.0006849315 0.0013698630 0.0342465753 0.0006849315 0.0417808219 
+     HdBoard      ImStucc      MetalSd      Plywood        Stone       Stucco 
+0.1520547945 0.0006849315 0.1506849315 0.0739726027 0.0013698630 0.0171232877 
+     VinylSd      Wd Sdng      WdShing 
+0.3527397260 0.1410958904 0.0178082192 
+ 
+Frequency Table - Relative Frequency of Exterior2nd 
+data
+     AsbShng      AsphShn      Brk Cmn      BrkFace       CBlock      CmentBd 
+0.0136986301 0.0020547945 0.0047945205 0.0171232877 0.0006849315 0.0410958904 
+     HdBoard      ImStucc      MetalSd        Other      Plywood        Stone 
+0.1417808219 0.0068493151 0.1465753425 0.0006849315 0.0972602740 0.0034246575 
+      Stucco      VinylSd      Wd Sdng      Wd Shng 
+0.0178082192 0.3452054795 0.1349315068 0.0260273973 
+ 
+Frequency Table - Relative Frequency of MasVnrType 
+data
+    BrkCmn    BrkFace       None      Stone 
+0.01027397 0.30479452 0.59726027 0.08767123 
+ 
+Frequency Table - Relative Frequency of ExterQual 
+data
+         Ex          Fa          Gd          TA 
+0.035616438 0.009589041 0.334246575 0.620547945 
+ 
+Frequency Table - Relative Frequency of ExterCond 
+data
+          Ex           Fa           Gd           Po           TA 
+0.0020547945 0.0191780822 0.1000000000 0.0006849315 0.8780821918 
+ 
+Frequency Table - Relative Frequency of Foundation 
+data
+     BrkTil      CBlock       PConc        Slab       Stone        Wood 
+0.100000000 0.434246575 0.443150685 0.016438356 0.004109589 0.002054795 
+ 
+Frequency Table - Relative Frequency of BsmtQual 
+data
+        Ex         Fa         Gd       None         TA 
+0.08287671 0.02397260 0.42328767 0.02534247 0.44452055 
+ 
+Frequency Table - Relative Frequency of BsmtCond 
+data
+         Fa          Gd        None          Po          TA 
+0.030821918 0.044520548 0.025342466 0.001369863 0.897945205 
+ 
+Frequency Table - Relative Frequency of BsmtExposure 
+data
+        Av         Gd         Mn         No       None 
+0.15136986 0.09178082 0.07808219 0.65273973 0.02602740 
+ 
+Frequency Table - Relative Frequency of BsmtFinType1 
+data
+       ALQ        BLQ        GLQ        LwQ       None        Rec        Unf 
+0.15068493 0.10136986 0.28630137 0.05068493 0.02534247 0.09109589 0.29452055 
+ 
+Frequency Table - Relative Frequency of BsmtFinType2 
+data
+        ALQ         BLQ         GLQ         LwQ        None         Rec 
+0.013013699 0.022602740 0.009589041 0.031506849 0.026027397 0.036986301 
+        Unf 
+0.860273973 
+ 
+Frequency Table - Relative Frequency of Heating 
+data
+       Floor         GasA         GasW         Grav         OthW         Wall 
+0.0006849315 0.9780821918 0.0123287671 0.0047945205 0.0013698630 0.0027397260 
+ 
+Frequency Table - Relative Frequency of HeatingQC 
+data
+          Ex           Fa           Gd           Po           TA 
+0.5075342466 0.0335616438 0.1650684932 0.0006849315 0.2931506849 
+ 
+Frequency Table - Relative Frequency of CentralAir 
+data
+         N          Y 
+0.06506849 0.93493151 
+ 
+Frequency Table - Relative Frequency of Electrical 
+data
+       FuseA        FuseF        FuseP          Mix         None        SBrkr 
+0.0643835616 0.0184931507 0.0020547945 0.0006849315 0.0006849315 0.9136986301 
+ 
+Frequency Table - Relative Frequency of KitchenQual 
+data
+        Ex         Fa         Gd         TA 
+0.06849315 0.02671233 0.40136986 0.50342466 
+ 
+Frequency Table - Relative Frequency of Functional 
+data
+        Maj1         Maj2         Min1         Min2          Mod          Sev 
+0.0095890411 0.0034246575 0.0212328767 0.0232876712 0.0102739726 0.0006849315 
+         Typ 
+0.9315068493 
+ 
+Frequency Table - Relative Frequency of FireplaceQu 
+data
+        Ex         Fa         Gd       None         Po         TA 
+0.01643836 0.02260274 0.26027397 0.47260274 0.01369863 0.21438356 
+ 
+Frequency Table - Relative Frequency of GarageType 
+data
+     2Types      Attchd     Basment     BuiltIn     CarPort      Detchd 
+0.004109589 0.595890411 0.013013699 0.060273973 0.006164384 0.265068493 
+       None 
+0.055479452 
+ 
+Frequency Table - Relative Frequency of GarageFinish 
+data
+       Fin       None        RFn        Unf 
+0.24109589 0.05547945 0.28904110 0.41438356 
+ 
+Frequency Table - Relative Frequency of GarageQual 
+data
+         Ex          Fa          Gd        None          Po          TA 
+0.002054795 0.032876712 0.009589041 0.055479452 0.002054795 0.897945205 
+ 
+Frequency Table - Relative Frequency of GarageCond 
+data
+         Ex          Fa          Gd        None          Po          TA 
+0.001369863 0.023972603 0.006164384 0.055479452 0.004794521 0.908219178 
+ 
+Frequency Table - Relative Frequency of PavedDrive 
+data
+         N          P          Y 
+0.06164384 0.02054795 0.91780822 
+ 
+Frequency Table - Relative Frequency of PoolQC 
+data
+         Ex          Fa          Gd        None 
+0.001369863 0.001369863 0.002054795 0.995205479 
+ 
+Frequency Table - Relative Frequency of Fence 
+data
+      GdPrv        GdWo       MnPrv        MnWw        None 
+0.040410959 0.036986301 0.107534247 0.007534247 0.807534247 
+ 
+Frequency Table - Relative Frequency of MiscFeature 
+data
+        Gar2         None         Othr         Shed         TenC 
+0.0013698630 0.9630136986 0.0013698630 0.0335616438 0.0006849315 
+ 
+Frequency Table - Relative Frequency of SaleType 
+data
+        COD         Con       ConLD       ConLI       ConLw         CWD 
+0.029452055 0.001369863 0.006164384 0.003424658 0.003424658 0.002739726 
+        New         Oth          WD 
+0.083561644 0.002054795 0.867808219 
+ 
+Frequency Table - Relative Frequency of SaleCondition 
+data
+    Abnorml     AdjLand      Alloca      Family      Normal     Partial 
+0.069178082 0.002739726 0.008219178 0.013698630 0.820547945 0.085616438 
+ 
+Frequency Table - Relative Frequency of MSZoning 
+data
+    C (all)          FV          RH          RL          RM 
+0.006849315 0.044520548 0.010958904 0.788356164 0.149315068 
+ 
+Frequency Table - Relative Frequency of Street 
+data
+       Grvl        Pave 
+0.004109589 0.995890411 
+ 
+Frequency Table - Relative Frequency of Alley 
+data
+      Grvl       None       Pave 
+0.03424658 0.93767123 0.02808219 
+ 
+Frequency Table - Relative Frequency of LotShape 
+data
+        IR1         IR2         IR3         Reg 
+0.331506849 0.028082192 0.006849315 0.633561644 
+ 
+Frequency Table - Relative Frequency of LandContour 
+data
+       Bnk        HLS        Low        Lvl 
+0.04315068 0.03424658 0.02465753 0.89794521 
+ 
+Frequency Table - Relative Frequency of Utilities 
+data
+      AllPub       NoSeWa 
+0.9993150685 0.0006849315 
+ 
+Frequency Table - Relative Frequency of LotConfig 
+data
+     Corner     CulDSac         FR2         FR3      Inside 
+0.180136986 0.064383562 0.032191781 0.002739726 0.720547945 
+ 
+Frequency Table - Relative Frequency of LandSlope 
+data
+       Gtl        Mod        Sev 
+0.94657534 0.04452055 0.00890411 
+ 
+Frequency Table - Relative Frequency of Neighborhood 
+data
+    Blmngtn     Blueste      BrDale     BrkSide     ClearCr     CollgCr 
+0.011643836 0.001369863 0.010958904 0.039726027 0.019178082 0.102739726 
+    Crawfor     Edwards     Gilbert      IDOTRR     MeadowV     Mitchel 
+0.034931507 0.068493151 0.054109589 0.025342466 0.011643836 0.033561644 
+      NAmes     NoRidge     NPkVill     NridgHt      NWAmes     OldTown 
+0.154109589 0.028082192 0.006164384 0.052739726 0.050000000 0.077397260 
+     Sawyer     SawyerW     Somerst     StoneBr       SWISU      Timber 
+0.050684932 0.040410959 0.058904110 0.017123288 0.017123288 0.026027397 
+    Veenker 
+0.007534247 
+ 
+Frequency Table - Relative Frequency of Condition1 
+data
+     Artery       Feedr        Norm        PosA        PosN        RRAe 
+0.032876712 0.055479452 0.863013699 0.005479452 0.013013699 0.007534247 
+       RRAn        RRNe        RRNn 
+0.017808219 0.001369863 0.003424658 
+ 
+Frequency Table - Relative Frequency of Condition2 
+data
+      Artery        Feedr         Norm         PosA         PosN         RRAe 
+0.0013698630 0.0041095890 0.9897260274 0.0006849315 0.0013698630 0.0006849315 
+        RRAn         RRNn 
+0.0006849315 0.0013698630 
+ 
+Frequency Table - Relative Frequency of BldgType 
+data
+      1Fam     2fmCon     Duplex      Twnhs     TwnhsE 
+0.83561644 0.02123288 0.03561644 0.02945205 0.07808219 
+ 
+Frequency Table - Relative Frequency of HouseStyle 
+data
+     1.5Fin      1.5Unf      1Story      2.5Fin      2.5Unf      2Story 
+0.105479452 0.009589041 0.497260274 0.005479452 0.007534247 0.304794521 
+     SFoyer        SLvl 
+0.025342466 0.044520548 
+ 
+Frequency Table - Relative Frequency of RoofStyle 
+data
+       Flat       Gable     Gambrel         Hip     Mansard        Shed 
+0.008904110 0.781506849 0.007534247 0.195890411 0.004794521 0.001369863 
+ 
+Frequency Table - Relative Frequency of RoofMatl 
+data
+     ClyTile      CompShg      Membran        Metal         Roll      Tar&Grv 
+0.0006849315 0.9821917808 0.0006849315 0.0006849315 0.0006849315 0.0075342466 
+     WdShake      WdShngl 
+0.0034246575 0.0041095890 
+ 
+Frequency Table - Relative Frequency of Exterior1st 
+data
+     AsbShng      AsphShn      BrkComm      BrkFace       CBlock      CemntBd 
+0.0136986301 0.0006849315 0.0013698630 0.0342465753 0.0006849315 0.0417808219 
+     HdBoard      ImStucc      MetalSd      Plywood        Stone       Stucco 
+0.1520547945 0.0006849315 0.1506849315 0.0739726027 0.0013698630 0.0171232877 
+     VinylSd      Wd Sdng      WdShing 
+0.3527397260 0.1410958904 0.0178082192 
+ 
+Frequency Table - Relative Frequency of Exterior2nd 
+data
+     AsbShng      AsphShn      Brk Cmn      BrkFace       CBlock      CmentBd 
+0.0136986301 0.0020547945 0.0047945205 0.0171232877 0.0006849315 0.0410958904 
+     HdBoard      ImStucc      MetalSd        Other      Plywood        Stone 
+0.1417808219 0.0068493151 0.1465753425 0.0006849315 0.0972602740 0.0034246575 
+      Stucco      VinylSd      Wd Sdng      Wd Shng 
+0.0178082192 0.3452054795 0.1349315068 0.0260273973 
+ 
+Frequency Table - Relative Frequency of MasVnrType 
+data
+    BrkCmn    BrkFace       None      Stone 
+0.01027397 0.30479452 0.59726027 0.08767123 
+ 
+Frequency Table - Relative Frequency of ExterQual 
+data
+         Ex          Fa          Gd          TA 
+0.035616438 0.009589041 0.334246575 0.620547945 
+ 
+Frequency Table - Relative Frequency of ExterCond 
+data
+          Ex           Fa           Gd           Po           TA 
+0.0020547945 0.0191780822 0.1000000000 0.0006849315 0.8780821918 
+ 
+Frequency Table - Relative Frequency of Foundation 
+data
+     BrkTil      CBlock       PConc        Slab       Stone        Wood 
+0.100000000 0.434246575 0.443150685 0.016438356 0.004109589 0.002054795 
+ 
+Frequency Table - Relative Frequency of BsmtQual 
+data
+        Ex         Fa         Gd       None         TA 
+0.08287671 0.02397260 0.42328767 0.02534247 0.44452055 
+ 
+Frequency Table - Relative Frequency of BsmtCond 
+data
+         Fa          Gd        None          Po          TA 
+0.030821918 0.044520548 0.025342466 0.001369863 0.897945205 
+ 
+Frequency Table - Relative Frequency of BsmtExposure 
+data
+        Av         Gd         Mn         No       None 
+0.15136986 0.09178082 0.07808219 0.65273973 0.02602740 
+ 
+Frequency Table - Relative Frequency of BsmtFinType1 
+data
+       ALQ        BLQ        GLQ        LwQ       None        Rec        Unf 
+0.15068493 0.10136986 0.28630137 0.05068493 0.02534247 0.09109589 0.29452055 
+ 
+Frequency Table - Relative Frequency of BsmtFinType2 
+data
+        ALQ         BLQ         GLQ         LwQ        None         Rec 
+0.013013699 0.022602740 0.009589041 0.031506849 0.026027397 0.036986301 
+        Unf 
+0.860273973 
+ 
+Frequency Table - Relative Frequency of Heating 
+data
+       Floor         GasA         GasW         Grav         OthW         Wall 
+0.0006849315 0.9780821918 0.0123287671 0.0047945205 0.0013698630 0.0027397260 
+ 
+Frequency Table - Relative Frequency of HeatingQC 
+data
+          Ex           Fa           Gd           Po           TA 
+0.5075342466 0.0335616438 0.1650684932 0.0006849315 0.2931506849 
+ 
+Frequency Table - Relative Frequency of CentralAir 
+data
+         N          Y 
+0.06506849 0.93493151 
+ 
+Frequency Table - Relative Frequency of Electrical 
+data
+       FuseA        FuseF        FuseP          Mix         None        SBrkr 
+0.0643835616 0.0184931507 0.0020547945 0.0006849315 0.0006849315 0.9136986301 
+ 
+Frequency Table - Relative Frequency of KitchenQual 
+data
+        Ex         Fa         Gd         TA 
+0.06849315 0.02671233 0.40136986 0.50342466 
+ 
+Frequency Table - Relative Frequency of Functional 
+data
+        Maj1         Maj2         Min1         Min2          Mod          Sev 
+0.0095890411 0.0034246575 0.0212328767 0.0232876712 0.0102739726 0.0006849315 
+         Typ 
+0.9315068493 
+ 
+Frequency Table - Relative Frequency of FireplaceQu 
+data
+        Ex         Fa         Gd       None         Po         TA 
+0.01643836 0.02260274 0.26027397 0.47260274 0.01369863 0.21438356 
+ 
+Frequency Table - Relative Frequency of GarageType 
+data
+     2Types      Attchd     Basment     BuiltIn     CarPort      Detchd 
+0.004109589 0.595890411 0.013013699 0.060273973 0.006164384 0.265068493 
+       None 
+0.055479452 
+ 
+Frequency Table - Relative Frequency of GarageFinish 
+data
+       Fin       None        RFn        Unf 
+0.24109589 0.05547945 0.28904110 0.41438356 
+ 
+Frequency Table - Relative Frequency of GarageQual 
+data
+         Ex          Fa          Gd        None          Po          TA 
+0.002054795 0.032876712 0.009589041 0.055479452 0.002054795 0.897945205 
+ 
+Frequency Table - Relative Frequency of GarageCond 
+data
+         Ex          Fa          Gd        None          Po          TA 
+0.001369863 0.023972603 0.006164384 0.055479452 0.004794521 0.908219178 
+ 
+Frequency Table - Relative Frequency of PavedDrive 
+data
+         N          P          Y 
+0.06164384 0.02054795 0.91780822 
+ 
+Frequency Table - Relative Frequency of PoolQC 
+data
+         Ex          Fa          Gd        None 
+0.001369863 0.001369863 0.002054795 0.995205479 
+ 
+Frequency Table - Relative Frequency of Fence 
+data
+      GdPrv        GdWo       MnPrv        MnWw        None 
+0.040410959 0.036986301 0.107534247 0.007534247 0.807534247 
+ 
+Frequency Table - Relative Frequency of MiscFeature 
+data
+        Gar2         None         Othr         Shed         TenC 
+0.0013698630 0.9630136986 0.0013698630 0.0335616438 0.0006849315 
+ 
+Frequency Table - Relative Frequency of SaleType 
+data
+        COD         Con       ConLD       ConLI       ConLw         CWD 
+0.029452055 0.001369863 0.006164384 0.003424658 0.003424658 0.002739726 
+        New         Oth          WD 
+0.083561644 0.002054795 0.867808219 
+ 
+Frequency Table - Relative Frequency of SaleCondition 
+data
+    Abnorml     AdjLand      Alloca      Family      Normal     Partial 
+0.069178082 0.002739726 0.008219178 0.013698630 0.820547945 0.085616438 
+ 
