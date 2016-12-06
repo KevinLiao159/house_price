@@ -1,6 +1,8 @@
 library(caret)
 library(glmnet)
 library(xgboost)
+library(dplyr)
+library(ggplot2)
 source("../function/util.R")
 load('../../data/cleanedData/ddata_train_validation.matrix.RData')
 
@@ -105,7 +107,6 @@ get_rmse(model.ridge.pred, data.validation.matrix$SalePrice)
 load('../../data/model/gbm.RData')
 
 # model importance
-plot(varImp(model.gbm))
 model.gbm.imp <- varImp(model.gbm)$importance
 model.gbm.imp$predictor <- rownames(model.gbm.imp)
 

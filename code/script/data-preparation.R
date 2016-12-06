@@ -1,3 +1,6 @@
+library(caret)
+library(dplyr)
+
 # split into train, test matrix
 load(file = "../../data/cleanedData/data.all.matrix.RData")
 data.all.matrix <- as.data.frame(data.all.matrix)

@@ -7,15 +7,15 @@ T = code/test
 R = report
 
 # Declare PHONY targets
-.PHONY: all data pre eda test gbm lasso pca ridge randomforest svm xgboost regressions analysis report slides shinyApp session clean
+.PHONY: all eda test gbm lasso pca ridge randomforest svm xgboost regressions analysis report slides shinyApp session clean
 
-all: eda regressions report
+all: data pre eda regressions report
 
 data:
-	curl -o $(rawD)/train.csv "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/train.csv?sv=2015-12-11&sr=b&sig=m%2FXEQ6M07l7RgzPG7yQF2gvm0o32G2UzzFHNoHL82LQ%3D&se=2016-12-06T01%3A56%3A58Z&sp=r"
-	curl -o $(rawD)/test.csv "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/test.csv?sv=2015-12-11&sr=b&sig=k4B%2FEHoCF4fOc6kkovM%2FFURCktPbjCfI6SjJg6pRsD8%3D&se=2016-12-06T01%3A58%3A24Z&sp=r"
-	curl -o $(rawD)/sample_submission.csv "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/test.csv?sv=2015-12-11&sr=b&sig=AazDyubohhgo5Vhe6Hb9ikuAFiOeEmCxI6pEYXTot78%3D&se=2016-12-06T01%3A58%3A59Z&sp=r"
-	curl -o $(rawD)/data_description.txt "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/data_description.txt?sv=2015-12-11&sr=b&sig=hFnRp6bMRyjDVf8gxBI3nYSTAvZVTJSrI8HwpE5sFOQ%3D&se=2016-12-06T01%3A59%3A17Z&sp=r"
+	curl -o $(rawD)/train.csv "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/train.csv?sv=2015-12-11&sr=b&sig=ykQkJVuM5PSUEHecOhmOalQprzvBuCqfULPDF%2FtkpRs%3D&se=2016-12-09T03%3A39%3A41Z&sp=r"
+	curl -o $(rawD)/test.csv "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/test.csv?sv=2015-12-11&sr=b&sig=jc2ImGkSPjvJlxfXQLUJ6aOcIO6NOMxSVuHdcLdvsCw%3D&se=2016-12-09T03%3A41%3A14Z&sp=r"
+	curl -o $(rawD)/sample_submission.csv "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/sample_submission.csv?sv=2015-12-11&sr=b&sig=r67fwegIDRxwV4XLTwGE5P%2BkFNhGANfK88p%2BYPY2fSY%3D&se=2016-12-09T03%3A40%3A39Z&sp=r"
+	curl -o $(rawD)/data_description.txt "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/data_description.txt?sv=2015-12-11&sr=b&sig=GKqUEtKm%2FpBprF%2B7UYn48Adm8LBL6cTW1Rs1wZvlBY0%3D&se=2016-12-09T03%3A38%3A26Z&sp=r"
 
 tests: $(T)/test-evaluation.R
 	cd $(T) && Rscript test-evaluation.R
@@ -24,7 +24,8 @@ tests: $(T)/test-evaluation.R
 # Data Preprocessing and Preparing
 # ------------------------------------------------------------------------------------------
 pre: $(S)/preprocess.R $(S)/data-preparation.R
-	cd $(S) && Rscript preprocess.R && Rscript data-preparation.R
+	cd $(S) && Rscript preprocess.R;
+	cd $(S) && Rscript data-preparation.R
 
 # ------------------------------------------------------------------------------------------
 # Exploratory Data Analysis - three parts
@@ -60,26 +61,26 @@ regressions:
 # ------------------------------------------------------------------------------------------
 # Generate Analysis
 # ------------------------------------------------------------------------------------------
-analysis: regressions $(S)/model-analysis.R
+analysis: $(S)/model-analysis.R
 	cd $(S) && Rscript model-analysis.R
 
 # ------------------------------------------------------------------------------------------
 # Generate report
 # ------------------------------------------------------------------------------------------
-report: $(R)/report_final.Rnw analysis
-	cd $(R); Rscript -e "library(knitr); knit2pdf('report_final.Rnw', output = 'report_final.tex')"
+report: $(R)/report.Rnw
+	cd $(R); Rscript -e "library(knitr); knit2pdf('report.Rnw', output = 'report.tex')"
 
 # ------------------------------------------------------------------------------------------
 # Generate slides
 # ------------------------------------------------------------------------------------------
-slides: slides/slides.Rmd analysis
+slides: slides/slides.Rmd
 	cd slides; Rscript -e 'library(rmarkdown); render("slides.Rmd")'
 
 # ------------------------------------------------------------------------------------------
 # Generate slides
 # ------------------------------------------------------------------------------------------
-shinyApp: shinyApp/app.R analysis
-	cd shinyApp; Rscript app.R
+shinyApp: shinyApp/app.R
+	cd shinyApp; Rscript -e "shiny::runApp('shinyApp')"
 
 # ------------------------------------------------------------------------------------------
 # Generate session information
