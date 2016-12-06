@@ -59,7 +59,16 @@ ui <- fluidPage(
     selectInput('ycol', 'Y Variable', names_items, selected = names_items[38]),
     selectInput('xcol', 'X Variable', names_items, selected = names_items[1], multiple = T),
     selectInput('col', 'Colors', color, selected = color[1]),
-    selectInput('size', 'Dot Size', dotsize, selected = dotsize[1])),
+    sliderInput("x1",
+                "x-axis range",
+                min = 0,  max = 2000, value = c(0, 1500)),
+    sliderInput("y1",
+                "y-axis range",
+                min = 0,  max = 1000000, value = c(300000, 700000))
+   
+  ),
+  
+  
   mainPanel(
     plotOutput('plot1')
   ),
@@ -123,7 +132,10 @@ server <- function(input, output) {
     plot(selectedData(),
          col = input$col,
          pch = 20, cex = as.numeric(input$size),
-         main = 'Scatter Plot')
+         main = 'Scatter Plot', 
+         xlim = c(input$x1[1], input$x1[2]),
+         ylim = c(input$y1[1], input$y1[2])
+         )
   })
   
 
