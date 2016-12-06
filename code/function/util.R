@@ -1,4 +1,6 @@
+
 modify_dataframe_for_comparison <- function(df, model_name) {
+  
   df = data.frame(pred = df, y=data.validation.matrix$SalePrice)
   colnames(df) <- c('pred', 'y')
   df$model <- model_name
@@ -8,6 +10,7 @@ modify_dataframe_for_comparison <- function(df, model_name) {
   
 }
 
+
 get_rmse <- function(pred, real) {
   
   return(sqrt(mean((pred - real) ** 2)))
@@ -15,8 +18,8 @@ get_rmse <- function(pred, real) {
 }
 
 
+
 convert_na_to_factor <- function(data) {
-  
   
   for (predictor in colnames(data)){
     pred = eval(quote(predictor))
@@ -40,11 +43,9 @@ convert_na_to_factor <- function(data) {
   
 }
 
+
 get_only_numerical_predictors <- function(data) {
-  
-  
-  
-  
+
   tmp = NULL
   
   for (predictor in colnames(data)){
@@ -60,13 +61,19 @@ get_only_numerical_predictors <- function(data) {
   data[, eval(quote(tmp))]
 }
 
+
+
 get_number_none <- function(data) {
+  
   number_of_nones <- apply(data, 1, function(x) {
     sum(x == 'None')
   })
   
   return(number_of_nones)
 }
+
+
+
 
 make_submission_form <- function(model, data.test) {
   data.test$SalePrice <- NULL
