@@ -77,10 +77,10 @@ slides: slides/slides.Rmd
 	cd slides; Rscript -e 'library(rmarkdown); render("slides.Rmd")'
 
 # ------------------------------------------------------------------------------------------
-# Generate slides
+# Generate shinyApp
 # ------------------------------------------------------------------------------------------
 shinyApp: shinyApp
-	cd shinyApp; Rscript -e "shiny::runApp('shinyApp')"
+	Rscript -e 'library(methods); shiny::runApp("shinyapp/", launch.browser=TRUE)'
 
 # ------------------------------------------------------------------------------------------
 # Generate session information
