@@ -64,7 +64,7 @@ ui <- fluidPage(
                 min = 0,  max = 2000, value = c(0, 1500)),
     sliderInput("y1",
                 "y-axis range",
-                min = 0,  max = 1000000, value = c(100000, 700000))
+                min = 0,  max = 1000000, value = c(00000, 700000))
    
   ),
   
