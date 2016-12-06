@@ -56,6 +56,7 @@ pairs(data.train[,c("LotFrontage", "LotArea", "MSSubClass", "OverallCond", "Over
                     "BsmtUnfSF", "TotalBsmtSF", "X1stFlrSF", "X2ndFlrSF", "LowQualFinSF", 
                     "GrLivArea")])
 dev.off()
+<<<<<<< HEAD
 # 
 # # LotFrontage ------ take log
 # ggplot(data = data.train, aes(y = SalePrice, x = LotFrontage)) + 
@@ -131,3 +132,105 @@ dev.off()
 # # data.all$YearBuilt <- scale(as.numeric(data.all$YearBuilt), center = TRUE, scale = TRUE)
 # # Mean = 1971.3
 # mean(as.numeric(data.all$YearBuilt))
+=======
+
+# LotFrontage ------ take log
+ggplot(data = data.train, aes(y = SalePrice, x = LotFrontage)) + 
+  geom_point()
+# weak coorelation
+cor(data.train$SalePrice, data.train$LotFrontage)
+# Log transformation
+ggplot(data.train, aes(x = LotFrontage)) + geom_histogram() + scale_x_log10()
+
+
+# LotArea ----- take log
+ggplot(data = data.train[-c(54, 250, 314, 336, 385, 452, 458, 707, 770, 1299, 1397), ], 
+       aes(y = SalePrice, x = LotArea)) + 
+  geom_point()
+
+# outlier with high leverage
+which(data.train$LotArea > 50000)
+
+cor(data.train$SalePrice, data.train$LotArea)
+# stronger correlation
+plot()
+
+lm1 <- lm(SalePrice ~ LotArea, data = data.train)
+plot(data.train$LotArea, data.train$SalePrice)
+abline(lm1)
+abline(lm2)
+
+lm2 <- lm(SalePrice ~ LotArea, data = data.train[-c(54, 250, 314, 336, 385, 452, 458, 707, 770, 1299, 1397), ])
+plot(data.train$LotArea, data.train$SalePrice)
+abline(lm2)
+## Log transformation
+ggplot(data.train, aes(x = LotArea)) + geom_histogram() + scale_x_log10()
+
+
+# MSSubClass ?????????????????
+ggplot(data = data.train, aes(y = SalePrice, x = MSSubClass)) + 
+  geom_point()
+
+plot(data.train$MSSubClass)
+
+# OverallCond  ????????
+ggplot(data = data.train, aes(y = SalePrice, x = OverallCond)) + 
+  geom_point()
+
+# Why outliers
+which(data.train$SalePrice > 5e+05 & data.train$OverallCond == 5)
+data.train[c(179, 441, 770, 804, 899, 1047, 1170, 1183),]
+
+
+# OverallQual  ---- Strong 
+ggplot(data = data.train, aes(y = SalePrice, x = OverallQual)) + 
+  geom_point()
+
+# add price multiple to data.all
+data.all$multiple <- data.all$SalePrice / data.all$GrLivArea
+
+# Look at the top 5 multiples
+head(data.all[order(data.all$multiple),][data.all$data_type=="train",])
+
+# plot multiple vs. neighborhood
+plot(data.train$Neighborhood, data.train$multiple, las = 2)
+
+
+
+# YearBuilt
+
+ggplot(data = data.train, aes(y = SalePrice, x = YearBuilt)) + 
+  geom_point()
+
+ggplot(data.train, aes(x = YearBuilt)) + geom_bar() 
+
+# standize YearBuilt
+# data.all$YearBuilt <- scale(as.numeric(data.all$YearBuilt), center = TRUE, scale = TRUE)
+# Mean = 1971.3
+mean(as.numeric(data.all$YearBuilt))
+<<<<<<< HEAD
+=======
+
+# binary YearBuilt
+data.all$Year <- c()
+for (i in 1:nrow(data.all)) {
+  if (data.all$YearBuilt[i] > 1945) {
+    data.all$Year[i] <- 1
+  } else {
+    data.all$Year[i] <- 0
+  }
+}
+
+# Year
+ggplot(data = data.train, aes(y = SalePrice, x = Year)) + 
+  geom_point()
+
+ggplot(data.train, aes(x = Year)) + geom_bar() 
+
+
+
+
+
+
+>>>>>>> shinyApp
+>>>>>>> 4b20ae8e1f4d8581f3b5a5ebe2ada1949291c396
