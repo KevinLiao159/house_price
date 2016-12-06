@@ -21,6 +21,8 @@ load('../data/model/ridge.RData')
 load('../data/model/gbm.RData')
 load('../data/model/rf.RData')
 load('../data/model/model.df.Rdata')
+load("../data/cleanedData/RMSEL_Table.RData")
+
 
 model.names <- c('PCA', 'lasso', 'ridge', 'gbm', 'random_forest')
 model.list <- list(PCA = model.pca,
@@ -138,6 +140,19 @@ ui <- fluidPage(
   ),
   
   
+  headerPanel('RMSLE for each model'),
+  fluidRow(
+    column(12, offset = 4, 
+           mainPanel(width = "100%",
+                     tableOutput('table1')
+                     
+           )
+           
+    )
+  ),
+  
+  
+  
   fluidRow(
     column(12, offset = 0,
            sidebarPanel(width = "100%", "Since the residual is the difference between real house price and predicted house price from models, we see that all models overestimate the price for cheaper house and underestimate the price for expensive house. We can therefore conclude that the models incur a high bias in these end zones., which can be alleviated if more data are gathered."
@@ -209,7 +224,10 @@ server <- function(input, output) {
       geom_smooth() + 
       facet_grid(~model) + 
       ggtitle("Model prediction comparison")
-  })  
+  })
+  
+  
+  output$table1 <- renderTable(model_comparison)
   
 }
 
