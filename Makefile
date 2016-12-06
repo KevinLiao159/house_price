@@ -17,8 +17,8 @@ data:
 	curl -o $(rawD)/sample_submission.csv "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/sample_submission.csv?sv=2015-12-11&sr=b&sig=r67fwegIDRxwV4XLTwGE5P%2BkFNhGANfK88p%2BYPY2fSY%3D&se=2016-12-09T03%3A40%3A39Z&sp=r"
 	curl -o $(rawD)/data_description.txt "https://kaggle2.blob.core.windows.net/competitions-data/kaggle/5407/data_description.txt?sv=2015-12-11&sr=b&sig=GKqUEtKm%2FpBprF%2B7UYn48Adm8LBL6cTW1Rs1wZvlBY0%3D&se=2016-12-09T03%3A38%3A26Z&sp=r"
 
-tests: $(T)/test-evaluation.R
-	cd $(T) && Rscript test-evaluation.R
+tests: $(T)/test-that.R
+	cd $(T) && Rscript test-that.R
 
 # ------------------------------------------------------------------------------------------
 # Data Preprocessing and Preparing
