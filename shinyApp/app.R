@@ -1,5 +1,8 @@
 library(shiny)
 library(ggplot2)
+library(glmnet)
+library(dplyr)
+library(caret)
 
 train <- read.csv("../data/rawData/train.csv")
 
@@ -112,10 +115,19 @@ ui <- fluidPage(
   
   
   headerPanel('Model Comparison'),
-  mainPanel(
-    plotOutput('plot5'),
-    plotOutput('plot6')
-  )
+  fluidRow(
+    column(12, offset = 0, 
+           mainPanel(width = "80%",
+             plotOutput('plot5'),
+             plotOutput('plot6')
+           )
+           
+    )
+  ) 
+  
+  
+  
+  
 )
   
 
