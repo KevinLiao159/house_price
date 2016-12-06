@@ -105,11 +105,23 @@ ui <- fluidPage(
   
   
   headerPanel('Results'),
-  sidebarPanel(
-    selectInput('method', 'Regression Methods', method.names, selected = method.names[1])),
-  mainPanel(
-    plotOutput('plot3'),
-    plotOutput('plot4')
+  fluidRow(
+    column(12, offset = 0,
+      sidebarPanel(
+        selectInput(width = "80%", 'method', 'Regression Methods', method.names, selected = method.names[1])
+        )
+    )
+  ),  
+  
+
+  
+  mainPanel(width = "80%",
+    fluidRow(
+      splitLayout(cellWidths = c("45%", "45%"), plotOutput('plot3'), plotOutput('plot4'))
+    )
+    
+    
+    
   ),
   
   
@@ -123,10 +135,16 @@ ui <- fluidPage(
            )
            
     )
-  ) 
+  ),
   
   
+  fluidRow(
+    column(12, offset = 0,
+           sidebarPanel(width = "100%", "Since the residual is the difference between real house price and predicted house price from models, we see that all models overestimate the price for cheaper house and underestimate the price for expensive house. We can therefore conclude that the models incur a high bias in these end zones., which can be alleviated if more data are gathered."
+           )
+    )
   
+  )
   
 )
   
