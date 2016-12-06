@@ -4,9 +4,9 @@
 library(testthat)
 
 # loading all function files
-files <- list.files("functions")
+files <- list.files("function")
 for (i in 1:length(files)) {
-  source(paste0("functions/", files[i]))
+  source(paste0("function/", files[i]))
 }
 
 # run unit tests in folder 'tests/'
