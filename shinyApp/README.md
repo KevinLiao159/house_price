@@ -42,3 +42,6493 @@ Author: **Minsu Kim**, **Lingjie Qiao**, **Kevin Liao**, and **Cheng Peng**
 
 
 
+
+
+
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+
+
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+---
+  title: "Predictive Modeling on Credit Data"
+author: "Kevin Liao and Thomas Sun"
+header-includes:
+  - \usepackage{float}
+output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+This report applies predictive modeling techiques to find the relationship between credit card balance and various factors. Specifically, we use ridge regression, lasso regression, principal components regression, and partial least squares regression on credit card data to find the best fitting model to make accurate predictons on credit card balance. We find that all four methods produce models with similarly low mean squared errors, but ridge regression is the best performing model out of the four. From the coefficient estimates using ridge regression, we find that income, credit limit, credit rating, and student status are particularly useful for predicting credit card balance.
+
+
+## Introduction
+
+The goal of the project is to use preditive modeling techniques in order to best predict how given inputs will affect the credit card balance of an individual. Specifically, there are ten predictors used to predict balance, of which can be classified as either quantitative or qualitative data. Quantitative variables include age, number of credit cards, years of education, income, credit limit, and credit rating. The qualitative variables are gender, student status, marital status, and ethnicity. All or some of these variables may be useful in predicting credit card balance.
+
+In order to discover if there exists a relationship between the predictors and balance, one can use a variety of models applied to the dataset. A common model used is ordinary least squares regression (OLS). OLS estimators have the advantage of being unbiased given that the relationship between response and predictors is truly linear. In the *Credit* dataset, a multiple linear regression model can be used to fit the data. 
+
+However, OLS may have high variance and include irrelevant variables. Alternative methods may be used to improve the prediction accuracy and model interpretability. We use ridge regression, lasso regression, principal components regression (PCR), and partial least squares regression (PLSR) on the *Credit* in an attempt to find the best fitting model for predictive modeling.
+
+Ridge regression and lasso regression, known as shrinkage methods, contrain the coefficient estimates and effectively shrinks them towards zero. Both tend to result in lower variance at the expense of more bias. Unlike ridge regression, lasso regression can have coefficient estimates equal to exactly zero, letting the resulting model only contain a subset of the predictors. Thus, lasso results are easier to interpret than results from ridge regression.
+
+PCR and PLSR are methods that transform the predictors and reduces the number of coefficients needed to be estimated by least squares, known as dimension reduction. PCR uses principal components to explain the variance in the predictors, resulting in a single variable to predict the response on behalf of multiple variables. PLSR is similar to PCR, except PLSR also attempts to find a linear combination that best predicts the response in addition to explaining the original predictors well. Using either PCR and PLSR can prevent overfitting, a potential problem that arises in OLS.
+
+In data with multiple dimensions, like in the *Credit* dataset, an OLS regression is prone to overfitting, especially when the regressors are highly collinear. We use ridge, lasso, principal component, and partial least squares regressions on *Credit* and try to pick the best model to fit the data. That is, find the model that is easy to interpret while having the best predictive capability.
+
+
+## Data
+
+Data was obtained by downloading the *Credit* dataset made available by Gareth James on his website based on the related textbook, "An Introduction to Statistical Learning" by James et al. It contains the data `Balance`, credit card balances for a few hundred individuals, as well as data on several predictors associated with the individual. These variables include `Age`, `Cards` (number of credit cards), `Education` (number of years of education), `Income`, `Limit` (credit limit), `Rating` (credit rating), `Gender`, `Student` (student status), `Status` (marital status), and `Ethnicity`. `Gender`, `Student`, `Status`, and `Ethnicity` are qualitative variables, while the others are quantitative variables. 
+
+
+
+## Methods
+
+#### Exploratory Data Analysis
+
+First, to better understand the *Credit* dataset, we perform exploratory data analysis. We obtain summary statistics of all the variables, as well as relevant plots to understand the distribution of each variable. We also find the matrix of correlations, scatterplot matrix, ANOVA between `Balance` and the qualitative variables, and a conditional boxplots of `Balance` conditioned to each qualitative variable.
+
+#### Data Processing
+
+Before fitting any of the models, we next conduct some data processing. The qualitative variables, `Gender`, `Student`, `Balance`, and `Ethnicity`, are categorical and thus need to be transformed into dummy variables, or binary indicators, to be used in the regression functions. The variables with two levels, `Gender`, `Student`, and `Married`, have one binary indicator for each, in which each observation takes a value of zero or one. `Ethnicity` has three levels so we create two binary indicators for this variable. We also mean center and standardize the data to remove different measurement scalings and be more comparable. So, each variable has a mean of zero and standard deviation of one.
+
+#### Model Building
+
+There are five regression models to be fitted to the *Credit* dataset, ordinary least squares, ridge, lasso, principal components, and partial least squares. To build the models, we use a training dataset, containing a random sample of 300 out of 400 observations in *Credit*. The remaining 100 observations will be the test set, used to test the performance of the model.
+
+For the non-OLS models, we use ten-fold cross-validation to see how the predictive models would perform in practice. The training set is partitioned into ten equally sized subsamples. One fold is used as the testing set, while the other nine are used to fit the relevant model. This is then repeated for each fold so that all observations are tested exactly once. The cross validation is then used to tune a certain parameter, depending on the model, and then find the value of the parameter that results in the smallest cross validation error. This parameter is then selected as the "best" model, which is then fitted to the test set and finally the full dataset.
+
+#### Regression Models
+
+In order to find the relationship between *Credit* and the ten predictors to be used for predictive modelling, we assume the relationship between the independent and dependent variables is linear. The relationship is assumed to be the following:
+  
+  $$
+  \begin{aligned}
+Credit_i = \beta_0 + \beta_1X_i + \beta_2X_i + \ldots + \beta_{10}X_i + \epsilon_i
+\end{aligned}
+$$
+  
+  Where $\beta_0$ is the intercept and $\beta_1$, ..., $\beta_{10}$ are the regression coefficients for their associated predictor, and $\epsilon$ is the error term. 
+
+We first use an ordinary least squares method to be used as a benchmark for comparison between the other models. OLS estimates the coefficients by minimizing the residual sum of squares (RSS), defined as
+
+$$
+  \begin{aligned}
+RSS = \sum_{i=1}^{n} (y_i - \beta_0 - \sum_{j=1}^{p} \beta_jx_{ij})^2
+\end{aligned}
+$$
+  
+  For ridge regression, we minimize the RSS in addition to a shrinkage penalty, defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} \beta_j^2
+\end{aligned}
+$$
+  
+  Where $\lambda$ is the tuning parameter. As $\lambda \rightarrow \infty$, the shrinkage penalty grows, effectively shrinking the coefficients $\beta_1$, ..., $\beta_{10}$ towards zero.
+
+Lasso regression is another shrinkage method like ridge regression. The quantity we want to minimize is defined as
+
+$$
+  \begin{aligned}
+RSS + \lambda \sum_{j=1}^{p} |\beta_j|
+  \end{aligned}
+$$
+  
+  This is similar to the quantity for ridge regression, except the penalty now contains $|\beta_j|$ instead of $\beta_j^2$. The tuning parameter $\lambda$ is the same, except now sufficiently large $\lambda$ may shrink coefficients to exactly zero. 
+
+For principal components regression, the method tries to reduce the dimensions $X_1$, ..., $X_{p}$ of the data matrix into principal components $Z_1$, ..., $Z_{M}$ and then using the components as the predictors for least squares regression. The $M$ principal compenents will be the tuning parameter, and we use cross validation find which $M$ produces the smallest mean squared error.
+
+Lastly, partial least squares, also a dimension reduction method, tries to find $Z_1$, ..., $Z_{M}$ that approximate the original dimensions like PCR, but also tries to find new features related to the response $Balance$. The tuning parameter, the number of $M$ directions, is the same as well. The $M$ that is associated with the smalled mean squared error will be selected for the model.
+
+Once all of the best models are identified, the test set will be used to compute the MSEs of each, and find which model performs best. The best model will finally be used on the full `Credit` data set to find official coefficients.
+
+## Analysis
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(Matrix)
+library(methods)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+#### OLS
+First, let's look at our benchmark - OLS regression. We use full set of data that is mean centering and standardizing to fit the OLS model. OLS model will be served as our benchmark for comparison with later four different methods. So we calculate OLS model's MSE, which is equal to `r I(osl_mse)` 
+\vspace{40mm}
+
+Here is more information about OLS regression:
+  ```{r, echo=FALSE, results='asis'}
+xtable_summary <- xtable(osl_summary, 
+                         caption = 'Summary Table of OLS Regression')
+print(xtable_summary, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 1 exhibits estimates of all coefficients and their corresponding t-test and p-value.
+
+From above information, we can conclude that predictors such as *Income*, *Limit*, *Rating*, *Cards*, and *Student* are extremely significant.
+
+#### Ridge Regression
+
+Next, let's look at ridge regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/ridge-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(ridge_bestlam)`$
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(ridge_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis', message = FALSE}
+colnames(ridge_coef) <- c("Value")
+xtable_ridge_coef<- xtable(as.matrix(ridge_coef), 
+caption = 'Coefficient Table of Ridge Regression')
+print(xtable_ridge_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+
+```
+
+#### Lasso Regression
+Next, let's look at lasso regression. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Initialize lambda and use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best tuning parameter
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/lasso-cv-lambda.png}
+\caption{the cross-validation errors in terms of the tuning parameter}
+\end{figure}
+
+Above is the plot of the cross-validation errors in terms of the tuning parameter.
+\vspace{80mm}
+
+
+4. Find the $\lambda$ for the best model: best $\lambda = `r I(lasso_bestlam)`$
+  5. Use the test set to compute the test Mean Square Error: test MSE = `r I(lasso_test_mse)`
+6. Refit the model on the full data set using the best lambda and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(lasso_coef) <- c("Value")
+xtable_lasso_coef<- xtable(as.matrix(lasso_coef), 
+                           caption = 'Coefficient Table of Lasso Regression')
+print(xtable_lasso_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+#### Principal Components Regression (PCR)
+Next, let's look at PCR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+
+1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of principal components used
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of principal components used}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of principal components considered for the best model: M = `r I(pcr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(pcr_test_mse)`
+6. Refit the model on the full data set using M = `r I(pcr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+```{r, echo=FALSE, results='asis'}
+colnames(pcr_coef) <- c("Value")
+xtable_pcr_coef<- xtable(as.data.frame(pcr_coef), 
+caption = 'Coefficient Table of PCR')
+print(xtable_pcr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+#### Partial Least Squares Regression (PLSR)
+Next, let's look at PLSR. We load mean centerized and standardized data before the analysis. 
+Here are the steps:
+  
+  1. Check mission value in data for both train and test set
+2. Use random seeds (set.seed()) for cross-validation
+3. Use train set to conduct 10-fold cross-validation to find out the best number of partial least squares directions
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=70mm]{../images/pcr-cv-ncomp.png}
+\caption{the cross-validation errors in terms of the number of partial least squares directions}
+\end{figure}
+
+Above is the plot of the cross-validation errors.
+\vspace{80mm}
+
+4. Find the number of partial least squares directions for the best model: M = `r I(plsr_bestncomp)`
+5. Use the test set to compute the test Mean Square Error: test MSE = `r I(plsr_test_mse)`
+6. Refit the model on the full data set using M = `r I(plsr_bestncomp)`and get official coefficients.
+
+
+Here is the official coefficient table:
+  ```{r, echo=FALSE, results='asis'}
+colnames(plsr_coef) <- c("Value")
+xtable_plsr_coef<- xtable(as.data.frame(plsr_coef), 
+                          caption = 'Coefficient Table of PLSR')
+print(xtable_plsr_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+
+## Results
+
+```{r, echo=FALSE}
+# load data and library
+options(warn = -1)
+library(xtable)
+library(png)
+library(grid)
+library(ggplot2)
+library(reshape2)
+
+# load data in our working environment 
+load('../data/ols-regression.RData')
+load('../data/ridge-regression.RData')
+load('../data/lasso-regression.RData')
+load('../data/PCR.RData')
+load('../data/PLSR.RData')
+
+# load our functions
+source("../code/functions/mse-function.R")
+```
+
+
+```{r, echo=FALSE}
+# Extract coefficients and convert them into vectors
+osl_coef_vector <- osl_coef[1:12]
+ridge_coef_vector <- unlist(ridge_coef)[1:12]
+lasso_coef_vector <- unlist(lasso_coef)[1:12]
+pcr_coef_vector <- c(0, pcr_coef[1:11])
+plsr_coef_vector <- c(0, plsr_coef[1:11])
+
+# Create a table of regression coefficients for all methods
+table_coef <- data.frame("OSL" = osl_coef_vector, "Ridge" = ridge_coef_vector, 
+                         "Lasso" = lasso_coef_vector, "PCR" = pcr_coef_vector,
+                         "PLSR" = plsr_coef_vector)
+rownames(table_coef) <- rownames(ridge_coef)
+
+```
+
+
+Let's start with looking at regression coefficients for all methods including: ols, ridge, lasso, pcr, and plsr. 
+
+```{r, echo=FALSE, results='asis'}
+# Use xtable to display our coefficients dataframe
+xtable_coef <- xtable(table_coef, caption = 'Regression Coefficients for All Methods',
+digits = c(0, 3, 3, 3, 3, 3))
+print(xtable_coef, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 6 has twelve rows (one intercept term and eleven predictors terms) and five columns (one column per regression methods: ols, ridge, lasso, pcr, and plsr).  
+
+From Table 6, the result shows that regression coefficients for ridge, lasso, pcr, and plsr are approximately closed to each other's value but a slightly different comparing to ols - our benchmark. 
+
+Not surprisingly, we have seen that some coefficients in lasso regression are zero because lasso regression allows coefficients to be zero to minimize the regression penalty.
+
+Now let's look at another table with the test MSE values for the regression techniques: ridge, lasso, pcr, and plsr.
+
+```{r, echo=FALSE, results='asis'}
+# Create test mse dataframe
+table_mse <- data.frame("ridge" = ridge_test_mse, "lasso" = lasso_test_mse,
+"PCR" = pcr_test_mse, "PLSR" = plsr_test_mse)
+rownames(table_mse) <- "MSE Value"
+
+# Use xtable to display our test mse dataframe
+xtable_mse <- xtable(table_mse, caption = 'Test MSE for All Methods', 
+digits = c(0, 3, 3, 3, 3))
+print(xtable_mse, comment=FALSE, type = "latex", caption.placement = 'top')
+```
+
+Table 7 has only one row (Test MSE value) and four columns (one column per regression methods: ridge, lasso, pcr, and plsr).
+
+From Table 7, the result shows that the model with lowest test Mean Square Error is Ridge Regression, which means that ridge regression acttually has the best performance when we test the prediction against the true value in testing set. So ridge regression is the best model in terms of measuring the fitness by MSE.
+
+Now let's look at a plot in which the official coefficients are compared. We plot trend lines (i.e. the profiles) of the coefficients (one line connecting the coefficients of each method).
+
+```{r, echo=FALSE}
+# Create a new dataframe for coefficient in order to plot 
+plot_table_coef <- cbind(data.frame("Predictors" = rownames(table_coef)), table_coef)
+rownames(plot_table_coef) <- NULL
+
+# Reshape our dataframe in order to plot multiple lines
+plot_table_coef <- melt(plot_table_coef, id.vars = "Predictors" , value.name= "value", variable.name= "Methods")
+
+# Use ggplot to acchieve multiple lines plot
+ggplot(plot_table_coef, aes(x = Predictors, y=value, group = Methods, colour = Methods)) +
+  geom_line() +
+  geom_point(size = 4, shape = 21, fill = "white") +
+  ggtitle("Figure 5: Official Coefficients Comparison") + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure 5 displays comparison of coefficients of each predictor between different methods that we discussed earlier. In this visualization, we again confirm that there is some level of similarity between all methods.
+
+
+## Conclusions
+After we explore the credit data, we are interested in learning relationship of Balance and the other 10 predictors. First, we have fitted a OLS model upon all of 10 predictors in credit data so that we could get more insight about the information hidden behind the data. And the summary statistics served as our benchmark. Next step is model selection. We will pick the best models according to test Mean Square Error. Two shrinkage methods (ridge regression and lasso regression) and two dimension reduction methods (principal component regression and partial least square regression). When we conducted our analysis, we would like to see test MSE improve each time. However, the test MSE from all 5 different methods are competitive with each other. Ridge regression method acchieved the lowest test MSE and is considered the best model among the other four methods.
+
+\vspace{20mm}
+
+## References
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. An Introduction to Statistical Learning: With Applications in R. New York: Springer, 2013. Print.
+
+
+
+
+
