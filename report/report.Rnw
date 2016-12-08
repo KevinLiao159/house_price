@@ -27,7 +27,7 @@
 %\usepackage{amssymb}  % assumes amsmath package installed
 
 \title{\LARGE \bf
-Predictive modeling for house price prediction
+Predictive Modeling For House Price Prediction
 }
 
 \author{Minsu Kim, Lingjie Qiao, Kevin Liao, Cheng Peng \\

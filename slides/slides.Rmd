@@ -10,7 +10,7 @@ output:
 
 ## House Price -- Advanced Regression Techniques
 
-* National Realtors Statistics
+* Statistics - National Association of Realtors
 * Significance of The Project
 
 <img src="../images/housesbanner.png" style="width: 750px; margin-top: 90px;"/>
@@ -41,7 +41,7 @@ Our analysis starts with the data sets provided by Kaggle Competition on  [House
 
 The dataset has 80 variables in total, including both categorical and numerical variables.
 
-Our goal is to understand the relationship between `SalePrice` and these potential predictors with statistical fitting procedures.
+Our goal is to understand the relationship between `SalePrice` and these potential predictors with statistical modeling.
 
 
 ## Exploratory Data Analysis
@@ -104,7 +104,7 @@ $$\epsilon = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (log(p_{i} + 1) - log(a_{i} + 1))^
 
 * **Shrinkage Regression Models** 
     * PCA - information compression
-    * Laaso - L1 norm
+    * Lasso - L1 norm
     * Ridge - L2 norm
 
 * **Ensemble Models**
