@@ -1,14 +1,19 @@
 ---
 title: "Final Project - House Price"
-author: "Team Golden Squirrels: Lingjie Qiao, Minsu Kim, Kevin Liao and Cheng Peng"
+author: 'Team Golden Squirrels: Lingjie Qiao, Minsu Kim, Kevin Liao and Cheng Peng'
 date: "12/06/2016"
-output: 
-    ioslides_presentation:
-        fig_caption: true
+output:
+  ioslides_presentation:
+    fig_caption: yes
+  beamer_presentation: default
 ---
 
-## House Price: Advanced Regression Techniques
-<img src="../images/housesbanner.png" style="width: 750px;"/>
+## House Price -- Advanced Regression Techniques
+
+* National Realtors Statistics
+* Significance of The Project
+
+<img src="../images/housesbanner.png" style="width: 750px; margin-top: 90px;"/>
 
 
 ## Agenda
@@ -17,16 +22,15 @@ output:
 * Data Description
 * Exploratory Data Analysis
 * Methodology
-* Applied Methods
 * Feature Engineering
 * Analysis and Key Findings
 * Conclusions
-* Acknowledgement
 
 ## Project Objective
-To make full use of statistical models and predictive tools we have learned from the class and challenge ourselves to the next level, we choose to complete **"House Price: Advanced Regression Techniques"** from Kaggle Competition and have entered the competition with our work. 
-
-Aiming to explore relations, predict housing price and raise interesting questions from the given dataset, we want to achieve both **Prediction Accuracy** and **Model Interpretability**. 
+* Make full use of statistical models and predictive tools 
+* Explore variable relationships, predict housing price and raise interesting questions from the dataset
+    * **Prediction Accuracy**
+    * **Model Interpretability**. 
 
 ## Data Description
 Our analysis starts with the data sets provided by Kaggle Competition on  [House Price](https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data). There are three files:
@@ -35,7 +39,7 @@ Our analysis starts with the data sets provided by Kaggle Competition on  [House
 * `train.csv` 
 * `test.csv` 
 
-The dataset has 79 variables in total, including both categorical and numerical variables.
+The dataset has 80 variables in total, including both categorical and numerical variables.
 
 Our goal is to understand the relationship between `SalePrice` and these potential predictors with statistical fitting procedures.
 
@@ -50,11 +54,17 @@ With datasets in hand, the first thing we would like to explore is the dataset i
 
 ## Methodology
 
-The goal of this analysis is to accurately predict the final price of each home. Therefore, we frame this problem as a regression problem, and decide to use the L2 loss function which is often used in regression problem. 
+**Goal**: accurately predict the final price of each home
 
-Taking this objective into account, we preprocess original dataset so that regression models can work well. Furthermore, we extract more features by involving feature engineering. Finally, we fit two shrinkage models and two ensemble models.
+**Problem Framing**: regression problem
 
-## Applied Methods
+**Methods**: L2 loss function
+
+* Data Preprocess 
+* Feature Engineering
+* Shrinkage models and ensemble models.
+
+## Methodology
 
 1. Objective Loss Function
 <div class="blue2">
@@ -62,17 +72,10 @@ $$\epsilon = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (log(p_{i} + 1) - log(a_{i} + 1))^
 </div>
 
 2. Data Preprocess
-    - **Factorization**: dealing with NA values
-    - **Log Transformation**: dealing with area-related variables
-    - **Outliers**: dataset highly sensitive to outliers
-
-
-## Data Preprocess - New Variables
-
-<img src="../images/scatter_Year_sold_Year_remodeled_Vs_Price.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
-
-<img src="../images/scatter_Year_sold_Year_built_Vs_Price.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
-
+    - **Factorization**: dealing with categorical variables
+    - **Missing Values**: dealing with NA values
+    - **Log Transformation**: dealing with highly-skewed variables
+    - **Outliers**: removing 17 outliers
 
 ## Data Preprocess - Log Transformation
 
@@ -80,20 +83,33 @@ $$\epsilon = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (log(p_{i} + 1) - log(a_{i} + 1))^
 
 <img src="../images/historgram_log_trasformed_price.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
 
+## Feature Engineering
+
+**Problem 1**: Complexity of the Dataset
+
+**Approach**: Dimension reduction and extraction of informative, feature engineered predictors
+
+**Problem 2**: Small dataset
+
+**Approach**: Manual feature engineering instead of feature learning
 
 ## Feature Engineering
 
-Considering the complexity of the problem as well as the number of observations and predictors, we assume that the success of this analysis is largely dependent on **informative, feature engineered predictors**.
+<img src="../images/scatter_Year_sold_Year_remodeled_Vs_Price.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;">
 
-However, since we have a small size of dataset with 1460 observations, we conclude that feature learning is not a feasible option, but instead focus more on **manual feature engineering**. 
+<img src="../images/scatter_Year_sold_Year_built_Vs_Price.png" style="float: right; width: 47%; margin-left: 1%; margin-bottom: 0.5em;">
 
-## Model Comparison
 
-We utilize both **shrinkage regression models** and **ensemble models**. Ensemble models such as **Random Forest** often work well with unscaled, missing data and are used for both classification and regression problems. 
+## Modeling
 
-Also, since our dataset contains a hug number of predictors, shrinkage methods such **Lasso** and **Ridge regressions** can be highly effective.
+* **Shrinkage Regression Models** 
+    * PCA - information compression
+    * Laaso - L1 norm
+    * Ridge - L2 norm
 
-Furthermore, we utilize a dimension reduction technique called **PCA** in order to compress information into lower dimension.
+* **Ensemble Models**
+    * Gradient Boosting Machine - Boosting 
+    * Random Forest - Bagging with a random trick
 
 
 ## Principal Component Analysis
@@ -142,11 +158,10 @@ print(xtable1, comment=FALSE, type = "latex", caption.placement = 'top')
 
 ## Conclusions
 
-In conclusions, we explore and compare the usage of different regression models on the train dataset and fit the model for predictions in the test dataset. 
+In conclusions, it is feasible to predict the house price with more informative predictors we created. 
 
-Solving problems to the next level and applying advanced regression techniques, we obtained a better understanding of the data, potential predictors and useful techniques. 
+To emphasize collaborative teamwork and project reproducibility, we also wrote blog post and code documentation (kernel) so that more people can benefit and make use of our results.
 
-Along the completition of this project, we emphasized team collaboration, project reproducibility and adventurous strategy.
 
 
 ## Acknowledgments
