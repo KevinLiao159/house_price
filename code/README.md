@@ -33,8 +33,8 @@ code/
       preprocess.R
       model-analysis.R # the main model analysis and comparison file
       seesion-info-script.R
-   test/
-      test-evaluation.R
+   tests/
+   test-that.R
    qualitative_output.txt # output from eda script
 ```
 
